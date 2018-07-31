@@ -1,12 +1,15 @@
 export default class Background {
-    constructor (properties) {
+    constructor (properties = {}) {
         if (!(properties instanceof Object)) {
-            properties = {};
+            throw new Error(
+                'Background first argument has to be an object with the properties even, odd and/or hover. ' +
+                '\'' + typeof properties + 'given.'
+            );
         }
 
-        this.even = properties.even || 'grey-lightest';
-        this.odd = properties.odd || 'white';
-        this.hover = properties.hover || 'grey-lighter';
+        this.even = properties.hasOwnProperty('even') ? properties.even : 'grey-lightest';
+        this.odd = properties.hasOwnProperty('odd') ? properties.odd : 'white';
+        this.hover = properties.hasOwnProperty('hover') ? properties.hover : 'grey-lighter';
     }
 
     set even (even) {
