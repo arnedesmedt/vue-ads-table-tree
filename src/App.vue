@@ -2,8 +2,9 @@
     <div id="app">
         <table-tree
             :columns="columns"
-            :rows="rows"
+            :rows="[]"
             :asyncCall="asyncCall"
+            :itemsPerPage="2"
         >
         </table-tree>
   </div>
@@ -137,12 +138,12 @@ export default {
                     total: filter ? 6 : 20,
                     rows: filter ? this.rows.slice(1, 4) : this.rows.slice(7),
                 };
-            }
+            };
         },
 
         sleep (ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         },
-    }
+    },
 };
 </script>

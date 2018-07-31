@@ -1,12 +1,15 @@
 export default class Border {
     constructor (properties = {}) {
         if (!(properties instanceof Object)) {
-            properties = {};
+            throw new Error(
+                'Border first argument has to be an object with the properties horizontal, vertical or outline.' +
+                '\'' + typeof properties + 'given.'
+            );
         }
 
-        this.horizontal = properties.horizontal || true;
-        this.vertical = properties.vertical || true;
-        this.outline = properties.outline || true;
+        this.horizontal = properties.hasOwnProperty('horizontal') ? properties.horizontal : true;
+        this.vertical = properties.hasOwnProperty('vertical') ? properties.vertical : true;
+        this.outline = properties.hasOwnProperty('outline') ? properties.outline : true;
     }
 
     set horizontal (horizontal) {
@@ -38,22 +41,22 @@ export default class Border {
             return {};
         }
 
-        return {['border ' + (this.outline instanceof String ? this.outline : '')]: true};
+        return {['border ' + (typeof this.outline === 'string' ? this.outline : '')]: true};
     }
 
-    rowClasses (last) {
+    rowClasses (last = false) {
         if (last || !this.horizontal) {
             return {};
         }
 
-        return {['border-b ' + (this.horizontal instanceof String ? this.horizontal : '')]: true};
+        return {['border-b ' + (typeof this.horizontal === 'string' ? this.horizontal : '')]: true};
     }
 
-    columnClasses (last) {
+    columnClasses (last = false) {
         if (last || !this.vertical) {
             return {};
         }
 
-        return {['border-r ' + (this.vertical instanceof String ? this.vertical : '')]: true};
+        return {['border-r ' + (typeof this.vertical === 'string' ? this.vertical : '')]: true};
     }
 }

@@ -70,7 +70,8 @@
         </table>
         <pagination
             :totalItems="filteredRowCollection.length"
-            :itemsPerPage="2"
+            :itemsPerPage="itemsPerPage"
+            :startPage="page"
             @click="pageChange"
         >
 
@@ -132,14 +133,16 @@ export default {
             required: false,
         },
 
-        initItemsPerPage: {
+        itemsPerPage: {
             type: Number,
             required: false,
+            default: 10,
         },
 
-        initPage: {
+        page: {
             type: Number,
             required: false,
+            default: 0,
         },
 
         initFilter: {
@@ -166,7 +169,7 @@ export default {
         data.sortedRowCollection = new SortedRowCollection(
             data.filteredRowCollection,
             data.sortColumnCollection
-        )
+        );
         data.paginatedRowCollection = new PaginatedRowCollection(data.sortedRowCollection);
         data.asyncRowCollection = new RowCollection();
 
