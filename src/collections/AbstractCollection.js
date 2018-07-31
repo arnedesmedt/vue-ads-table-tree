@@ -49,25 +49,25 @@ export default class AbstractCollection {
         return this.length === 0;
     }
 
-    itemsInRangeSet (startIndex, endIndex, totalItems) {
-        if (totalItems === 0) {
-            totalItems = this.length;
-        }
-
-        if (totalItems === 0) {
-            return false;
-        }
-
-        if (endIndex > totalItems) {
-            endIndex = totalItems;
-        }
-
-        for (let i = startIndex; i < endIndex; i++) {
-            if (this.items[i] === undefined) {
-                return false;
-            }
-        }
-
-        return true;
-    }
+    // itemsInRangeSet (startIndex, endIndex, totalItems) {
+    //     if (totalItems === 0) {
+    //         totalItems = this.length;
+    //     }
+    //
+    //     if (totalItems === 0) {
+    //         return false;
+    //     }
+    //
+    //     if (endIndex > totalItems) {
+    //         endIndex = totalItems;
+    //     }
+    //
+    //     for (let i = startIndex; i < endIndex; i++) {
+    //         if (this.items[i] === undefined) {
+    //             return false;
+    //         }
+    //     }
+    //
+    //     return true;
+    // }
 }

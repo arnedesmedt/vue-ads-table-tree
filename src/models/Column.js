@@ -2,10 +2,19 @@ export default class Column {
     constructor (properties) {
         Object.assign(this, properties);
 
+        if (
+            !this.hasOwnProperty('property') ||
+            typeof this.property !== 'string'
+        ) {
+            throw new Error(
+                'Each column needs a unique property attribute of the type string'
+            );
+        }
+
         this.width = 'auto';
-        this.sortable = this.sortable || false;
-        this.direction = this.direction || null;
-        this.filterable = this.filterable || false;
+        this.sortable = this.hasOwnProperty('_sortable') ? this.sortable : false;
+        this.direction = this.hasOwnProperty('_direction') ? this.direction : null;
+        this.filterable = this.hasOwnProperty('_filterable') ? this.filterable : false;
     }
 
     set width (width) {

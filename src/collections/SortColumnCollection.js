@@ -19,7 +19,7 @@ export default class SortColumnCollection extends AbstractCollection {
     static mapToSortColumns (columns) {
         return columns
             .filter(column => {
-                return column.sortable || false;
+                return column.sortable;
             })
             .map(column => {
                 return {

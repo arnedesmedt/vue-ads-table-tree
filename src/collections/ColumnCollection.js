@@ -3,7 +3,10 @@ import AbstractCollection from './AbstractCollection';
 
 export default class ColumnCollection extends AbstractCollection {
     set items (items) {
-        super.items = ColumnCollection.mapToColumns(items);
+        let columns = ColumnCollection.mapToColumns(items);
+        this.checkUniqueColumns(columns);
+
+        super.items = columns;
     }
 
     get items () {
@@ -18,6 +21,17 @@ export default class ColumnCollection extends AbstractCollection {
 
             return item;
         });
+    }
+
+    checkUniqueColumns (columns) {
+        let columnProperties = columns.map(column => column.property);
+        let set = new Set(columnProperties);
+
+        if (set.size !== columnProperties.length) {
+            throw new Error(
+                'ColumnCollection is not unique'
+            );
+        }
     }
 
     filterColumns () {
