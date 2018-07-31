@@ -33,9 +33,9 @@ export default class RowCollection extends AbstractCollection {
         return result;
     }
 
-    addItemsOnIndex (items, startIndex = null) {
-        super.addItemsOnIndex(RowCollection.mapToRows(items), startIndex);
-    }
+    // addItemsOnIndex (items, startIndex = null) {
+    //     super.addItemsOnIndex(RowCollection.mapToRows(items), startIndex);
+    // }
 
     // allItemsLoaded  (totalRootItems) {
     //     if (this.length < totalRootItems) {

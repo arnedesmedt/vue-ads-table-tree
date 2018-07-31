@@ -29,13 +29,6 @@ export default class PaginatedRowCollection extends RowCollection {
         this.end = end;
     }
 
-    get range () {
-        return {
-            start: this.start,
-            end: this.end,
-        };
-    }
-
     set start (start) {
         this._start = start;
     }
