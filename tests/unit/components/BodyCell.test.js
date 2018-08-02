@@ -1,0 +1,76 @@
+import { shallowMount } from '@vue/test-utils';
+
+import BodyCell from '../../../src/components/BodyCell';
+import Row from '../../../src/models/Row';
+import Column from '../../../src/models/Column';
+import Border from '../../../src/models/Border';
+
+describe('BodyCell', () => {
+    let bodyCell;
+
+    beforeEach(() => {
+        bodyCell = shallowMount(BodyCell, {
+            propsData: {
+                border: new Border({
+                    vertical: true,
+                }),
+                row: new Row({
+                    firstName: 'arne',
+                }),
+                column: new Column({
+                    property: 'firstName',
+                }),
+                index: 0,
+            },
+        });
+    });
+
+    it('returns the default cell classes', function () {
+        expect(bodyCell.vm.cellClasses).toEqual({
+            'border-r ': true,
+            'px-4': true,
+            'py-2': true,
+            'text-sm': true,
+            'w-auto': true,
+        });
+
+        expect(bodyCell.vm.first).toBeTruthy();
+        expect(bodyCell.vm.cellStyle['padding-left']).toBe('1rem');
+
+        expect(bodyCell.html()).toMatchSnapshot();
+    });
+
+    it('changes the padding if the number of parents changes', function () {
+        bodyCell.setProps({
+            row: new Row({
+                parent: new Row(),
+            }),
+        });
+
+        expect(bodyCell.vm.cellStyle['padding-left']).toBe('2.5rem');
+    });
+
+    it('adds a toggle children button if the row has children', function () {
+        bodyCell.setProps({
+            row: new Row({
+                hasChildren: true,
+            }),
+        });
+
+        expect(bodyCell.html()).toMatchSnapshot();
+    });
+
+    it('is empty with no matching properties', function () {
+        bodyCell.setProps({
+            row: new Row({
+                lastName: 'de smedt',
+            }),
+        });
+    });
+
+    it('emits toggle children, when calling toggle children', function () {
+        bodyCell.vm.toggleChildren();
+
+        expect(bodyCell.emitted().toggleChildren).toBeTruthy();
+    });
+});

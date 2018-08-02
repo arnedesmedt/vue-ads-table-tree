@@ -28,7 +28,6 @@
     "postcss-import": "^11.1.0",
     "postcss-url": "^7.3.2",
     "tailwindcss": "^0.6.4",
-    "vue-ads-pagination": "^0.1.9",
     "vue-template-compiler": "^2.5.16"
   },
   "eslintConfig": {
@@ -91,7 +90,7 @@
       "jest-serializer-vue"
     ],
     "testMatch": [
-      "<rootDir>/(tests/unit/(models|collections)/*.test.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx))"
+      "<rootDir>/(tests/unit/(models|collections|components)/*.test.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx))"
     ],
     "testURL": "http://localhost",
     "collectCoverage": true,

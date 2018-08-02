@@ -59,9 +59,9 @@ export default {
 
         sortIconClasses () {
             return {
-                'fa-sort': this.sortColumn && this.sortColumn.direction === null,
-                'fa-sort-desc': this.sortColumn.direction === false,
-                'fa-sort-asc': this.sortColumn.direction === true,
+                'fa-sort': this.sortColumn instanceof Object && this.sortColumn.direction === null,
+                'fa-sort-desc': this.sortColumn instanceof Object && this.sortColumn.direction === false,
+                'fa-sort-asc': this.sortColumn instanceof Object && this.sortColumn.direction === true,
             };
         },
     },

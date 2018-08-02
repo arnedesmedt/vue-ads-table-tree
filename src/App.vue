@@ -1,10 +1,11 @@
 <template>
     <div id="app">
+        <input v-model="page"/>
         <table-tree
             :columns="columns"
-            :rows="[]"
-            :asyncCall="asyncCall"
+            :rows="rows"
             :itemsPerPage="2"
+            :page="parseInt(page)"
         >
         </table-tree>
   </div>
@@ -22,6 +23,7 @@ export default {
 
     data () {
         return {
+            page: 0,
             columns: [
                 {
                     property: 'firstName',

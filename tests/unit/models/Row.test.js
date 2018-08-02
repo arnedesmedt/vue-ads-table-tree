@@ -117,4 +117,12 @@ describe('Row model', () => {
         row.processedChildren = new RowCollection();
         expect(row.processedChildren.isEmpty()).toBeTruthy();
     });
+
+    it('throws an error if the parent of a row is not a row', function () {
+        const row = new Row();
+
+        expect(() => {
+            row.parent = 1;
+        }).toThrow('Parent of a row has to be a row');
+    });
 });
