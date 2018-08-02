@@ -96,7 +96,7 @@ export default {
                 );
             }
 
-            if (this.column.property) {
+            if (this.column.property && this.row.hasOwnProperty(this.column.property)) {
                 elements.push(this.row[this.column.property]);
             }
 

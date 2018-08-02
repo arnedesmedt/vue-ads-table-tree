@@ -36,12 +36,12 @@ export default class FilteredRowCollection extends RowCollection {
     get items () {
         let filterColumns = this.columnCollection.filterColumns();
 
-        if (filterColumns.length === 0 || this.filter.length === 0) {
+        if (filterColumns.length === 0 || this.trimFilter.length === 0) {
             this._length = this.rowCollection.length;
             return this.rowCollection.items;
         }
 
-        let regex = new RegExp(this.filter, 'i');
+        let regex = new RegExp(this.trimFilter, 'i');
 
         let filteredRows = this.rowCollection.items.filter(row => {
             let filterRow = this.filterRow(row, regex, filterColumns);
@@ -51,7 +51,7 @@ export default class FilteredRowCollection extends RowCollection {
             }
 
             let filteredChildrenRowCollection = new FilteredRowCollection(row.children, this.columnCollection);
-            filteredChildrenRowCollection.filter = this.filter;
+            filteredChildrenRowCollection.filter = this.trimFilter;
 
             let filterChildren = filteredChildrenRowCollection.items.length > 0;
 
@@ -75,7 +75,11 @@ export default class FilteredRowCollection extends RowCollection {
     }
 
     get filter () {
-        return this._filter.trim();
+        return this._filter;
+    }
+
+    get trimFilter () {
+        return this.filter.trim();
     }
 
     filterRow (row, regex, filterColumns) {

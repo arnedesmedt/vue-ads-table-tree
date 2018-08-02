@@ -18,7 +18,7 @@
                     class="appearance-none border rounded py-2 px-3 text-grey-darker "
                     type="text"
                     placeholder="Filterable..."
-                    v-model="filter"
+                    v-model="currentFilter"
                 >
             </div>
         </div>
@@ -71,8 +71,8 @@
         <pagination
             :totalItems="filteredRowCollection.length"
             :itemsPerPage="itemsPerPage"
-            :startPage="page"
-            @click="pageChange"
+            :page="currentPage"
+            @pageChange="pageChange"
         >
 
         </pagination>
@@ -84,7 +84,7 @@ import '../assets/css/styles.css';
 
 import HeaderCell from './HeaderCell';
 import BodyRow from './BodyRow';
-import Pagination from 'vue-ads-pagination';
+import Pagination from 'vue-ads-pagination/src/components/Pagination';
 
 import Border from '../models/Border';
 import Background from '../models/Background';
@@ -94,8 +94,6 @@ import SortColumnCollection from '../collections/SortColumnCollection';
 import PaginatedRowCollection from '../collections/PaginatedRowCollection';
 import FilteredRowCollection from '../collections/FilteredRowCollection';
 import SortedRowCollection from '../collections/SortedRowCollection';
-
-import RowConnection from '../connections/RowConnection';
 
 export default {
     name: 'TableTree',
@@ -145,23 +143,24 @@ export default {
             default: 0,
         },
 
-        initFilter: {
+        filter: {
             type: String,
             required: false,
         },
     },
 
     data () {
-        let data = {};
+        let data = {
+            currentPage: this.page,
+            borderModel: new Border(this.border),
+            backgroundModel: new Background(this.background),
+            columnCollection: new ColumnCollection(this.columns),
+            rowCollection: new RowCollection(this.rows),
+            asyncRowCollection: new RowCollection(),
+        };
 
-        data.filter = this.initFilter || '';
-
-        data.borderModel = new Border(this.border);
-        data.backgroundModel = new Background(this.background);
-
-        data.columnCollection = new ColumnCollection(this.columns);
         data.sortColumnCollection = new SortColumnCollection(data.columnCollection);
-        data.rowCollection = new RowCollection(this.rows);
+
         data.filteredRowCollection = new FilteredRowCollection(
             data.rowCollection,
             data.columnCollection
@@ -171,31 +170,48 @@ export default {
             data.sortColumnCollection
         );
         data.paginatedRowCollection = new PaginatedRowCollection(data.sortedRowCollection);
-        data.asyncRowCollection = new RowCollection();
-
-        if (this.asyncCall) {
-            data.rowConnection = new RowConnection(this.asyncCall);
-        }
 
         return data;
     },
 
-    created () {
-        this.paginatedRowCollection.range = {
-            start: 0,
-            end: 2,
-        };
-
-        this.filteredRowCollection.filter = this.filter;
-    },
-
     watch: {
-        filter (value) {
-            this.filteredRowCollection.filter = value;
+        border (border) {
+            this.borderModel = new Border(border);
+        },
+
+        background (background) {
+            this.backgroundModel = new Background(background);
+        },
+
+        rows (rows) {
+            this.rowCollection.items = rows;
+        },
+
+        columns (columns) {
+            this.columnCollection.items = columns;
+        },
+
+        filter (filter) {
+            this.currentFilter = filter;
+        },
+
+        page (page) {
+            this.currentPage = page;
         },
     },
 
     computed: {
+        currentFilter: {
+            get () {
+                return this.filteredRowCollection.filter;
+            },
+
+            set (filter) {
+                this.currentPage = 0;
+                this.filteredRowCollection.filter = filter;
+            },
+        },
+
         visibleColumns () {
             return this.columnCollection.items;
         },
@@ -248,6 +264,7 @@ export default {
         },
 
         pageChange (page, range) {
+            this.currentPage = page;
             this.paginatedRowCollection.range = range;
         },
     },

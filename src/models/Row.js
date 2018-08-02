@@ -10,6 +10,12 @@ export default class Row {
     }
 
     set parent (parent) {
+        if (!(parent instanceof Row)) {
+            throw new Error(
+                'Parent of a row has to be a row'
+            );
+        }
+
         this._parent = parent;
     }
 
