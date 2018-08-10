@@ -30,11 +30,6 @@ export default {
             required: true,
         },
 
-        sortColumn: {
-            type: Object,
-            required: false,
-        },
-
         border: {
             type: Border,
             required: true,
@@ -59,9 +54,9 @@ export default {
 
         sortIconClasses () {
             return {
-                'fa-sort': this.sortColumn instanceof Object && this.sortColumn.direction === null,
-                'fa-sort-desc': this.sortColumn instanceof Object && this.sortColumn.direction === false,
-                'fa-sort-asc': this.sortColumn instanceof Object && this.sortColumn.direction === true,
+                'fa-sort': this.column.sortable && this.column.direction === null,
+                'fa-sort-desc': this.column.sortable && this.column.direction === false,
+                'fa-sort-asc': this.column.sortable && this.column.direction === true,
             };
         },
     },

@@ -25,7 +25,7 @@ describe('BodyCell', () => {
         });
     });
 
-    it('returns the default cell classes', function () {
+    it('returns the default cell classes', () => {
         expect(bodyCell.vm.cellClasses).toEqual({
             'border-r ': true,
             'px-4': true,
@@ -40,7 +40,7 @@ describe('BodyCell', () => {
         expect(bodyCell.html()).toMatchSnapshot();
     });
 
-    it('changes the padding if the number of parents changes', function () {
+    it('changes the padding if the number of parents changes', () => {
         bodyCell.setProps({
             row: new Row({
                 parent: new Row(),
@@ -50,7 +50,7 @@ describe('BodyCell', () => {
         expect(bodyCell.vm.cellStyle['padding-left']).toBe('2.5rem');
     });
 
-    it('adds a toggle children button if the row has children', function () {
+    it('adds a toggle children button if the row has children', () => {
         bodyCell.setProps({
             row: new Row({
                 hasChildren: true,
@@ -60,7 +60,7 @@ describe('BodyCell', () => {
         expect(bodyCell.html()).toMatchSnapshot();
     });
 
-    it('is empty with no matching properties', function () {
+    it('is empty with no matching properties', () => {
         bodyCell.setProps({
             row: new Row({
                 lastName: 'de smedt',
@@ -68,7 +68,7 @@ describe('BodyCell', () => {
         });
     });
 
-    it('emits toggle children, when calling toggle children', function () {
+    it('emits toggle children, when calling toggle children', () => {
         bodyCell.vm.toggleChildren();
 
         expect(bodyCell.emitted().toggleChildren).toBeTruthy();

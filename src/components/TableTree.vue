@@ -32,36 +32,34 @@
                     :class="borderModel.rowClasses(false)"
                 >
                     <header-cell
-                        v-for="(column, columnKey) in visibleColumns"
+                        v-for="(column, columnKey) in columnCollection.items"
                         :key="columnKey"
                         :column="column"
-                        :sortColumn="sortColumnCollection.getSortColumn(column)"
-                        :last="columnKey === visibleColumns.length - 1"
+                        :last="columnKey === columnCollection.length - 1"
                         :border="borderModel"
-                        @sort="sortColumnCollection.sort(column)"
+                        @sort="sortColumn(column)"
                     />
                 </tr>
             </thead>
             <tbody>
                 <tr
-                    v-if="visibleRows.length === 0"
+                    v-if="visibleRowCollection.length === 0"
                 >
                     <td
                         class="text-center py-6 text-sm"
-                        :colspan="visibleColumns.length"
+                        :colspan="columnCollection.length"
                     >
-                        <!--En bij async nog checken not loading -->
-                        <!--<span v-if="this.resolver.loading">Loading...</span>-->
-                        <span>No results found</span>
+                        <span v-if="asyncCall && rowConnection.loading">Loading...</span>
+                        <span v-else>No results found</span>
                     </td>
                 </tr>
                 <body-row
-                    v-for="(row, rowKey) in visibleRows"
+                    v-for="(row, rowKey) in visibleRowCollection.items"
                     :key="rowKey"
                     :row="row"
                     :index="rowKey"
-                    :last="rowKey === visibleRows.length - 1"
-                    :columns="visibleColumns"
+                    :last="rowKey === visibleRowCollection.length - 1"
+                    :columns="columnCollection.items"
                     :background="backgroundModel"
                     :border="borderModel"
                     @toggleChildren="toggleChildren(row)"
@@ -69,12 +67,11 @@
             </tbody>
         </table>
         <pagination
-            :totalItems="filteredRowCollection.length"
+            :totalItems="currentTotalRows"
             :itemsPerPage="itemsPerPage"
             :page="currentPage"
             @pageChange="pageChange"
         >
-
         </pagination>
     </div>
 </template>
@@ -84,16 +81,21 @@ import '../assets/css/styles.css';
 
 import HeaderCell from './HeaderCell';
 import BodyRow from './BodyRow';
-import Pagination from 'vue-ads-pagination/src/components/Pagination';
+import Pagination from 'vue-ads-pagination';
 
 import Border from '../models/Border';
 import Background from '../models/Background';
+
 import RowCollection from '../collections/RowCollection';
 import ColumnCollection from '../collections/ColumnCollection';
-import SortColumnCollection from '../collections/SortColumnCollection';
-import PaginatedRowCollection from '../collections/PaginatedRowCollection';
-import FilteredRowCollection from '../collections/FilteredRowCollection';
-import SortedRowCollection from '../collections/SortedRowCollection';
+
+import TableConnection from '../connections/TableConnection';
+import RowRepository from '../repositories/RowRepository';
+
+import Filter from '../services/Filter';
+import Sort from '../services/Sort';
+import Paginate from '../services/Paginate';
+import Cache from '../services/Cache';
 
 export default {
     name: 'TableTree',
@@ -126,9 +128,20 @@ export default {
             default: () => [],
         },
 
+        totalRows: {
+            type: Number,
+            required: false,
+        },
+
         asyncCall: {
             type: Function,
             required: false,
+        },
+
+        useCache: {
+            type: Boolean,
+            required: false,
+            default: true,
         },
 
         itemsPerPage: {
@@ -152,24 +165,38 @@ export default {
     data () {
         let data = {
             currentPage: this.page,
+            currentTotalRows: this.totalRows || this.rows.length,
+            currentFilter: this.filter,
             borderModel: new Border(this.border),
             backgroundModel: new Background(this.background),
             columnCollection: new ColumnCollection(this.columns),
             rowCollection: new RowCollection(this.rows),
             asyncRowCollection: new RowCollection(),
+            visibleRowCollection: new RowCollection(),
         };
 
-        data.sortColumnCollection = new SortColumnCollection(data.columnCollection);
+        data.filterService = new Filter(data.columnCollection);
+        data.sortService = new Sort(data.columnCollection);
+        data.paginateService = new Paginate();
 
-        data.filteredRowCollection = new FilteredRowCollection(
-            data.rowCollection,
-            data.columnCollection
-        );
-        data.sortedRowCollection = new SortedRowCollection(
-            data.filteredRowCollection,
-            data.sortColumnCollection
-        );
-        data.paginatedRowCollection = new PaginatedRowCollection(data.sortedRowCollection);
+        if (this.asyncCall) {
+            data.rowConnection = new TableConnection(
+                this.asyncCall,
+                data.filterService,
+                data.sortService,
+                data.paginateService
+            );
+            data.rowRepository = new RowRepository(data.rowConnection);
+
+            if (this.useCache) {
+                data.cache = new Cache(
+                    data.rowCollection,
+                    data.filterService,
+                    data.sortService,
+                    data.paginateService
+                );
+            }
+        }
 
         return data;
     },
@@ -198,74 +225,129 @@ export default {
         page (page) {
             this.currentPage = page;
         },
+
+        totalRows (totalRows) {
+            this.currentTotalRows = totalRows;
+        },
+
+        asyncCall (asyncCall) {
+            this.rowRepository.callable = asyncCall;
+        },
+
+        currentFilter (currentFilter) {
+            this.filterService.filterValue = currentFilter;
+
+            if (this.currentPage === 0) {
+                this.renderRootRows();
+            } else {
+                this.currentPage = 0;
+            }
+        },
+
+        currentTotalRows (currentTotalRows) {
+            if (this.rowCollection.length < currentTotalRows) {
+                this.rowCollection.extendToLength(currentTotalRows);
+            }
+        }
     },
 
     computed: {
-        currentFilter: {
-            get () {
-                return this.filteredRowCollection.filter;
-            },
+        makeAsyncCall () {
+            if (!(this.asyncCall instanceof Function)) {
+                return false;
+            }
 
-            set (filter) {
-                this.currentPage = 0;
-                this.filteredRowCollection.filter = filter;
-            },
-        },
+            if (!this.useCache || this.currentTotalRows === 0) {
+                return true;
+            }
 
-        visibleColumns () {
-            return this.columnCollection.items;
-        },
+            if (this.rowCollection.allRowsLoaded(this.currentTotalRows)) {
+                return false;
+            }
 
-        visibleRows () {
-            return this.paginatedRowCollection.flatten();
+            if (this.filterService.isFiltering()) {
+                return true;
+            }
+
+            if (this.rowCollection.allRootRowsLoaded(this.currentTotalRows)) {
+                return false;
+            }
+
+            if (this.sortService.hasSortedColumns()) {
+                return true;
+            }
+
+            return !this.rowCollection.allRowsInRangeLoaded(this.paginateService.range);
         },
-        // async () {
-        //     return (this.filterOrSort && !this.allItemsLoaded) || !this.pageItemsLoaded;
-        // },
-        //
-        // filterOrSort () {
-        //     return this.asyncRows instanceof Function && (
-        //         this.filterModel.trimValue.length > 0 ||
-        //         this.columnCollection.hasSortedColumns
-        //     );
-        // },
-        //
-        // pageItemsLoaded () {
-        //     return this.asyncRows === null ||
-        //         this.rowCollection.itemsLoaded(
-        //             this.paginateModel.range,
-        //             this.paginateModel.totalItems
-        //         );
-        // },
-        //
-        // allItemsLoaded () {
-        //     return this.asyncRows === null ||
-        //         this.rowCollection.allItemsLoaded(
-        //             this.paginateModel.totalItems
-        //         );
-        // },
     },
 
     methods: {
-        toggleChildren (row) {
-            this.callChildRows(row);
-            row.toggleChildren();
+        renderRows () {
+            let visibleCollection;
+
+            if (this.makeAsyncCall) {
+                visibleCollection = this.asyncRowCollection;
+                this.cache.store(this.asyncRowCollection);
+            } else {
+                let filteredCollection = this.filterService.filter(this.rowCollection);
+                this.currentTotalRows = filteredCollection.length;
+                let sortedCollection = this.sortService.sort(filteredCollection);
+                visibleCollection = this.paginateService.paginate(sortedCollection);
+            }
+
+            this.visibleRowCollection.items = visibleCollection.flatten();
         },
 
-        callChildRows (parentRow) {
-            if (!parentRow.childrenLoaded() && !this.rowConnection) {
+        async renderRootRows () {
+            await this.callRootRows();
+            this.renderRows();
+        },
+
+        async renderChildRows (row) {
+            await this.callChildRows(row);
+            this.renderRows();
+        },
+
+        async toggleChildren (row) {
+            row.toggleChildren();
+            await this.renderChildRows(row);
+        },
+
+        async sortColumn (column) {
+            this.columnCollection.sort(column);
+            await this.renderRootRows();
+        },
+
+        async callRootRows () {
+            if (!this.makeAsyncCall) {
+                return;
+            }
+
+            this.visibleRowCollection.clear();
+            let result = await this.rowRepository.callRootRows();
+            this.currentTotalRows = result.total;
+            this.asyncRowCollection.items = result.rows.items;
+        },
+
+        async callChildRows (parentRow) {
+            if (parentRow.childrenLoaded() || !parentRow.showChildren) {
+                return;
+            }
+
+            if (!this.asyncCall) {
                 throw new Error(
                     'Add an asyncCall function if there is one row with hasChildren = true ' +
-                    'and without any children attribute or an empty children attribute.'
+                    'and without or with an empty children attribute.'
                 );
             }
 
-            this.rowConnection.callChildRows(parentRow);
+            parentRow.children = await this.rowRepository.callChildRows(parentRow);
         },
 
-        pageChange (page, range) {
+        async pageChange (page, range) {
             this.currentPage = page;
-            this.paginatedRowCollection.range = range;
+            this.paginateService.range = range;
+            await this.renderRootRows();
         },
     },
 };

@@ -1,8 +1,13 @@
-export default class RowConnection {
-    static maxConsecutiveCalls = 20;
+export default class TableConnection {
+    static maxConsecutiveCalls = 10;
 
-    constructor (callable) {
+    constructor (callable, filterService, sortService, paginateService) {
         this.callable = callable;
+
+        this.filterService = filterService;
+        this.sortService = sortService;
+        this.paginateService = paginateService;
+
         this.loading = false;
         this.consecutiveCalls = 0;
     }
@@ -19,6 +24,30 @@ export default class RowConnection {
 
     get callable () {
         return this._callable;
+    }
+
+    set filterService (filterService) {
+        this._filterService = filterService;
+    }
+
+    get filterValue () {
+        return this._filterService.filterValue;
+    }
+
+    set sortService (sortService) {
+        this._sortService = sortService;
+    }
+
+    get sortColumns () {
+        return this._sortService.sortColumns;
+    }
+
+    set paginateService (paginateService) {
+        this._paginateService = paginateService;
+    }
+
+    get range () {
+        return this._paginateService.range;
     }
 
     get loading () {
@@ -57,18 +86,22 @@ export default class RowConnection {
     }
 
     checkConsecutiveCalls () {
-        if (this.consecutiveCalls > RowConnection.maxConsecutiveCalls) {
+        if (this.consecutiveCalls > TableConnection.maxConsecutiveCalls) {
             throw new Error(
                 'Too much async calls. Prevent loading the children by setting showChildren to false.'
             );
         }
     }
 
-    callChildRows (parentRow) {
-        // let result = await this.resolve();
+    async callChildRows (parentRow) {
+        let result = await this.resolve(this.range, this.filterValue, this.sortColumns, parentRow);
+
+        return result.rows;
     }
 
-    callRootRows () {
+    async callRootRows () {
+        let result = await this.resolve(this.range, this.filterValue, this.sortColumns);
 
+        return result;
     }
 }

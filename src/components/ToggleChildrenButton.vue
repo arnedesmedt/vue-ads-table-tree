@@ -1,6 +1,6 @@
 <template>
     <i
-        class="fa pr-2"
+        class="fa pr-2 cursor-pointer"
         :class="toggleChildrenButtonClasses"
     >
     </i>

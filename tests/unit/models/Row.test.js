@@ -2,31 +2,34 @@ import Row from '../../../src/models/Row';
 import RowCollection from '../../../src/collections/RowCollection';
 
 describe('Row model', () => {
-    it('initializes the default values if no arguments are given', function () {
+    it('initializes the default values if no arguments are given', () => {
         const row = new Row();
 
         expect(row.children.isEmpty()).toBeTruthy();
         expect(row.processedChildren.isEmpty()).toBeTruthy();
         expect(row.showChildren).toBeFalsy();
         expect(row.hasChildren).toBeFalsy();
+        expect(row.childrenLoaded()).toBeFalsy();
     });
 
-    it('initializes the given values from the argument', function () {
+    it('initializes the given values from the argument', () => {
         const row = new Row({
             name: 'arne',
             showChildren: true,
             hasChildren: true,
+            childrenLoading: true,
             children: new RowCollection([{name: 'de smedt'}]),
         });
 
         expect(row.children.isEmpty()).toBeFalsy();
         expect(row.showChildren).toBeTruthy();
         expect(row.hasChildren).toBeTruthy();
+        expect(row.childrenLoading).toBeTruthy();
         expect(row.name).toBe('arne');
-        expect(row.children.items[0].name).toBe('de smedt');
+        expect(row.children.first.name).toBe('de smedt');
     });
 
-    it('sets hasChildren on true if children is not empty', function () {
+    it('sets hasChildren on true if children is not empty', () => {
         const row = new Row({
             hasChildren: false,
             children: new RowCollection([{name: 'de smedt'}]),
@@ -36,16 +39,16 @@ describe('Row model', () => {
         expect(row.hasChildren).toBeTruthy();
     });
 
-    it('adds a parent to all children', function () {
+    it('adds a parent to all children', () => {
         const row = new Row({
             name: 'arne',
             children: new RowCollection([{name: 'de smedt'}]),
         });
 
-        expect(row.children.items[0].parent.name).toBe('arne');
+        expect(row.children.first.parent.name).toBe('arne');
     });
 
-    it('creates a RowCollection if the children attribute is an array', function () {
+    it('creates a RowCollection if the children attribute is an array', () => {
         const row = new Row({
             children: [
                 {
@@ -57,7 +60,7 @@ describe('Row model', () => {
         expect(row.children).toBeInstanceOf(RowCollection);
     });
 
-    it('returns the properties if asked for', function () {
+    it('returns the properties if asked for', () => {
         const row = new Row({
             showChildren: false,
             firstName: 'arne',
@@ -70,7 +73,7 @@ describe('Row model', () => {
         ]);
     });
 
-    it('shows/hide the children on a toggleChildren call', function () {
+    it('shows/hide the children on a toggleChildren call', () => {
         const row = new Row({
             showChildren: false,
         });
@@ -81,7 +84,7 @@ describe('Row model', () => {
         expect(row.showChildren).toBeFalsy();
     });
 
-    it('checks if the children are loaded', function () {
+    it('checks if the children are loaded', () => {
         const row = new Row({
             hasChildren: true,
             children: new RowCollection([{name: 'de smedt'}]),
@@ -92,7 +95,7 @@ describe('Row model', () => {
         expect(row.childrenLoaded()).toBeFalsy();
     });
 
-    it('counts the parents', function () {
+    it('counts the parents', () => {
         const row = new Row({
             children: new RowCollection([
                 {
@@ -105,24 +108,33 @@ describe('Row model', () => {
             ]),
         });
 
-        expect(row.children.items[0].children.items[0].countParents()).toBe(2);
+        expect(row.children.first.children.first.countParents()).toBe(2);
     });
 
-    it('gives the processed children otherwise the default children', function () {
+    it('returns the processed children otherwise the default children', () => {
         const row = new Row({
             children: new RowCollection([{name: 'arne'}]),
         });
 
-        expect(row.processedChildren.items[0].name).toBe('arne');
+        expect(row.processedChildren.first.name).toBe('arne');
         row.processedChildren = new RowCollection();
         expect(row.processedChildren.isEmpty()).toBeTruthy();
     });
 
-    it('throws an error if the parent of a row is not a row', function () {
+    it('throws an error if the parent of a row is not a row', () => {
         const row = new Row();
 
         expect(() => {
             row.parent = 1;
         }).toThrow('Parent of a row has to be a row');
+    });
+
+    it('sets loadChildren on true, if the row has to show the children, it has children and the children are empty', () => {
+        const row = new Row({
+            showChildren: true,
+            hasChildren: true,
+        });
+
+        expect(row.loadChildren()).toBeTruthy();
     });
 });

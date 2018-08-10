@@ -41,4 +41,28 @@ export default class ColumnCollection extends AbstractCollection {
             })
             .map(column => column.property);
     }
+
+    sortColumns () {
+        return this.items
+            .filter(column => {
+                return column.sortable || false;
+            })
+            .sort((columnA, columnB) => {
+                if (columnA.sortOrder === columnB.sortOrder) {
+                    return 0;
+                }
+
+                return columnA.sortOrder < columnB.sortOrder ? -1 : 1;
+            });
+    }
+
+    sort (column) {
+        column.sort(this.maxSortOrder() + 1);
+    }
+
+    maxSortOrder () {
+        let sortColumns = this.sortColumns();
+
+        return sortColumns[sortColumns.length - 1].sortOrder;
+    }
 }

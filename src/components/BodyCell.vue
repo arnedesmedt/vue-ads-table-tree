@@ -33,12 +33,6 @@ export default {
         },
     },
 
-    data () {
-        return {
-            // loading: false,
-        };
-    },
-
     render (createElement) {
         return createElement('td', {
             class: this.cellClasses,
@@ -72,10 +66,6 @@ export default {
         first () {
             return this.index === 0;
         },
-
-        // isLoading () {
-        //     return this.loading && this.row.children.isEmpty() && this.row.processedChildren.isEmpty();
-        // },
     },
 
     methods: {
@@ -87,7 +77,7 @@ export default {
                     createElement(ToggleChildrenButton, {
                         props: {
                             expanded: this.row.showChildren,
-                            // loading: this.loading,
+                            loading: this.row.childrenLoading,
                         },
                         nativeOn: {
                             'click': this.toggleChildren,
@@ -104,7 +94,6 @@ export default {
         },
 
         toggleChildren () {
-            // this.loading = this.row.hasLoadedChildren();
             this.$emit('toggleChildren');
         },
     },

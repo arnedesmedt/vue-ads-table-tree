@@ -12,6 +12,7 @@ export default class Column {
         }
 
         this.width = 'auto';
+        this.sortOrder = this.hasOwnProperty('_sortOrder') ? this.sortOrder : 0;
         this.sortable = this.hasOwnProperty('_sortable') ? this.sortable : false;
         this.direction = this.hasOwnProperty('_direction') ? this.direction : null;
         this.filterable = this.hasOwnProperty('_filterable') ? this.filterable : false;
@@ -23,6 +24,14 @@ export default class Column {
 
     get width () {
         return this._width;
+    }
+
+    set sortOrder (sortOrder) {
+        this._sortOrder = sortOrder;
+    }
+
+    get sortOrder () {
+        return this._sortOrder;
     }
 
     set sortable (sortable) {
@@ -53,5 +62,10 @@ export default class Column {
 
     get filterable () {
         return this._filterable;
+    }
+
+    sort (sortOrder) {
+        this.direction = !this.direction;
+        this.sortOrder = sortOrder;
     }
 }

@@ -1,11 +1,9 @@
 <template>
     <div id="app">
-        <input v-model="page"/>
         <table-tree
             :columns="columns"
-            :rows="rows"
-            :itemsPerPage="2"
-            :page="parseInt(page)"
+            :asyncCall="asyncCall"
+            :itemsPerPage="3"
         >
         </table-tree>
   </div>
@@ -23,7 +21,6 @@ export default {
 
     data () {
         return {
-            page: 0,
             columns: [
                 {
                     property: 'firstName',
@@ -130,16 +127,12 @@ export default {
     },
 
     methods: {
-        asyncCall () {
-            return async (range, filter, sortColumns, parent) => {
-                await this.sleep(1000);
+        async asyncCall (range, filter, sortColumns, parent) {
+            await this.sleep(1000);
 
-                // console.log(range, filter, sortColumns, parent);
-
-                return {
-                    total: filter ? 6 : 20,
-                    rows: filter ? this.rows.slice(1, 4) : this.rows.slice(7),
-                };
+            return {
+                total: 10,
+                rows: parent ? this.rows : this.rows.slice(range.start, range.end),
             };
         },
 

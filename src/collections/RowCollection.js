@@ -33,33 +33,41 @@ export default class RowCollection extends AbstractCollection {
         return result;
     }
 
-    // addItemsOnIndex (items, startIndex = null) {
-    //     super.addItemsOnIndex(RowCollection.mapToRows(items), startIndex);
-    // }
+    addItemsFromIndex (items, startIndex = null) {
+        super.addItemsFromIndex(RowCollection.mapToRows(items), startIndex);
+    }
 
-    // allItemsLoaded  (totalRootItems) {
-    //     if (this.length < totalRootItems) {
-    //         return false;
-    //     }
-    //
-    //     return this.allChildItemsLoaded(this);
-    // }
+    allRowsLoaded (totalRows) {
+        if (!this.allRootRowsLoaded(totalRows)) {
+            return false;
+        }
 
-    // allChildItemsLoaded (rowCollection) {
-    //     return rowCollection.items.reduce((start, row) => {
-    //         if (!start) {
-    //             return start;
-    //         }
-    //
-    //         if (row.hasChildren && row.children.empty) {
-    //             return false;
-    //         }
-    //
-    //         if (!row.hasChildren) {
-    //             return true;
-    //         }
-    //
-    //         return this.allChildItemsLoaded(row.children);
-    //     }, true)
-    // }
+        return RowCollection.allChildRowsLoaded(this);
+    }
+
+    allRootRowsLoaded (totalRows) {
+        return this.length === totalRows && this.allItemsAreFilled();
+    }
+
+    static allChildRowsLoaded (rowCollection) {
+        return rowCollection.items.reduce((start, row) => {
+            if (!start) {
+                return start;
+            }
+
+            if (!row.hasChildren) {
+                return true;
+            }
+
+            if (row.children.isEmpty()) {
+                return false;
+            }
+
+            return this.allChildRowsLoaded(row.children);
+        }, true);
+    }
+
+    allRowsInRangeLoaded (range) {
+        return this.allItemsAreFilledInRange(range);
+    }
 }

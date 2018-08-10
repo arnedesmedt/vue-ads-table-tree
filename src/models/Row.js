@@ -6,6 +6,7 @@ export default class Row {
         this.processedChildren = null;
         this.showChildren = false;
         this.hasChildren = false;
+        this.childrenLoading = false;
         Object.assign(this, properties);
     }
 
@@ -30,11 +31,19 @@ export default class Row {
                 childRow.parent = this;
             });
 
-        this.hasChildren = !this.children.empty;
+        this.hasChildren = !this._children.isEmpty();
     }
 
     get children () {
         return this._children;
+    }
+
+    set childrenLoading (childrenLoading) {
+        this._childrenLoading = childrenLoading;
+    }
+
+    get childrenLoading () {
+        return this._childrenLoading;
     }
 
     set processedChildren (processedChildren) {
@@ -80,6 +89,10 @@ export default class Row {
 
     childrenLoaded () {
         return this.hasChildren && !this.children.isEmpty();
+    }
+
+    loadChildren () {
+        return this.showChildren && this.hasChildren && this.children.isEmpty();
     }
 
     countParents () {
