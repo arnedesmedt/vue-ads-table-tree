@@ -19,6 +19,14 @@ export default class AbstractCollection {
         return this._items;
     }
 
+    get first () {
+        return this.items[0];
+    }
+
+    get last () {
+        return this.items[this.length - 1];
+    }
+
     clear () {
         this._items.splice(0, this.length);
     }
@@ -49,25 +57,29 @@ export default class AbstractCollection {
         return this.length === 0;
     }
 
-    // itemsInRangeSet (startIndex, endIndex, totalItems) {
-    //     if (totalItems === 0) {
-    //         totalItems = this.length;
-    //     }
-    //
-    //     if (totalItems === 0) {
-    //         return false;
-    //     }
-    //
-    //     if (endIndex > totalItems) {
-    //         endIndex = totalItems;
-    //     }
-    //
-    //     for (let i = startIndex; i < endIndex; i++) {
-    //         if (this.items[i] === undefined) {
-    //             return false;
-    //         }
-    //     }
-    //
-    //     return true;
-    // }
+    allItemsAreFilled () {
+        return AbstractCollection.itemsAreFilled(this.items);
+    }
+
+    static itemsAreFilled (items) {
+        return items.length === items.filter(item => true).length;
+    }
+
+    allItemsAreFilledInRange (range) {
+        let slicedItems = this.items.slice(range.start, range.end);
+
+        if ((range.end - range.start) === 0) {
+            return true;
+        }
+
+        if (slicedItems.length < range.end - range.start) {
+            return false;
+        }
+
+        return AbstractCollection.itemsAreFilled(slicedItems);
+    }
+
+    extendToLength (length) {
+        this.items[length - 1] = undefined;
+    }
 }

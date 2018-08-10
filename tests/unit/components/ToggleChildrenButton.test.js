@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import ToggleChildrenButton from '../../../src/components/ToggleChildrenButton';
 
 describe('ToggleChildrenButton', () => {
-    it('show the + sign by default', function () {
+    it('show the + sign by default', () => {
         const toggleChildrenButton = shallowMount(ToggleChildrenButton);
 
         expect(toggleChildrenButton.vm.toggleChildrenButtonClasses).toEqual({
@@ -12,7 +12,7 @@ describe('ToggleChildrenButton', () => {
         });
     });
 
-    it('shows the - sign if the component is expanded', function () {
+    it('shows the - sign if the component is expanded', () => {
         const toggleChildrenButton = shallowMount(ToggleChildrenButton, {
             propsData: {
                 expanded: true,
@@ -26,7 +26,7 @@ describe('ToggleChildrenButton', () => {
         });
     });
 
-    it('shows the loading sign if the component is loading', function () {
+    it('shows the loading sign if the component is loading', () => {
         const toggleChildrenButton = shallowMount(ToggleChildrenButton, {
             propsData: {
                 loading: true,

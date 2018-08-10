@@ -1,7 +1,7 @@
 import Background from '../../../src/models/Background';
 
 describe('Background model', () => {
-    it('initializes the default values if no values are given', function () {
+    it('initializes the default values if no values are given', () => {
         const background = new Background();
 
         expect(background.even).toBe('grey-lightest');
@@ -9,8 +9,8 @@ describe('Background model', () => {
         expect(background.hover).toBe('grey-lighter');
     });
 
-    it('initializes the given background colors if set', function () {
-        const background = new Background ({
+    it('initializes the given background colors if set', () => {
+        const background = new Background({
             even: 'red',
             odd: 'blue',
             hover: 'green',
@@ -21,7 +21,7 @@ describe('Background model', () => {
         expect(background.hover).toBe('green');
     });
 
-    it('returns the correct background class if the row index is even', function () {
+    it('returns the correct background class if the row index is even', () => {
         const background = new Background();
 
         expect(background.classes(0)).toEqual({
@@ -34,7 +34,7 @@ describe('Background model', () => {
         });
     });
 
-    it('don\'t add a any class, if all set to false', function () {
+    it('don\'t add a any class, if all set to false', () => {
         const background = new Background({
             even: false,
             odd: false,
@@ -44,7 +44,7 @@ describe('Background model', () => {
         expect(background.classes(0)).toEqual({});
     });
 
-    it('throws an error if the background argument is not an object', function () {
+    it('throws an error if the background argument is not an object', () => {
         const background = () => {new Background(1)};
 
         expect(background).toThrow(Error);

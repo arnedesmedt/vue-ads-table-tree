@@ -32,7 +32,7 @@ describe('BodyRow', () => {
         });
     });
 
-    it('returns the default row classes', function () {
+    it('returns the default row classes', () => {
         expect(bodyRow.vm.rowClasses).toEqual({
             'border-b ': true,
             'bg-grey-lightest': true,

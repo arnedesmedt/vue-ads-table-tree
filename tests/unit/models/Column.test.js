@@ -1,33 +1,54 @@
 import Column from '../../../src/models/Column';
 
 describe('Column model', () => {
-    it('initializes the default values if no arguments are given', function () {
-        const column = new Column({
+    let column;
+
+    beforeEach(() => {
+        column = new Column({
             property: 'name',
         });
+    });
 
+    it('initializes the default values if no arguments are given', () => {
         expect(column.width).toBe('auto');
         expect(column.sortable).toBeFalsy();
         expect(column.direction).toBeNull();
         expect(column.filterable).toBeFalsy();
     });
 
-    it('throws an error if the direction is not true, false or null', function () {
-        const column = () => {
-            new Column({
-                property: 'name',
-                direction: 1,
-            });
-        };
+    it('initializes the given values', () => {
+        column = new Column({
+            property: 'name',
+            sortable: true,
+            filterable: true,
+            direction: false,
+        });
 
-        expect(column).toThrow(Error);
+        expect(column.sortable).toBeTruthy();
+        expect(column.filterable).toBeTruthy();
+        expect(column.direction).toBeFalsy();
     });
 
-    it('throws an error if the column has no property attribute of the type string', function () {
-        const column = () => {
+    it('throws an error if the direction is not true, false or null', () => {
+        const columnThrow = () => {
+            column.direction = 1;
+        };
+
+        expect(columnThrow).toThrow(Error);
+    });
+
+    it('throws an error if the column has no property attribute of the type string', () => {
+        const columnThrow = () => {
             new Column();
         };
 
-        expect(column).toThrow('Each column needs a unique property attribute of the type string');
+        expect(columnThrow).toThrow('Each column needs a unique property attribute of the type string');
+    });
+
+    it('changes the sort direction on a sort and sets the sortorder', () => {
+        column.sort(1);
+
+        expect(column.direction).toBeTruthy();
+        expect(column.sortOrder).toBe(1);
     });
 });
