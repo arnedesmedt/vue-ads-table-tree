@@ -39,7 +39,7 @@ export default class RowRepository {
     async callChildRowsWithoutReset (parent) {
         let result = await this.connection.callChildRows(parent);
 
-        return await this.fillChildRows(result);
+        return this.fillChildRows(result);
     }
 
     async fillChildRows (rows) {
