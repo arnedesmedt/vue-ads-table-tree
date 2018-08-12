@@ -49,7 +49,7 @@
                         class="text-center py-6 text-sm"
                         :colspan="columnCollection.length"
                     >
-                        <span v-if="asyncCall && rowConnection.loading">Loading...</span>
+                        <span v-if="asyncCall && connection.loading">Loading...</span>
                         <span v-else>No results found</span>
                     </td>
                 </tr>
@@ -173,32 +173,22 @@ export default {
             rowCollection: new RowCollection(this.rows),
             asyncRowCollection: new RowCollection(),
             visibleRowCollection: new RowCollection(),
+            connection: undefined,
+            rowRepository: undefined,
+            cache: undefined,
         };
 
         data.filterService = new Filter(data.columnCollection);
         data.sortService = new Sort(data.columnCollection);
         data.paginateService = new Paginate();
 
-        if (this.asyncCall) {
-            data.rowConnection = new TableConnection(
-                this.asyncCall,
-                data.filterService,
-                data.sortService,
-                data.paginateService
-            );
-            data.rowRepository = new RowRepository(data.rowConnection);
-
-            if (this.useCache) {
-                data.cache = new Cache(
-                    data.rowCollection,
-                    data.filterService,
-                    data.sortService,
-                    data.paginateService
-                );
-            }
-        }
-
         return data;
+    },
+
+    created () {
+        if (this.asyncCall) {
+            this.initializeAsync();
+        }
     },
 
     watch: {
@@ -231,7 +221,7 @@ export default {
         },
 
         asyncCall (asyncCall) {
-            this.rowRepository.callable = asyncCall;
+            this.initializeAsync();
         },
 
         currentFilter (currentFilter) {
@@ -248,7 +238,7 @@ export default {
             if (this.rowCollection.length < currentTotalRows) {
                 this.rowCollection.extendToLength(currentTotalRows);
             }
-        }
+        },
     },
 
     computed: {
@@ -282,12 +272,33 @@ export default {
     },
 
     methods: {
+        initializeAsync () {
+            this.connection = new TableConnection(
+                this.asyncCall,
+                this.filterService,
+                this.sortService,
+                this.paginateService
+            );
+            this.rowRepository = new RowRepository(this.connection);
+
+            if (this.useCache) {
+                this.cache = new Cache(
+                    this.rowCollection,
+                    this.filterService,
+                    this.sortService,
+                    this.paginateService
+                );
+            }
+        },
+
         renderRows () {
             let visibleCollection;
 
             if (this.makeAsyncCall) {
                 visibleCollection = this.asyncRowCollection;
-                this.cache.store(this.asyncRowCollection);
+                if (this.cache) {
+                    this.cache.store(this.asyncRowCollection);
+                }
             } else {
                 let filteredCollection = this.filterService.filter(this.rowCollection);
                 this.currentTotalRows = filteredCollection.length;
