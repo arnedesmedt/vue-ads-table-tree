@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 
 import TableTree from '../../../src/components/TableTree';
 
-describe('BodyRow', () => {
+describe('TableTree', () => {
     let tableTree;
     let rows;
     let asyncCall;
@@ -39,7 +39,17 @@ describe('BodyRow', () => {
         ];
 
         asyncCall = (range, filter, sort, parent) => {
+            if (parent) {
+                return [];
+            }
 
+            let row = rows[2];
+            row.showChildren = true;
+
+            return {
+                total: 100,
+                rows: [row],
+            };
         };
 
         tableTree = shallowMount(TableTree, {
@@ -75,10 +85,8 @@ describe('BodyRow', () => {
         let lastRow = tableTree.vm.rowCollection.last;
 
         await tableTree.vm.pageChange(1, {start: 1, end: 3});
-        tableTree.vm.renderRows();
         expect(tableTree.vm.visibleRowCollection.items).toHaveLength(2);
         await tableTree.vm.toggleChildren(lastRow);
-        tableTree.vm.renderRows();
         expect(tableTree.vm.visibleRowCollection.items).toHaveLength(4);
     });
 
@@ -119,15 +127,54 @@ describe('BodyRow', () => {
 
         await tableTree.vm.pageChange(0, {start: 0, end: 2});
         await tableTree.vm.toggleChildren(lastRow);
-        tableTree.vm.renderRows();
-
         expect(tableTree.vm.visibleRowCollection.first.firstName).toBe('Arnold');
-
         await tableTree.vm.sortColumn(firstColumn);
-        tableTree.vm.renderRows();
-
         expect(tableTree.vm.visibleRowCollection.first.firstName).toBe('Arne');
         expect(tableTree.vm.visibleRowCollection.items[1].firstName).toBe('Alice');
+    });
+
+    it('paginates the rows', async () => {
+        tableTree.setProps({
+            rows,
+        });
+
+        await tableTree.vm.pageChange(0, {start: 0, end: 1});
+        expect(tableTree.vm.visibleRowCollection.first.firstName).toBe('Arnold');
+        await tableTree.vm.pageChange(1, {start: 1, end: 2});
+        expect(tableTree.vm.visibleRowCollection.first.firstName).toBe('Peter');
+    });
+
+    it('load rows with an async call', async () => {
+        tableTree.setProps({
+            asyncCall: asyncCall,
+        });
+
+        await tableTree.vm.pageChange(0, {start: 0, end: 1});
+
+        expect(tableTree.vm.visibleRowCollection.items).toHaveLength(3);
+        expect(tableTree.vm.visibleRowCollection.first.firstName).toBe('Arne');
+    });
+
+    it('stores the rows in the cache on the start index', async () => {
+        tableTree.setProps({
+            asyncCall: asyncCall,
+        });
+
+        await tableTree.vm.pageChange(0, {start: 45, end: 46});
+
+        expect(tableTree.vm.rowCollection.items).toHaveLength(100);
+        expect(tableTree.vm.rowCollection.items[45].firstName).toBe('Arne');
+    });
+
+    it('doesn\'t store rows in the cache when filtering', async () => {
+        tableTree.setProps({
+            asyncCall: asyncCall,
+            filter: 'sme',
+        });
+
+        await tableTree.vm.pageChange(0, {start: 0, end: 1});
+
+        expect(tableTree.vm.rowCollection.items[0]).toBeUndefined();
     });
 
     it('updates the rows and columns', () => {
@@ -135,7 +182,7 @@ describe('BodyRow', () => {
             rows,
         });
 
-        expect(tableTree.vm.rowCollection.first.firstName).toBe('Arne');
+        expect(tableTree.vm.rowCollection.first.firstName).toBe('Arnold');
 
         tableTree.setProps({
             columns: [

@@ -13,7 +13,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "vue": "^2.5.16"
+    "vue": "^2.5.16",
+    "vue-ads-pagination": "^0.1.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.0-rc.7",

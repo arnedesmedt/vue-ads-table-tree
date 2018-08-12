@@ -3,6 +3,7 @@
         <table-tree
             :columns="columns"
             :asyncCall="asyncCall"
+            :useCache="false"
             :itemsPerPage="3"
         >
         </table-tree>
