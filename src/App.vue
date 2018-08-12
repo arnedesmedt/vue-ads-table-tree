@@ -6,6 +6,13 @@
             :useCache="true"
             :itemsPerPage="3"
         >
+            <template>
+                <h2
+                    class="block pl-3 leading-normal"
+                >
+                    My own title
+                </h2>
+            </template>
         </table-tree>
   </div>
 </template>

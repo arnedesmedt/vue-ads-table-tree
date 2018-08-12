@@ -5,11 +5,13 @@
         <div
             class="mt-3 mb-6 flex text-grey-darker"
         >
-            <h2
-                class="block pl-3 leading-normal"
-            >
-                Title
-            </h2>
+            <slot>
+                <h2
+                    class="block pl-3 leading-normal"
+                >
+                    Title
+                </h2>
+            </slot>
             <div
                 class="flex-grow justify-end text-right"
             >
