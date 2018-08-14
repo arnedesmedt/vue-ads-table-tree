@@ -62,7 +62,7 @@ export default class AbstractCollection {
     }
 
     static itemsAreFilled (items) {
-        return items.length === items.filter(item => true).length;
+        return items.length === items.filter(item => item).length;
     }
 
     allItemsAreFilledInRange (range) {
@@ -80,6 +80,8 @@ export default class AbstractCollection {
     }
 
     extendToLength (length) {
-        this.items[length - 1] = undefined;
+        for (let i = this.length; i < length; i++) {
+            this.addItemOnIndex(undefined, i);
+        }
     }
 }

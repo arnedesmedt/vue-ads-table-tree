@@ -167,7 +167,7 @@ export default {
     data () {
         let data = {
             currentPage: this.page,
-            currentTotalRows: this.totalRows || this.rows.length,
+            currentTotalRows: 0,
             currentFilter: this.filter,
             borderModel: new Border(this.border),
             backgroundModel: new Background(this.background),
@@ -188,6 +188,7 @@ export default {
     },
 
     created () {
+        this.currentTotalRows = this.totalRows || this.rows.length;
         if (this.asyncCall) {
             this.initializeAsync();
         }
@@ -303,9 +304,12 @@ export default {
                 }
             } else {
                 let filteredCollection = this.filterService.filter(this.rowCollection);
-                this.currentTotalRows = filteredCollection.length;
                 let sortedCollection = this.sortService.sort(filteredCollection);
                 visibleCollection = this.paginateService.paginate(sortedCollection);
+
+                if (this.filterService.isFiltering()) {
+                    this.currentTotalRows = filteredCollection.length;
+                }
             }
 
             this.visibleRowCollection.items = visibleCollection.flatten();
