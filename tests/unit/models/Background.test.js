@@ -45,7 +45,7 @@ describe('Background model', () => {
     });
 
     it('throws an error if the background argument is not an object', () => {
-        const background = () => {new Background(1)};
+        const background = () => { new Background(1); };
 
         expect(background).toThrow(Error);
     });
