@@ -72,7 +72,7 @@
             :totalItems="currentTotalRows"
             :itemsPerPage="itemsPerPage"
             :page="currentPage"
-            @pageChange="pageChange"
+            @page-change="pageChange"
         >
         </pagination>
     </div>
