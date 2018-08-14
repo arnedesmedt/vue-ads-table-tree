@@ -3,6 +3,8 @@ module.exports = {
     jest: true
   },
   rules: {
-    'import/no-extraneous-dependencies': 'off'
+    'no-new': 'off',
+    'no-unused-expressions': 'off',
+    'import/no-extraneous-dependencies': 'off',
   }
 }
