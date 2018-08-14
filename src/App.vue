@@ -3,8 +3,10 @@
         <table-tree
             :columns="columns"
             :asyncCall="asyncCall"
+            :rows="rows"
             :useCache="true"
-            :itemsPerPage="3"
+            :itemsPerPage="2"
+            :totalRows="50"
         >
             <template>
                 <h2
@@ -146,12 +148,10 @@ export default {
             let filteredRows = this.filter(startRows, filter);
             let sortedRows = this.sort(filteredRows, sortColumns);
 
-            console.log(sortedRows);
-
-            let rows = parent ? sortedRows : sortedRows.slice(range.start, range.end);
+            let rows = parent ? sortedRows : sortedRows.slice(range.start % 10, range.end % 10);
 
             return {
-                total: sortedRows.length,
+                total: 50,
                 rows,
             };
         },
