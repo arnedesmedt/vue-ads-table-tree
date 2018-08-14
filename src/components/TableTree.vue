@@ -74,6 +74,11 @@
             :page="currentPage"
             @page-change="pageChange"
         >
+            <template slot-scope="props">
+                <slot name="pagination" :range="props.range">
+                    {{ props.range.start }} - {{ props.range.end }} of {{ props.range.total }} items
+                </slot>
+            </template>
         </pagination>
     </div>
 </template>
