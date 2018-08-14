@@ -1,5 +1,5 @@
 import Paginate from '../../../src/services/Paginate';
-import RowCollection from "../../../src/collections/RowCollection";
+import RowCollection from '../../../src/collections/RowCollection';
 
 describe('Paginate service', () => {
     let paginate;

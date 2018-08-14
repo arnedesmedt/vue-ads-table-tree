@@ -35,7 +35,7 @@ describe('Table connection', () => {
     it('throws an error if the callable is not callable', () => {
         expect(() => {
             connection.callable = 1;
-        }).toThrow('Callable to get async rows has to be a function. \'number\' given.')
+        }).toThrow('Callable to get async rows has to be a function. \'number\' given.');
     });
 
     it('return the root rows on a call', () => {

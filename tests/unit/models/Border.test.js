@@ -122,7 +122,7 @@ describe('Border model', () => {
     });
 
     it('throws an error if the border argument is not an object', () => {
-        const border = () => {new Border(1)};
+        const border = () => { new Border(1); };
 
         expect(border).toThrow(Error);
     });
