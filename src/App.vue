@@ -15,6 +15,9 @@
                     My own title
                 </h2>
             </template>
+            <template slot="pagination" slot-scope="props">
+                Items {{ props.range.start}} tot {{ props.range.end }} van de {{ props.range.total }}
+            </template>
         </table-tree>
   </div>
 </template>
