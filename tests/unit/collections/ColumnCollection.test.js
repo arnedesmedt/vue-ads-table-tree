@@ -132,7 +132,7 @@ describe('ColumnCollection', () => {
         const column2 = new Column({
             property: 'address',
             sortable: true,
-        })
+        });
 
         const columnCollection = new ColumnCollection([
             column,
