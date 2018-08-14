@@ -1,10 +1,11 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 
 import TableTree from '../../../src/components/TableTree';
 
 describe('TableTree', () => {
     let tableTree;
     let rows;
+    let columns;
     let asyncCall;
 
     beforeEach(() => {
@@ -38,6 +39,22 @@ describe('TableTree', () => {
             },
         ];
 
+        columns = [
+            {
+                property: 'firstName',
+                filterable: true,
+                sortable: true,
+            },
+            {
+                property: 'lastName',
+                filterable: true,
+            },
+            {
+                property: 'address',
+                sortable: true,
+            },
+        ],
+
         asyncCall = (range, filter, sort, parent) => {
             if (parent) {
                 return [];
@@ -54,21 +71,7 @@ describe('TableTree', () => {
 
         tableTree = shallowMount(TableTree, {
             propsData: {
-                columns: [
-                    {
-                        property: 'firstName',
-                        filterable: true,
-                        sortable: true,
-                    },
-                    {
-                        property: 'lastName',
-                        filterable: true,
-                    },
-                    {
-                        property: 'address',
-                        sortable: true,
-                    },
-                ],
+                columns,
             },
         });
     });
@@ -177,6 +180,24 @@ describe('TableTree', () => {
         expect(tableTree.vm.rowCollection.items[0]).toBeUndefined();
     });
 
+    it('changes the pagination details when using a template', async () => {
+        tableTree = mount(TableTree, {
+            propsData: {
+                columns,
+                rows,
+                itemsPerPage: 2,
+                page: 0,
+            },
+            scopedSlots: {
+                pagination: '<div id="mySlot" slot-scope="props">' +
+                    'Mijn items {{ props.range.start }} - {{ props.range.end }} van de {{ props.range.total }}' +
+                    '</div>',
+            },
+        });
+
+        expect(tableTree.find('#mySlot').text()).toBe('Mijn items 1 - 2 van de 3');
+    });
+
     it('updates the rows and columns', () => {
         tableTree.setProps({
             rows,
@@ -226,4 +247,6 @@ describe('TableTree', () => {
 
         expect(tableTree.vm.borderModel.vertical).toBeFalsy();
     });
+
+
 });
