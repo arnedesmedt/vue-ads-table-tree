@@ -8,9 +8,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:bundle": "vue-cli-service build --target lib --name vue-ads-pagination ./src/index.js",
+    "build:bundle": "vue-cli-service build --target lib --name vue-ads-table-tree ./src/index.js",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit --silent",
+    "preversion": "npm run lint && npm run test:unit",
+    "version": "npm run build:bundle",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "vue": "^2.5.16",
