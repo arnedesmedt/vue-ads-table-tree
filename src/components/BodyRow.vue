@@ -1,6 +1,6 @@
 <template>
     <tr
-        :class="rowClasses"
+        :class="styling.rowClasses(index, last)"
     >
         <body-cell
             v-for="(column, key) in columns"
@@ -8,7 +8,7 @@
             :row="row"
             :index="key"
             :column="column"
-            :border="border"
+            :styling="styling"
             @toggleChildren="$emit('toggleChildren')"
         >
 
@@ -17,10 +17,9 @@
 </template>
 
 <script>
-import Border from '../models/Border';
-import Background from '../models/Background';
 import Row from '../models/Row';
 import BodyCell from './BodyCell';
+import Styling from '../models/Styling';
 
 export default {
     name: 'BodyRow',
@@ -30,13 +29,8 @@ export default {
     },
 
     props: {
-        border: {
-            type: Border,
-            required: true,
-        },
-
-        background: {
-            type: Background,
+        styling: {
+            type: Styling,
             required: true,
         },
 
@@ -59,15 +53,6 @@ export default {
             type: Boolean,
             required: false,
             default: false,
-        },
-    },
-
-    computed: {
-        rowClasses () {
-            return Object.assign(
-                this.background.classes(this.index),
-                this.border.rowClasses(this.last),
-            );
         },
     },
 };

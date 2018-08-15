@@ -154,7 +154,7 @@ export default {
             let rows = parent ? sortedRows : sortedRows.slice(range.start % 10, range.end % 10);
 
             return {
-                total: 50,
+                total: filter ? filteredRows.length : 50,
                 rows,
             };
         },
