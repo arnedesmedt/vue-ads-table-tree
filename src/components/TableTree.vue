@@ -26,19 +26,20 @@
         </div>
         <table
             class="w-full vue-ads-table-tree"
-            :class="borderModel.tableClasses()"
+            :class="stylingModel.tableClasses()"
             style="border-collapse: collapse;"
         >
             <thead>
                 <tr
-                    :class="borderModel.rowClasses(false)"
+                    class="border-b"
                 >
                     <header-cell
                         v-for="(column, columnKey) in columnCollection.items"
                         :key="columnKey"
+                        :index="columnKey"
                         :column="column"
                         :last="columnKey === columnCollection.length - 1"
-                        :border="borderModel"
+                        :styling="stylingModel"
                         @sort="sortColumn(column)"
                     />
                 </tr>
@@ -62,8 +63,7 @@
                     :index="rowKey"
                     :last="rowKey === visibleRowCollection.length - 1"
                     :columns="columnCollection.items"
-                    :background="backgroundModel"
-                    :border="borderModel"
+                    :styling="stylingModel"
                     @toggleChildren="toggleChildren(row)"
                 />
             </tbody>
@@ -90,8 +90,7 @@ import HeaderCell from './HeaderCell';
 import BodyRow from './BodyRow';
 import Pagination from 'vue-ads-pagination';
 
-import Border from '../models/Border';
-import Background from '../models/Background';
+import Styling from '../models/Styling';
 
 import RowCollection from '../collections/RowCollection';
 import ColumnCollection from '../collections/ColumnCollection';
@@ -114,12 +113,7 @@ export default {
     },
 
     props: {
-        background: {
-            type: Object,
-            required: false,
-        },
-
-        border: {
+        styling: {
             type: Object,
             required: false,
         },
@@ -174,8 +168,7 @@ export default {
             currentPage: this.page,
             currentTotalRows: 0,
             currentFilter: this.filter,
-            borderModel: new Border(this.border),
-            backgroundModel: new Background(this.background),
+            stylingModel: new Styling(this.styling),
             columnCollection: new ColumnCollection(this.columns),
             rowCollection: new RowCollection(this.rows),
             asyncRowCollection: new RowCollection(),
@@ -200,12 +193,8 @@ export default {
     },
 
     watch: {
-        border (border) {
-            this.borderModel = new Border(border);
-        },
-
-        background (background) {
-            this.backgroundModel = new Background(background);
+        styling (styling) {
+            this.stylingModel = new Styling(styling);
         },
 
         rows (rows) {

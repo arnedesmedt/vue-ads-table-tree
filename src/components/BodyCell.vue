@@ -1,8 +1,8 @@
 <script>
-import Border from '../models/Border';
 import Row from '../models/Row';
 import Column from '../models/Column';
 import ToggleChildrenButton from './ToggleChildrenButton';
+import Styling from '../models/Styling';
 
 export default {
     name: 'BodyCell',
@@ -12,8 +12,8 @@ export default {
     },
 
     props: {
-        border: {
-            type: Border,
+        styling: {
+            type: Styling,
             required: true,
         },
 
@@ -45,7 +45,7 @@ export default {
     computed: {
         cellClasses () {
             return Object.assign(
-                this.border.columnClasses(this.column.last),
+                this.styling.columnClasses(0, this.column.last),
                 {
                     'px-4': true,
                     'py-2': true,
