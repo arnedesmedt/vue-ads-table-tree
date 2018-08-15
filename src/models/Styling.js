@@ -3,7 +3,7 @@ export default class Styling {
         if (!(properties instanceof Object)) {
             throw new Error(
                 'Styling first argument has to be an object with the properties rowsEven, rowsOdd, rowsAll, rowsExceptLast, columnsEven, columnsOdd, columnsAll, columnsExceptLast and/or table.' +
-                '\'' + typeof properties + 'given.'
+                ' \'' + typeof properties + '\' given.'
             );
         }
 

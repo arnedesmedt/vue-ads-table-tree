@@ -3,8 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import BodyRow from '../../../src/components/BodyRow';
 import Row from '../../../src/models/Row';
 import Column from '../../../src/models/Column';
-import Border from '../../../src/models/Border';
-import Background from '../../../src/models/Background';
+import Styling from '../../../src/models/Styling';
 
 describe('BodyRow', () => {
     let bodyRow;
@@ -12,12 +11,10 @@ describe('BodyRow', () => {
     beforeEach(() => {
         bodyRow = shallowMount(BodyRow, {
             propsData: {
-                border: new Border({
-                    vertical: true,
-                }),
-                background: new Background({
-                    odd: true,
-                    hover: false,
+                styling: new Styling({
+                    columnsAllExceptLast: 'border-b',
+                    rowsOdd: 'bg-grey-lightest',
+                    rowsAll: false,
                 }),
                 row: new Row({
                     firstName: 'arne',
@@ -33,8 +30,8 @@ describe('BodyRow', () => {
     });
 
     it('returns the default row classes', () => {
-        expect(bodyRow.vm.rowClasses).toEqual({
-            'border-b ': true,
+        expect(bodyRow.vm.styling.rowClasses(0)).toEqual({
+            'border-b': true,
             'bg-grey-lightest': true,
         });
     });

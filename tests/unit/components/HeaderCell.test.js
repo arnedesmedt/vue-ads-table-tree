@@ -1,7 +1,7 @@
 import {shallowMount} from '@vue/test-utils';
 
 import Column from '../../../src/models/Column';
-import Border from '../../../src/models/Border';
+import Styling from '../../../src/models/Styling';
 import HeaderCell from '../../../src/components/HeaderCell';
 
 describe('HeaderCell', () => {
@@ -15,8 +15,8 @@ describe('HeaderCell', () => {
         });
         headerCell = shallowMount(HeaderCell, {
             propsData: {
-                border: new Border({
-                    vertical: true,
+                styling: new Styling({
+                    columnsAllExceptLast: 'border-r',
                 }),
                 column: column,
                 index: 0,
@@ -26,7 +26,7 @@ describe('HeaderCell', () => {
 
     it('returns the default header classes', () => {
         expect(headerCell.vm.headerClasses).toEqual({
-            'border-r ': true,
+            'border-r': true,
             'w-auto': true,
         });
     });
