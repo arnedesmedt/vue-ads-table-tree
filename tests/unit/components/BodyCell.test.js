@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import BodyCell from '../../../src/components/BodyCell';
 import Row from '../../../src/models/Row';
 import Column from '../../../src/models/Column';
-import Border from '../../../src/models/Border';
+import Styling from '../../../src/models/Styling';
 
 describe('BodyCell', () => {
     let bodyCell;
@@ -11,8 +11,8 @@ describe('BodyCell', () => {
     beforeEach(() => {
         bodyCell = shallowMount(BodyCell, {
             propsData: {
-                border: new Border({
-                    vertical: true,
+                styling: new Styling({
+                    columnsAllExceptLast: 'border-r',
                 }),
                 row: new Row({
                     firstName: 'arne',
@@ -27,7 +27,7 @@ describe('BodyCell', () => {
 
     it('returns the default cell classes', () => {
         expect(bodyCell.vm.cellClasses).toEqual({
-            'border-r ': true,
+            'border-r': true,
             'px-4': true,
             'py-2': true,
             'text-sm': true,

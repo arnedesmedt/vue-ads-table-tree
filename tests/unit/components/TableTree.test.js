@@ -229,22 +229,15 @@ describe('TableTree', () => {
         expect(tableTree.vm.rowCollection.first.animal).toBe('salmon');
     });
 
-    it('updates the border and background', () => {
-        expect(tableTree.vm.borderModel.vertical).toBeTruthy();
+    it('updates the style', () => {
+        expect(tableTree.vm.stylingModel.columnsAllExceptLast).toBe('border-r');
 
         tableTree.setProps({
-            border: {
-                vertical: false,
-                horizontal: false,
-                outline: false,
-            },
-            background: {
-                odd: false,
-                even: false,
-                hover: false,
+            styling: {
+                columnsAllExceptLast: 'border-l',
             },
         });
 
-        expect(tableTree.vm.borderModel.vertical).toBeFalsy();
+        expect(tableTree.vm.stylingModel.columnsAllExceptLast).toBe('border-l');
     });
 });
