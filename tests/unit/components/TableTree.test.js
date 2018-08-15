@@ -53,7 +53,7 @@ describe('TableTree', () => {
                 property: 'address',
                 sortable: true,
             },
-        ],
+        ];
 
         asyncCall = (range, filter, sort, parent) => {
             if (parent) {
@@ -247,6 +247,4 @@ describe('TableTree', () => {
 
         expect(tableTree.vm.borderModel.vertical).toBeFalsy();
     });
-
-
 });
