@@ -5,11 +5,13 @@
         <div
             class="mt-3 mb-6 flex text-grey-darker"
         >
-            <h2
-                class="block pl-3 leading-normal"
-            >
-                Title
-            </h2>
+            <slot>
+                <h2
+                    class="block pl-3 leading-normal"
+                >
+                    Title
+                </h2>
+            </slot>
             <div
                 class="flex-grow justify-end text-right"
             >
@@ -24,19 +26,20 @@
         </div>
         <table
             class="w-full vue-ads-table-tree"
-            :class="borderModel.tableClasses()"
+            :class="stylingModel.tableClasses()"
             style="border-collapse: collapse;"
         >
             <thead>
                 <tr
-                    :class="borderModel.rowClasses(false)"
+                    class="border-b"
                 >
                     <header-cell
                         v-for="(column, columnKey) in columnCollection.items"
                         :key="columnKey"
+                        :index="columnKey"
                         :column="column"
                         :last="columnKey === columnCollection.length - 1"
-                        :border="borderModel"
+                        :styling="stylingModel"
                         @sort="sortColumn(column)"
                     />
                 </tr>
@@ -49,7 +52,7 @@
                         class="text-center py-6 text-sm"
                         :colspan="columnCollection.length"
                     >
-                        <span v-if="asyncCall && rowConnection.loading">Loading...</span>
+                        <span v-if="asyncCall && connection.loading">Loading...</span>
                         <span v-else>No results found</span>
                     </td>
                 </tr>
@@ -60,8 +63,7 @@
                     :index="rowKey"
                     :last="rowKey === visibleRowCollection.length - 1"
                     :columns="columnCollection.items"
-                    :background="backgroundModel"
-                    :border="borderModel"
+                    :styling="stylingModel"
                     @toggleChildren="toggleChildren(row)"
                 />
             </tbody>
@@ -70,8 +72,13 @@
             :totalItems="currentTotalRows"
             :itemsPerPage="itemsPerPage"
             :page="currentPage"
-            @pageChange="pageChange"
+            @page-change="pageChange"
         >
+            <template slot-scope="props">
+                <slot name="pagination" :range="props.range">
+                    {{ props.range.start }} - {{ props.range.end }} of {{ props.range.total }} items
+                </slot>
+            </template>
         </pagination>
     </div>
 </template>
@@ -83,8 +90,7 @@ import HeaderCell from './HeaderCell';
 import BodyRow from './BodyRow';
 import Pagination from 'vue-ads-pagination';
 
-import Border from '../models/Border';
-import Background from '../models/Background';
+import Styling from '../models/Styling';
 
 import RowCollection from '../collections/RowCollection';
 import ColumnCollection from '../collections/ColumnCollection';
@@ -107,12 +113,7 @@ export default {
     },
 
     props: {
-        background: {
-            type: Object,
-            required: false,
-        },
-
-        border: {
+        styling: {
             type: Object,
             required: false,
         },
@@ -165,49 +166,35 @@ export default {
     data () {
         let data = {
             currentPage: this.page,
-            currentTotalRows: this.totalRows || this.rows.length,
+            currentTotalRows: 0,
             currentFilter: this.filter,
-            borderModel: new Border(this.border),
-            backgroundModel: new Background(this.background),
+            stylingModel: new Styling(this.styling),
             columnCollection: new ColumnCollection(this.columns),
             rowCollection: new RowCollection(this.rows),
             asyncRowCollection: new RowCollection(),
             visibleRowCollection: new RowCollection(),
+            connection: undefined,
+            rowRepository: undefined,
+            cache: undefined,
         };
 
         data.filterService = new Filter(data.columnCollection);
         data.sortService = new Sort(data.columnCollection);
         data.paginateService = new Paginate();
 
-        if (this.asyncCall) {
-            data.rowConnection = new TableConnection(
-                this.asyncCall,
-                data.filterService,
-                data.sortService,
-                data.paginateService
-            );
-            data.rowRepository = new RowRepository(data.rowConnection);
-
-            if (this.useCache) {
-                data.cache = new Cache(
-                    data.rowCollection,
-                    data.filterService,
-                    data.sortService,
-                    data.paginateService
-                );
-            }
-        }
-
         return data;
     },
 
-    watch: {
-        border (border) {
-            this.borderModel = new Border(border);
-        },
+    created () {
+        this.currentTotalRows = this.totalRows || this.rows.length;
+        if (this.asyncCall) {
+            this.initializeAsync();
+        }
+    },
 
-        background (background) {
-            this.backgroundModel = new Background(background);
+    watch: {
+        styling (styling) {
+            this.stylingModel = new Styling(styling);
         },
 
         rows (rows) {
@@ -231,7 +218,7 @@ export default {
         },
 
         asyncCall (asyncCall) {
-            this.rowRepository.callable = asyncCall;
+            this.initializeAsync();
         },
 
         currentFilter (currentFilter) {
@@ -248,7 +235,7 @@ export default {
             if (this.rowCollection.length < currentTotalRows) {
                 this.rowCollection.extendToLength(currentTotalRows);
             }
-        }
+        },
     },
 
     computed: {
@@ -282,17 +269,41 @@ export default {
     },
 
     methods: {
+        initializeAsync () {
+            this.connection = new TableConnection(
+                this.asyncCall,
+                this.filterService,
+                this.sortService,
+                this.paginateService
+            );
+            this.rowRepository = new RowRepository(this.connection);
+
+            if (this.useCache) {
+                this.cache = new Cache(
+                    this.rowCollection,
+                    this.filterService,
+                    this.sortService,
+                    this.paginateService
+                );
+            }
+        },
+
         renderRows () {
             let visibleCollection;
 
             if (this.makeAsyncCall) {
                 visibleCollection = this.asyncRowCollection;
-                this.cache.store(this.asyncRowCollection);
+                if (this.cache) {
+                    this.cache.store(this.asyncRowCollection);
+                }
             } else {
                 let filteredCollection = this.filterService.filter(this.rowCollection);
-                this.currentTotalRows = filteredCollection.length;
                 let sortedCollection = this.sortService.sort(filteredCollection);
                 visibleCollection = this.paginateService.paginate(sortedCollection);
+
+                if (this.filterService.isFiltering()) {
+                    this.currentTotalRows = filteredCollection.length;
+                }
             }
 
             this.visibleRowCollection.items = visibleCollection.flatten();

@@ -1,6 +1,6 @@
 {
   "name": "vue-ads-table-tree",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "./dist/vue-ads-table-tree.common.js",
   "files": [
     "/dist"
@@ -8,9 +8,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:bundle": "vue-cli-service build --target lib --name vue-ads-pagination ./src/index.js",
+    "build:bundle": "vue-cli-service build --target lib --name vue-ads-table-tree ./src/index.js",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit --silent",
+    "preversion": "npm run lint && npm run test:unit",
+    "version": "npm run build:bundle",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "vue": "^2.5.16"
@@ -28,6 +31,7 @@
     "postcss-import": "^11.1.0",
     "postcss-url": "^7.3.2",
     "tailwindcss": "^0.6.4",
+    "vue-ads-pagination": "^1.0.1",
     "vue-template-compiler": "^2.5.16"
   },
   "eslintConfig": {

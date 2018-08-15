@@ -12,6 +12,10 @@ export default class RowCollection extends AbstractCollection {
 
     static mapToRows (items) {
         return items.map(item => {
+            if (item === undefined) {
+                return item;
+            }
+
             if (!(item instanceof Row)) {
                 item = new Row(item);
             }
@@ -24,7 +28,12 @@ export default class RowCollection extends AbstractCollection {
         let result = [];
 
         this.items.forEach(row => {
+            if (row === undefined) {
+                return;
+            }
+
             result.push(row);
+
             if (row.showChildren) {
                 result = result.concat(row.processedChildren.flatten());
             }

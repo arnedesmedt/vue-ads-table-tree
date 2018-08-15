@@ -19,7 +19,7 @@
 
 <script>
 import Column from '../models/Column';
-import Border from '../models/Border';
+import Styling from '../models/Styling';
 
 export default {
     name: 'HeaderCell',
@@ -30,8 +30,13 @@ export default {
             required: true,
         },
 
-        border: {
-            type: Border,
+        index: {
+            type: Number,
+            required: true,
+        },
+
+        styling: {
+            type: Styling,
             required: true,
         },
 
@@ -45,7 +50,7 @@ export default {
     computed: {
         headerClasses () {
             return Object.assign(
-                this.border.columnClasses(this.last),
+                this.styling.columnClasses(this.index, this.last),
                 {
                     ['w-' + this.column.width]: true,
                 }
