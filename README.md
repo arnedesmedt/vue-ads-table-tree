@@ -14,7 +14,9 @@ It uses the handy
 
 ## Demo
 
-TODO
+![Demo](https://media.giphy.com/media/jyINAhKJhEGpZGmOL1/giphy.gif)
+
+I've written a demo in [JSFiddle](https://jsfiddle.net/arnedesmedt/18n9k6vm)
 
 ## Installation
 
