@@ -73,7 +73,7 @@ describe('Styling model', () => {
 
     it('throws an error if the style is not an object', function () {
         expect(() => {
-            const styling = new Styling(1);
+            new Styling(1);
         }).toThrow(
             'Styling first argument has to be an object with the properties rowsEven, rowsOdd, rowsAll, ' +
             'rowsExceptLast, columnsEven, columnsOdd, columnsAll, columnsExceptLast and/or table. \'number\' given'
