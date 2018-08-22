@@ -93,6 +93,8 @@
 <script>
 import '../assets/css/styles.css';
 
+import debounce from '../services/debounce';
+
 import HeaderCell from './HeaderCell';
 import BodyRow from './BodyRow';
 import Pagination from 'vue-ads-pagination';
@@ -195,12 +197,13 @@ export default {
             connection: undefined,
             rowRepository: undefined,
             cache: undefined,
+            slots: {},
+            filterDebounce: debounce(() => { this.renderAfterFilter(); }, 500),
         };
 
         data.filterService = new Filter(data.columnCollection);
         data.sortService = new Sort(data.columnCollection);
         data.paginateService = new Paginate();
-        data.slots = {};
 
         return data;
     },
@@ -248,11 +251,13 @@ export default {
         currentFilter (currentFilter) {
             this.filterService.filterValue = currentFilter;
 
-            if (this.currentPage === 0) {
-                this.renderRootRows();
-            } else {
-                this.currentPage = 0;
+            if (this.makeAsyncCall) {
+                this.filterDebounce();
+
+                return;
             }
+
+            this.renderAfterFilter();
         },
 
         currentTotalRows (currentTotalRows) {
@@ -391,6 +396,14 @@ export default {
             this.currentPage = page;
             this.paginateService.range = range;
             await this.renderRootRows();
+        },
+
+        async renderAfterFilter () {
+            if (this.currentPage === 0) {
+                await this.renderRootRows();
+            } else {
+                this.currentPage = 0;
+            }
         },
 
         columnSlots (columnCollection) {
