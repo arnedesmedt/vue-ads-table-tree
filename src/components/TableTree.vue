@@ -250,6 +250,10 @@ export default {
             if (this.rowCollection.length < currentTotalRows) {
                 this.rowCollection.extendToLength(currentTotalRows);
             }
+
+            if (this.rowCollection.length > currentTotalRows && !this.filterService.isFiltering()) {
+                throw new Error('totalRows can\'t be smaller than the number of rows');
+            }
         },
     },
 
