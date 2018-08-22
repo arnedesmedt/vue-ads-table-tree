@@ -52,7 +52,7 @@
                         class="text-center py-6 text-sm"
                         :colspan="columnCollection.length"
                     >
-                        <span v-if="asyncCall && connection.loading">Loading...</span>
+                        <span v-if="isLoading">Loading...</span>
                         <span v-else>No results found</span>
                     </td>
                 </tr>
@@ -73,6 +73,9 @@
             :itemsPerPage="itemsPerPage"
             :page="currentPage"
             @page-change="pageChange"
+            :loading="isLoading"
+            :detailClasses="paginationDetailClasses"
+            :buttonClasses="paginationButtonClasses"
         >
             <template slot-scope="props">
                 <slot name="pagination" :range="props.range">
@@ -160,6 +163,18 @@ export default {
         filter: {
             type: String,
             required: false,
+        },
+
+        paginationDetailClasses: {
+            type: Array,
+            required: false,
+            default: () => [],
+        },
+
+        paginationButtonClasses: {
+            type: Object,
+            required: false,
+            default: () => {},
         },
     },
 
@@ -265,6 +280,10 @@ export default {
             }
 
             return !this.rowCollection.allRowsInRangeLoaded(this.paginateService.range);
+        },
+
+        isLoading () {
+            return this.asyncCall && this.connection.loading;
         },
     },
 
