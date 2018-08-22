@@ -16,7 +16,7 @@ It uses the handy
 
 ![Demo](https://media.giphy.com/media/jyINAhKJhEGpZGmOL1/giphy.gif)
 
-I've written a demo in [JSFiddle](https://jsfiddle.net/arnedesmedt/18n9k6vm)
+I've written a demo in [JSFiddle](https://jsfiddle.net/arnedesmedt/7my8L42q)
 
 ## Installation
 
