@@ -123,6 +123,12 @@ export default {
 - `itemsPerPage`: *(type: number, default: 10)* The max amount of items on one page.
 - `page`: *(type: number, default: 0)* A zero-based number to set the initial page.
 - `filter`: *(type: string)* The initial filter value.
+- `paginationDetailClasses`: *(type: array)* A list of (tailwind) classes you can add to change the pagination detail box ui.
+- `paginationButtonClasses`: *(type: object)* An object to change the pagination buttons ui for each state:
+    - `default`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the default pagination button. These classes are added on all pagination buttons.
+    - `active`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the active pagination button.
+    - `disabled`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the disabled pagination button.
+    - `dots`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the pagination dots.
 
 ## Testing
 
