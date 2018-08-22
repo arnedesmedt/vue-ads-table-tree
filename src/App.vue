@@ -7,6 +7,7 @@
             :useCache="true"
             :itemsPerPage="2"
             :totalRows="50"
+            :paginationButtonClasses="{default: ['border-none'], active: ['bg-orange']}"
         >
             <template>
                 <h2
