@@ -1,13 +1,15 @@
 <template>
     <tr
-        :class="styling.rowClasses(index, last)"
+        :class="styling.rowClasses(paginatedIndex, last)"
     >
         <body-cell
             v-for="(column, key) in columns"
             :key="key"
             :row="row"
             :index="key"
+            :rowIndex="index"
             :column="column"
+            :columnSlot="slots[column.property]"
             :styling="styling"
             @toggleChildren="$emit('toggleChildren')"
         >
@@ -44,7 +46,18 @@ export default {
             required: true,
         },
 
+        slots: {
+            type: Object,
+            required: false,
+            default: () => {return {};},
+        },
+
         index: {
+            type: Number,
+            require: true,
+        },
+
+        paginatedIndex: {
             type: Number,
             require: true,
         },

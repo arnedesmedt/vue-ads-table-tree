@@ -60,12 +60,16 @@
                     v-for="(row, rowKey) in visibleRowCollection.items"
                     :key="rowKey"
                     :row="row"
-                    :index="rowKey"
+                    :paginatedIndex="rowKey"
+                    :index="rowKey + paginateService.range.start"
                     :last="rowKey === visibleRowCollection.length - 1"
                     :columns="columnCollection.items"
+                    :slots="slots"
                     :styling="stylingModel"
                     @toggleChildren="toggleChildren(row)"
-                />
+                >
+
+                </body-row>
             </tbody>
         </table>
         <pagination
@@ -78,7 +82,7 @@
             :buttonClasses="paginationButtonClasses"
         >
             <template slot-scope="props">
-                <slot name="pagination" :range="props.range">
+                <slot name="vue-ads-pagination" :range="props.range">
                     {{ props.range.start }} - {{ props.range.end }} of {{ props.range.total }} items
                 </slot>
             </template>
@@ -196,6 +200,7 @@ export default {
         data.filterService = new Filter(data.columnCollection);
         data.sortService = new Sort(data.columnCollection);
         data.paginateService = new Paginate();
+        data.slots = {};
 
         return data;
     },
@@ -205,6 +210,10 @@ export default {
         if (this.asyncCall) {
             this.initializeAsync();
         }
+    },
+
+    mounted () {
+        this.slots = this.columnSlots(this.columnCollection);
     },
 
     watch: {
@@ -382,6 +391,19 @@ export default {
             this.currentPage = page;
             this.paginateService.range = range;
             await this.renderRootRows();
+        },
+
+        columnSlots (columnCollection) {
+            let properties = columnCollection.properties;
+            let slots = {};
+
+            for (let key in this.$scopedSlots) {
+                if (properties.includes(key)) {
+                    slots[key] = this.$scopedSlots[key];
+                }
+            }
+
+            return slots;
         },
     },
 };
