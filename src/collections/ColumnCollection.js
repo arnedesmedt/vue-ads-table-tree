@@ -13,6 +13,10 @@ export default class ColumnCollection extends AbstractCollection {
         return super.items;
     }
 
+    get properties () {
+        return this.items.map(column => column.property);
+    }
+
     static mapToColumns (items) {
         return items.map(item => {
             if (!(item instanceof Column)) {

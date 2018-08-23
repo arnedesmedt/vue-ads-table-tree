@@ -27,7 +27,16 @@ export default {
             required: true,
         },
 
+        columnSlot: {
+            required: false,
+        },
+
         index: {
+            type: Number,
+            required: true,
+        },
+
+        rowIndex: {
             type: Number,
             required: true,
         },
@@ -86,7 +95,9 @@ export default {
                 );
             }
 
-            if (this.column.property && this.row.hasOwnProperty(this.column.property)) {
+            if (this.columnSlot) {
+                elements.push(this.columnSlot({row: this.row, index: this.rowIndex}));
+            } else if (this.column.property && this.row.hasOwnProperty(this.column.property)) {
                 elements.push(this.row[this.column.property]);
             }
 

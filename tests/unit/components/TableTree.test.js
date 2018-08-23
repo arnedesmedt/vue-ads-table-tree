@@ -189,13 +189,31 @@ describe('TableTree', () => {
                 page: 0,
             },
             scopedSlots: {
-                pagination: '<div id="mySlot" slot-scope="props">' +
+                'vue-ads-pagination': '<div id="mySlot" slot-scope="props">' +
                     'Mijn items {{ props.range.start }} - {{ props.range.end }} van de {{ props.range.total }}' +
                     '</div>',
             },
         });
 
         expect(tableTree.find('#mySlot').text()).toBe('Mijn items 1 - 2 van de 3');
+    });
+
+    it('changes the body cell details when using a template', async () => {
+        tableTree = mount(TableTree, {
+            propsData: {
+                columns,
+                rows,
+            },
+            scopedSlots: {
+                'firstName': '<div :id="`mySlot_${props.index}`" slot-scope="props">' +
+                    'Dit is mijn naam {{ props.row.firstName }}' +
+                    '</div>',
+            },
+        });
+
+        await tableTree.vm.pageChange(0, {start: 2, end: 4});
+
+        expect(tableTree.find('#mySlot_2').text()).toBe('Dit is mijn naam Arne');
     });
 
     it('updates the rows and columns', () => {
