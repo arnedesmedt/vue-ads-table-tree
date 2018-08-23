@@ -16,7 +16,7 @@ It uses the handy
 
 ![Demo](https://media.giphy.com/media/jyINAhKJhEGpZGmOL1/giphy.gif)
 
-I've written a demo in [JSFiddle](https://jsfiddle.net/arnedesmedt/18n9k6vm)
+I've written a demo in [JSFiddle](https://jsfiddle.net/arnedesmedt/7my8L42q)
 
 ## Installation
 
@@ -38,22 +38,33 @@ This is the most simple example.
 ```vue
 <template>
     <div id="app">
-        <table-tree
+        <vue-ads-table-tree
             :columns="columns"
             :rows="rows"
         >
-        </table-tree>
+            <template>
+                <h2 class="block pl-3 leading-normal">
+                    My own title
+                </h2>
+            </template>
+            <template slot="vue-ads-pagination" slot-scope="props">
+                Items {{ props.range.start}} tot {{ props.range.end }} van de {{ props.range.total }}
+            </template>
+            <template slot="firstName" slot-scope="props">
+                <a :href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`" target="_blank">{{props.row.firstName}}</a>
+            </template>
+        </vue-ads-table-tree>
   </div>
 </template>
 
 <script>
-import TableTree from './components/TableTree';
+import VueAdsTableTree from 'vue-ads-table-tree';
 
 export default {
     name: 'app',
 
     components: {
-        TableTree,
+        VueAdsTableTree,
     },
 
     data () {
@@ -123,6 +134,49 @@ export default {
 - `itemsPerPage`: *(type: number, default: 10)* The max amount of items on one page.
 - `page`: *(type: number, default: 0)* A zero-based number to set the initial page.
 - `filter`: *(type: string)* The initial filter value.
+- `paginationDetailClasses`: *(type: array)* A list of (tailwind) classes you can add to change the pagination detail box ui.
+- `paginationButtonClasses`: *(type: object)* An object to change the pagination buttons ui for each state:
+    - `default`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the default pagination button. These classes are added on all pagination buttons.
+    - `active`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the active pagination button.
+    - `disabled`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the disabled pagination button.
+    - `dots`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the pagination dots.
+    
+### Templates
+
+#### Default
+
+The default template is used to change the title section. It has no scope.
+
+```vue
+<template>
+    <h2 class="block pl-3 leading-normal">
+        My own title
+    </h2>
+</template>
+```
+
+#### Pagination
+
+The pagination template used in the [vue-ads-pagination](https://www.npmjs.com/package/vue-ads-pagination) component, to customize the pagination details.
+
+```vue
+<template slot="vue-ads-pagination" scope="props">
+    Items {{ props.range.start}} - {{ props.range.end }}. Total: {{ props.range.total }}
+</template>
+```
+
+#### Column templates
+
+If you want to use custom content in a cell, you can use the column templates. Name the template to the column properties. The scope is an object with the following parameters:
+
+- `row`: *(type: Row)* The current row.
+- `index`: *(type: number)* The zero-based index of the row.
+
+```vue
+<template slot="firstName" slot-scope="props">
+    <a :href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`" target="_blank">{{props.row.firstName}}</a>
+</template>
+```
 
 ## Testing
 

@@ -31,7 +31,7 @@
     "postcss-import": "^11.1.0",
     "postcss-url": "^7.3.2",
     "tailwindcss": "^0.6.4",
-    "vue-ads-pagination": "^1.0.1",
+    "vue-ads-pagination": "^1.1.0",
     "vue-template-compiler": "^2.5.16"
   },
   "eslintConfig": {

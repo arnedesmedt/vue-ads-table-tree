@@ -52,7 +52,7 @@
                         class="text-center py-6 text-sm"
                         :colspan="columnCollection.length"
                     >
-                        <span v-if="asyncCall && connection.loading">Loading...</span>
+                        <span v-if="isLoading">Loading...</span>
                         <span v-else>No results found</span>
                     </td>
                 </tr>
@@ -60,12 +60,16 @@
                     v-for="(row, rowKey) in visibleRowCollection.items"
                     :key="rowKey"
                     :row="row"
-                    :index="rowKey"
+                    :paginatedIndex="rowKey"
+                    :index="rowKey + paginateService.range.start"
                     :last="rowKey === visibleRowCollection.length - 1"
                     :columns="columnCollection.items"
+                    :slots="slots"
                     :styling="stylingModel"
                     @toggleChildren="toggleChildren(row)"
-                />
+                >
+
+                </body-row>
             </tbody>
         </table>
         <pagination
@@ -73,9 +77,12 @@
             :itemsPerPage="itemsPerPage"
             :page="currentPage"
             @page-change="pageChange"
+            :loading="isLoading"
+            :detailClasses="paginationDetailClasses"
+            :buttonClasses="paginationButtonClasses"
         >
             <template slot-scope="props">
-                <slot name="pagination" :range="props.range">
+                <slot name="vue-ads-pagination" :range="props.range">
                     {{ props.range.start }} - {{ props.range.end }} of {{ props.range.total }} items
                 </slot>
             </template>
@@ -85,6 +92,8 @@
 
 <script>
 import '../assets/css/styles.css';
+
+import debounce from '../services/debounce';
 
 import HeaderCell from './HeaderCell';
 import BodyRow from './BodyRow';
@@ -161,6 +170,18 @@ export default {
             type: String,
             required: false,
         },
+
+        paginationDetailClasses: {
+            type: Array,
+            required: false,
+            default: () => [],
+        },
+
+        paginationButtonClasses: {
+            type: Object,
+            required: false,
+            default: () => {},
+        },
     },
 
     data () {
@@ -176,6 +197,8 @@ export default {
             connection: undefined,
             rowRepository: undefined,
             cache: undefined,
+            slots: {},
+            filterDebounce: debounce(() => { this.renderAfterFilter(); }, 500),
         };
 
         data.filterService = new Filter(data.columnCollection);
@@ -190,6 +213,10 @@ export default {
         if (this.asyncCall) {
             this.initializeAsync();
         }
+    },
+
+    mounted () {
+        this.slots = this.columnSlots(this.columnCollection);
     },
 
     watch: {
@@ -224,16 +251,22 @@ export default {
         currentFilter (currentFilter) {
             this.filterService.filterValue = currentFilter;
 
-            if (this.currentPage === 0) {
-                this.renderRootRows();
-            } else {
-                this.currentPage = 0;
+            if (this.makeAsyncCall) {
+                this.filterDebounce();
+
+                return;
             }
+
+            this.renderAfterFilter();
         },
 
         currentTotalRows (currentTotalRows) {
             if (this.rowCollection.length < currentTotalRows) {
                 this.rowCollection.extendToLength(currentTotalRows);
+            }
+
+            if (this.rowCollection.length > currentTotalRows && !this.filterService.isFiltering()) {
+                throw new Error('totalRows can\'t be smaller than the number of rows');
             }
         },
     },
@@ -265,6 +298,10 @@ export default {
             }
 
             return !this.rowCollection.allRowsInRangeLoaded(this.paginateService.range);
+        },
+
+        isLoading () {
+            return this.asyncCall && this.connection.loading;
         },
     },
 
@@ -359,6 +396,27 @@ export default {
             this.currentPage = page;
             this.paginateService.range = range;
             await this.renderRootRows();
+        },
+
+        async renderAfterFilter () {
+            if (this.currentPage === 0) {
+                await this.renderRootRows();
+            } else {
+                this.currentPage = 0;
+            }
+        },
+
+        columnSlots (columnCollection) {
+            let properties = columnCollection.properties;
+            let slots = {};
+
+            for (let key in this.$scopedSlots) {
+                if (properties.includes(key)) {
+                    slots[key] = this.$scopedSlots[key];
+                }
+            }
+
+            return slots;
         },
     },
 };
