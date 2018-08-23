@@ -49,7 +49,7 @@ export default {
         slots: {
             type: Object,
             required: false,
-            default: () => {return {};},
+            default: () => { return {}; },
         },
 
         index: {
