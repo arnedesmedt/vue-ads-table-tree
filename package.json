@@ -20,6 +20,7 @@
     "vue": "^2.5.16"
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^1.1.0",
     "@vue/cli-plugin-babel": "^3.0.0-rc.7",
     "@vue/cli-plugin-eslint": "^3.0.0-rc.7",
     "@vue/cli-plugin-unit-jest": "^3.0.0-rc.7",
@@ -60,14 +61,6 @@
     },
     "parserOptions": {
       "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {},
-      "tailwindcss": "./src/tailwind.config.js",
-      "postcss-import": {},
-      "postcss-url": {}
     }
   },
   "browserslist": [
