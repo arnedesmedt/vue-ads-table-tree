@@ -138,7 +138,7 @@ export default {
             default: () => [],
         },
 
-        totalRows: {
+        totalItems: {
             type: Number,
             required: false,
         },
@@ -209,7 +209,7 @@ export default {
     },
 
     created () {
-        this.currentTotalRows = this.totalRows || this.rows.length;
+        this.currentTotalRows = this.totalItems || this.rows.length;
         if (this.asyncCall) {
             this.initializeAsync();
         }
@@ -240,7 +240,7 @@ export default {
             this.currentPage = page;
         },
 
-        totalRows (totalRows) {
+        totalItems (totalRows) {
             this.currentTotalRows = totalRows;
         },
 
@@ -266,7 +266,7 @@ export default {
             }
 
             if (this.rowCollection.length > currentTotalRows && !this.filterService.isFiltering()) {
-                throw new Error('totalRows can\'t be smaller than the number of rows');
+                throw new Error('totalItems can\'t be smaller than the number of rows');
             }
         },
     },
