@@ -58,6 +58,7 @@ This is the most simple example.
 </template>
 
 <script>
+import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import VueAdsTableTree from 'vue-ads-table-tree';
 
 export default {

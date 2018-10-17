@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import '../assets/css/styles.css';
+import '../assets/css/tailwind.css';
 
 import debounce from '../services/debounce';
 

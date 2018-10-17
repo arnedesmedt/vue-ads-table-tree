@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import TableTree from './components/TableTree';
 
 export default {
