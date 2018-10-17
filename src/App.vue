@@ -2,11 +2,11 @@
     <div id="app">
         <table-tree
             :columns="columns"
-            :asyncCall="asyncCall"
             :rows="rows"
+            :asyncCall="asyncCall"
             :useCache="true"
             :itemsPerPage="2"
-            :totalRows="50"
+            totalItems="50"
             :paginationButtonClasses="{default: ['border-none'], active: ['bg-orange']}"
         >
             <template>
