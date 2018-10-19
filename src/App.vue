@@ -6,16 +6,13 @@
             :asyncCall="asyncCall"
             :useCache="true"
             :itemsPerPage="2"
-            totalItems="50"
+            :totalItems="50"
             :paginationButtonClasses="{default: ['border-none'], active: ['bg-orange']}"
         >
             <template>
                 <h2 class="block pl-3 leading-normal">
                     My own title
                 </h2>
-            </template>
-            <template slot="vue-ads-pagination" slot-scope="props">
-                Items {{ props.range.start}} tot {{ props.range.end }} van de {{ props.range.total }}
             </template>
             <template slot="firstName" slot-scope="props">
                 <a :href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`" target="_blank">{{props.row.firstName}}</a>

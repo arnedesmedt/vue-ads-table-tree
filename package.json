@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.4.1",
-    "vue": "^2.5.16"
+    "vue": "^2.5.16",
+    "vue-ads-pagination": "file:../vue-ads-pagination"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^1.1.0",
@@ -32,7 +33,6 @@
     "postcss-import": "^11.1.0",
     "postcss-url": "^7.3.2",
     "tailwindcss": "^0.6.4",
-    "vue-ads-pagination": "^1.1.0",
     "vue-template-compiler": "^2.5.16"
   },
   "eslintConfig": {

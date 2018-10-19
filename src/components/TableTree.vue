@@ -72,21 +72,18 @@
                 </body-row>
             </tbody>
         </table>
-        <pagination
-            :totalItems="currentTotalRows"
-            :itemsPerPage="itemsPerPage"
-            :page="currentPage"
-            @page-change="pageChange"
+        <slot
+            name="pagination"
+            :totalRows="currentTotalRows"
             :loading="isLoading"
-            :detailClasses="paginationDetailClasses"
-            :buttonClasses="paginationButtonClasses"
         >
-            <template slot-scope="props">
-                <slot name="vue-ads-pagination" :range="props.range">
-                    {{ props.range.start }} - {{ props.range.end }} of {{ props.range.total }} items
-                </slot>
-            </template>
-        </pagination>
+            <pagination
+                :totalItems="currentTotalRows"
+                @page-change="pageChange"
+                :loading="isLoading"
+            >
+            </pagination>
+        </slot>
     </div>
 </template>
 
@@ -154,12 +151,6 @@ export default {
             default: true,
         },
 
-        itemsPerPage: {
-            type: Number,
-            required: false,
-            default: 10,
-        },
-
         page: {
             type: Number,
             required: false,
@@ -169,18 +160,6 @@ export default {
         filter: {
             type: String,
             required: false,
-        },
-
-        paginationDetailClasses: {
-            type: Array,
-            required: false,
-            default: () => [],
-        },
-
-        paginationButtonClasses: {
-            type: Object,
-            required: false,
-            default: () => {},
         },
     },
 
@@ -210,6 +189,7 @@ export default {
 
     created () {
         this.currentTotalRows = this.totalItems || this.rows.length;
+
         if (this.asyncCall) {
             this.initializeAsync();
         }
