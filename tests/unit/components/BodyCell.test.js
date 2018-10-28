@@ -12,7 +12,7 @@ describe('BodyCell', () => {
         bodyCell = shallowMount(BodyCell, {
             propsData: {
                 styling: new Styling({
-                    columnsAllExceptLast: 'border-r',
+                    columnsAllExceptLast: 'vue-ads-table-tree-border-r',
                 }),
                 row: new Row({
                     firstName: 'arne',
@@ -27,11 +27,11 @@ describe('BodyCell', () => {
 
     it('returns the default cell classes', () => {
         expect(bodyCell.vm.cellClasses).toEqual({
-            'border-r': true,
-            'px-4': true,
-            'py-2': true,
-            'text-sm': true,
-            'w-auto': true,
+            'vue-ads-table-tree-border-r': true,
+            'vue-ads-table-tree-px-4': true,
+            'vue-ads-table-tree-py-2': true,
+            'vue-ads-table-tree-text-sm': true,
+            'vue-ads-table-tree-w-auto': true,
         });
 
         expect(bodyCell.vm.first).toBeTruthy();

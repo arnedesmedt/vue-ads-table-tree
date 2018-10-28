@@ -4,15 +4,15 @@ describe('Styling model', () => {
     it('initializes the default values if no values are given', () => {
         const styling = new Styling();
 
-        expect(styling.rowsEven).toBe('bg-grey-lightest');
-        expect(styling.rowsOdd).toBe('bg-white');
-        expect(styling.rowsAll).toBe('hover:bg-grey-lighter');
-        expect(styling.rowsAllExceptLast).toBe('border-b');
+        expect(styling.rowsEven).toBe('vue-ads-table-tree-bg-grey-lightest');
+        expect(styling.rowsOdd).toBe('vue-ads-table-tree-bg-white');
+        expect(styling.rowsAll).toBe('vue-ads-table-tree-hover:bg-grey-lighter');
+        expect(styling.rowsAllExceptLast).toBe('vue-ads-table-tree-border-b');
         expect(styling.columnsEven).toBe('');
         expect(styling.columnsOdd).toBe('');
         expect(styling.columnsAll).toBe('');
-        expect(styling.columnsAllExceptLast).toBe('border-r');
-        expect(styling.table).toBe('border');
+        expect(styling.columnsAllExceptLast).toBe('vue-ads-table-tree-border-r');
+        expect(styling.table).toBe('vue-ads-table-tree-border');
     });
 
     it('initializes the given stylings if set', () => {
@@ -43,13 +43,13 @@ describe('Styling model', () => {
         const styling = new Styling();
 
         expect(styling.rowClasses(0)).toEqual({
-            'bg-grey-lightest': true,
-            'hover:bg-grey-lighter': true,
-            'border-b': true,
+            'vue-ads-table-tree-bg-grey-lightest': true,
+            'vue-ads-table-tree-hover:bg-grey-lighter': true,
+            'vue-ads-table-tree-border-b': true,
         });
         expect(styling.rowClasses(1, true)).toEqual({
-            'bg-white': true,
-            'hover:bg-grey-lighter': true,
+            'vue-ads-table-tree-bg-white': true,
+            'vue-ads-table-tree-hover:bg-grey-lighter': true,
         });
     });
 
@@ -63,7 +63,7 @@ describe('Styling model', () => {
         expect(styling.columnClasses(0)).toEqual({
             'bg-green': true,
             'hover:bg-yellow': true,
-            'border-r': true,
+            'vue-ads-table-tree-border-r': true,
         });
         expect(styling.columnClasses(1, true)).toEqual({
             'bg-red': true,

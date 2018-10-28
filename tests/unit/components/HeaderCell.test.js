@@ -16,7 +16,7 @@ describe('HeaderCell', () => {
         headerCell = shallowMount(HeaderCell, {
             propsData: {
                 styling: new Styling({
-                    columnsAllExceptLast: 'border-r',
+                    columnsAllExceptLast: 'vue-ads-table-tree-border-r',
                 }),
                 column: column,
                 index: 0,
@@ -26,16 +26,16 @@ describe('HeaderCell', () => {
 
     it('returns the default header classes', () => {
         expect(headerCell.vm.headerClasses).toEqual({
-            'border-r': true,
-            'w-auto': true,
+            'vue-ads-table-tree-border-r': true,
+            'vue-ads-table-tree-w-auto': true,
         });
     });
 
     it('shows the sort icon if the column is sortable', () => {
         expect(headerCell.vm.sortIconClasses).toEqual({
-            'fa-sort': true,
-            'fa-sort-desc': false,
-            'fa-sort-asc': false,
+            'vue-ads-table-tree-fa-sort': true,
+            'vue-ads-table-tree-fa-sort-desc': false,
+            'vue-ads-table-tree-fa-sort-asc': false,
         });
     });
 
@@ -51,9 +51,9 @@ describe('HeaderCell', () => {
         });
 
         expect(headerCell.vm.sortIconClasses).toEqual({
-            'fa-sort': false,
-            'fa-sort-desc': false,
-            'fa-sort-asc': true,
+            'vue-ads-table-tree-fa-sort': false,
+            'vue-ads-table-tree-fa-sort-desc': false,
+            'vue-ads-table-tree-fa-sort-asc': true,
         });
     });
 
@@ -69,9 +69,9 @@ describe('HeaderCell', () => {
         });
 
         expect(headerCell.vm.sortIconClasses).toEqual({
-            'fa-sort': false,
-            'fa-sort-desc': true,
-            'fa-sort-asc': false,
+            'vue-ads-table-tree-fa-sort': false,
+            'vue-ads-table-tree-fa-sort-desc': true,
+            'vue-ads-table-tree-fa-sort-asc': false,
         });
     });
 });

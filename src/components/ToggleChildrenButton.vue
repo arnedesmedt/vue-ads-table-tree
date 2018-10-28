@@ -1,6 +1,6 @@
 <template>
     <i
-        class="fa pr-2 cursor-pointer"
+        class="vue-ads-table-tree-fa vue-ads-table-tree-pr-2 vue-ads-table-tree-cursor-pointer"
         :class="toggleChildrenButtonClasses"
     >
     </i>

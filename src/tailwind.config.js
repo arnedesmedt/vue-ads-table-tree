@@ -920,9 +920,9 @@ module.exports = {
   */
 
   options: {
-    prefix: '',
+    prefix: 'vue-ads-table-tree-',
     important: false,
     separator: ':',
   },
 
-}
+};

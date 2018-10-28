@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BodyCell adds a toggle children button if the row has children 1`] = `<td class="border-r px-4 py-2 text-sm w-auto" style="padding-left: 1rem;"><span><i class="fa pr-2 cursor-pointer fa-plus-square"></i></span></td>`;
+exports[`BodyCell adds a toggle children button if the row has children 1`] = `<td class="vue-ads-table-tree-border-r vue-ads-table-tree-px-4 vue-ads-table-tree-py-2 vue-ads-table-tree-text-sm vue-ads-table-tree-w-auto" style="padding-left: 1rem;"><span><i class="vue-ads-table-tree-fa vue-ads-table-tree-pr-2 vue-ads-table-tree-cursor-pointer fa-plus-square"></i></span></td>`;
 
-exports[`BodyCell returns the default cell classes 1`] = `<td class="border-r px-4 py-2 text-sm w-auto" style="padding-left: 1rem;"><span>arne</span></td>`;
+exports[`BodyCell returns the default cell classes 1`] = `<td class="vue-ads-table-tree-border-r vue-ads-table-tree-px-4 vue-ads-table-tree-py-2 vue-ads-table-tree-text-sm vue-ads-table-tree-w-auto" style="padding-left: 1rem;"><span>arne</span></td>`;

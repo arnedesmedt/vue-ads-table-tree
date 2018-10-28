@@ -248,14 +248,14 @@ describe('TableTree', () => {
     });
 
     it('updates the style', () => {
-        expect(tableTree.vm.stylingModel.columnsAllExceptLast).toBe('border-r');
+        expect(tableTree.vm.stylingModel.columnsAllExceptLast).toBe('vue-ads-table-tree-border-r');
 
         tableTree.setProps({
             styling: {
-                columnsAllExceptLast: 'border-l',
+                columnsAllExceptLast: 'vue-ads-table-tree-border-l',
             },
         });
 
-        expect(tableTree.vm.stylingModel.columnsAllExceptLast).toBe('border-l');
+        expect(tableTree.vm.stylingModel.columnsAllExceptLast).toBe('vue-ads-table-tree-border-l');
     });
 });

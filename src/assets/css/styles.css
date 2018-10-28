@@ -7,5 +7,5 @@
 @tailwind utilities;
 
 table.vue-ads-table-tree {
-    @apply .text-grey-darker;
+    @apply .vue-ads-table-tree-text-grey-darker;
 }

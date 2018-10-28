@@ -1,23 +1,23 @@
 <template>
     <div
-        class="w-full p-3"
+        class="vue-ads-table-tree-w-full vue-ads-table-tree-p-3"
     >
         <div
-            class="mt-3 mb-6 flex text-grey-darker"
+            class="vue-ads-table-tree-mt-3 vue-ads-table-tree-mb-6 vue-ads-table-tree-flex text-grey-darker"
         >
             <slot>
                 <h2
-                    class="block pl-3 leading-normal"
+                    class="vue-ads-table-tree-block vue-ads-table-tree-pl-3 vue-ads-table-tree-leading-normal"
                 >
                     Title
                 </h2>
             </slot>
             <div
-                class="flex-grow justify-end text-right"
+                class="vue-ads-table-tree-flex-grow vue-ads-table-tree-justify-end vue-ads-table-tree-text-right"
             >
-                <h3 class="inline pr-2">Filterable:</h3>
+                <h3 class="vue-ads-table-tree-inline vue-ads-table-tree-pr-2">Filterable:</h3>
                 <input
-                    class="appearance-none border rounded py-2 px-3 text-grey-darker "
+                    class="vue-ads-table-tree-appearance-none vue-ads-table-tree-border vue-ads-table-tree-rounded vue-ads-table-tree-py-2 vue-ads-table-tree-px-3 vue-ads-table-tree-text-grey-darker "
                     type="text"
                     placeholder="Filterable..."
                     v-model="currentFilter"
@@ -25,13 +25,13 @@
             </div>
         </div>
         <table
-            class="w-full vue-ads-table-tree"
+            class="vue-ads-table-tree-w-full vue-ads-table-tree"
             :class="stylingModel.tableClasses()"
             style="border-collapse: collapse;"
         >
             <thead>
                 <tr
-                    class="border-b"
+                    class="vue-ads-table-tree-border-b"
                 >
                     <header-cell
                         v-for="(column, columnKey) in columnCollection.items"
@@ -49,7 +49,7 @@
                     v-if="visibleRowCollection.length === 0"
                 >
                     <td
-                        class="text-center py-6 text-sm"
+                        class="vue-ads-table-tree-text-center vue-ads-table-tree-py-6 vue-ads-table-tree-text-sm"
                         :colspan="columnCollection.length"
                     >
                         <span v-if="isLoading">Loading...</span>

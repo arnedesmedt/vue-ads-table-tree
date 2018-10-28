@@ -56,10 +56,10 @@ export default {
             return Object.assign(
                 this.styling.columnClasses(0, this.column.last),
                 {
-                    'px-4': true,
-                    'py-2': true,
-                    'text-sm': true,
-                    ['w-' + this.column.width]: true,
+                    'vue-ads-table-tree-px-4': true,
+                    'vue-ads-table-tree-py-2': true,
+                    'vue-ads-table-tree-text-sm': true,
+                    ['vue-ads-table-tree-w-' + this.column.width]: true,
                 }
             );
         },

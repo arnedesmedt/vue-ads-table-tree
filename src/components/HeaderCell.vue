@@ -1,16 +1,16 @@
 <template>
     <th
-        class="px-4 py-2 text-left cursor-pointer"
+        class="vue-ads-table-tree-px-4 vue-ads-table-tree-py-2 vue-ads-table-tree-text-left vue-ads-table-tree-cursor-pointer"
         :class="headerClasses"
         @click="$emit('sort')"
     >
-        <div class="flex">
-            <span class="flex-grow">
+        <div class="vue-ads-table-tree-flex">
+            <span class="vue-ads-table-tree-flex-grow">
                 {{ column.title || '' }}
             </span>
             <i
                 v-if="column.sortable"
-                class="ml-2 fa leading-normal"
+                class="vue-ads-table-tree-ml-2 vue-ads-table-tree-fa vue-ads-table-tree-leading-normal"
                 :class="sortIconClasses"
             ></i>
         </div>
@@ -52,16 +52,16 @@ export default {
             return Object.assign(
                 this.styling.columnClasses(this.index, this.last),
                 {
-                    ['w-' + this.column.width]: true,
+                    ['vue-ads-table-tree-w-' + this.column.width]: true,
                 }
             );
         },
 
         sortIconClasses () {
             return {
-                'fa-sort': this.column.sortable && this.column.direction === null,
-                'fa-sort-desc': this.column.sortable && this.column.direction === false,
-                'fa-sort-asc': this.column.sortable && this.column.direction === true,
+                'vue-ads-table-tree-fa-sort': this.column.sortable && this.column.direction === null,
+                'vue-ads-table-tree-fa-sort-desc': this.column.sortable && this.column.direction === false,
+                'vue-ads-table-tree-fa-sort-asc': this.column.sortable && this.column.direction === true,
             };
         },
     },

@@ -31,8 +31,8 @@ describe('BodyRow', () => {
 
     it('returns the default row classes', () => {
         expect(bodyRow.vm.styling.rowClasses(0)).toEqual({
-            'border-b': true,
-            'bg-grey-lightest': true,
+            'vue-ads-table-tree-border-b': true,
+            'vue-ads-table-tree-bg-grey-lightest': true,
         });
     });
 });

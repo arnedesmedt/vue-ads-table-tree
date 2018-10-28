@@ -7,15 +7,15 @@ export default class Styling {
             );
         }
 
-        this.rowsEven = properties.hasOwnProperty('rowsEven') ? properties.rowsEven : 'bg-grey-lightest';
-        this.rowsOdd = properties.hasOwnProperty('rowsOdd') ? properties.rowsOdd : 'bg-white';
-        this.rowsAll = properties.hasOwnProperty('rowsAll') ? properties.rowsAll : 'hover:bg-grey-lighter';
-        this.rowsAllExceptLast = properties.hasOwnProperty('rowsAllExceptLast') ? properties.rowsAllExceptLast : 'border-b';
+        this.rowsEven = properties.hasOwnProperty('rowsEven') ? properties.rowsEven : 'vue-ads-table-tree-bg-grey-lightest';
+        this.rowsOdd = properties.hasOwnProperty('rowsOdd') ? properties.rowsOdd : 'vue-ads-table-tree-bg-white';
+        this.rowsAll = properties.hasOwnProperty('rowsAll') ? properties.rowsAll : 'vue-ads-table-tree-hover:bg-grey-lighter';
+        this.rowsAllExceptLast = properties.hasOwnProperty('rowsAllExceptLast') ? properties.rowsAllExceptLast : 'vue-ads-table-tree-border-b';
         this.columnsEven = properties.hasOwnProperty('columnsEven') ? properties.columnsEven : '';
         this.columnsOdd = properties.hasOwnProperty('columnsOdd') ? properties.columnsOdd : '';
         this.columnsAll = properties.hasOwnProperty('columnsAll') ? properties.columnsAll : '';
-        this.columnsAllExceptLast = properties.hasOwnProperty('columnsAllExceptLast') ? properties.columnsAllExceptLast : 'border-r';
-        this.table = properties.hasOwnProperty('table') ? properties.table : 'border';
+        this.columnsAllExceptLast = properties.hasOwnProperty('columnsAllExceptLast') ? properties.columnsAllExceptLast : 'vue-ads-table-tree-border-r';
+        this.table = properties.hasOwnProperty('table') ? properties.table : 'vue-ads-table-tree-border';
     }
 
     set rowsEven (rowsEven) {
