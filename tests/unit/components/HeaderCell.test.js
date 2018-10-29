@@ -33,9 +33,9 @@ describe('HeaderCell', () => {
 
     it('shows the sort icon if the column is sortable', () => {
         expect(headerCell.vm.sortIconClasses).toEqual({
-            'vue-ads-table-tree-fa-sort': true,
-            'vue-ads-table-tree-fa-sort-desc': false,
-            'vue-ads-table-tree-fa-sort-asc': false,
+            'fa-sort': true,
+            'fa-sort-desc': false,
+            'fa-sort-asc': false,
         });
     });
 
@@ -51,9 +51,9 @@ describe('HeaderCell', () => {
         });
 
         expect(headerCell.vm.sortIconClasses).toEqual({
-            'vue-ads-table-tree-fa-sort': false,
-            'vue-ads-table-tree-fa-sort-desc': false,
-            'vue-ads-table-tree-fa-sort-asc': true,
+            'fa-sort': false,
+            'fa-sort-desc': false,
+            'fa-sort-asc': true,
         });
     });
 
@@ -69,9 +69,9 @@ describe('HeaderCell', () => {
         });
 
         expect(headerCell.vm.sortIconClasses).toEqual({
-            'vue-ads-table-tree-fa-sort': false,
-            'vue-ads-table-tree-fa-sort-desc': true,
-            'vue-ads-table-tree-fa-sort-asc': false,
+            'fa-sort': false,
+            'fa-sort-desc': true,
+            'fa-sort-asc': false,
         });
     });
 });

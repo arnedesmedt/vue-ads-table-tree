@@ -10,7 +10,7 @@
             </span>
             <i
                 v-if="column.sortable"
-                class="vue-ads-table-tree-ml-2 vue-ads-table-tree-fa vue-ads-table-tree-leading-normal"
+                class="vue-ads-table-tree-ml-2 fa vue-ads-table-tree-leading-normal"
                 :class="sortIconClasses"
             ></i>
         </div>
@@ -59,9 +59,9 @@ export default {
 
         sortIconClasses () {
             return {
-                'vue-ads-table-tree-fa-sort': this.column.sortable && this.column.direction === null,
-                'vue-ads-table-tree-fa-sort-desc': this.column.sortable && this.column.direction === false,
-                'vue-ads-table-tree-fa-sort-asc': this.column.sortable && this.column.direction === true,
+                'fa-sort': this.column.sortable && this.column.direction === null,
+                'fa-sort-desc': this.column.sortable && this.column.direction === false,
+                'fa-sort-asc': this.column.sortable && this.column.direction === true,
             };
         },
     },
