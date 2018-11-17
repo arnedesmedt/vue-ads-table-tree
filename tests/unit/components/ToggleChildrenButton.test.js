@@ -1,11 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
-import ToggleChildrenButton from '../../../src/components/ToggleChildrenButton';
+import ToggleChildrenButton from '../../../src/components/ChildrenButton';
 
 describe('ToggleChildrenButton', () => {
     it('show the + sign by default', () => {
         const toggleChildrenButton = shallowMount(ToggleChildrenButton);
 
-        expect(toggleChildrenButton.vm.toggleChildrenButtonClasses).toEqual({
+        expect(toggleChildrenButton.vm.classes).toEqual({
             'fa-plus-square': true,
             'fa-minus-square': false,
             'fa-ellipsis-h': false,
@@ -19,7 +19,7 @@ describe('ToggleChildrenButton', () => {
             },
         });
 
-        expect(toggleChildrenButton.vm.toggleChildrenButtonClasses).toEqual({
+        expect(toggleChildrenButton.vm.classes).toEqual({
             'fa-plus-square': false,
             'fa-minus-square': true,
             'fa-ellipsis-h': false,
@@ -33,7 +33,7 @@ describe('ToggleChildrenButton', () => {
             },
         });
 
-        expect(toggleChildrenButton.vm.toggleChildrenButtonClasses).toEqual({
+        expect(toggleChildrenButton.vm.classes).toEqual({
             'fa-plus-square': false,
             'fa-minus-square': false,
             'fa-ellipsis-h': true,

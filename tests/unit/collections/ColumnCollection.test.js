@@ -105,7 +105,7 @@ describe('ColumnCollection', () => {
             },
         ]);
 
-        expect(columnCollection.maxSortOrder()).toBe(16);
+        expect(columnCollection.maxOrder()).toBe(16);
     });
 
     it('sorts on a specific column', () => {
@@ -120,7 +120,7 @@ describe('ColumnCollection', () => {
 
         columnCollection.sort(column);
 
-        expect(column.sortOrder).toBe(1);
+        expect(column.order).toBe(1);
     });
 
     it('sorts the columns desc if they are sorting', () => {
@@ -142,7 +142,7 @@ describe('ColumnCollection', () => {
         columnCollection.sort(column2);
         columnCollection.sort(column);
 
-        expect(column2.sortOrder).toBe(1);
-        expect(column.sortOrder).toBe(2);
+        expect(column2.order).toBe(1);
+        expect(column.order).toBe(2);
     });
 });

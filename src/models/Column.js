@@ -1,21 +1,18 @@
 export default class Column {
     constructor (properties) {
         Object.assign(this, properties);
+    }
 
-        if (
-            !this.hasOwnProperty('property') ||
-            typeof this.property !== 'string'
-        ) {
-            throw new Error(
-                'Each column needs a unique property attribute of the type string'
-            );
+    set property (property) {
+        this._property = property;
+    }
+
+    get property () {
+        if (!this.hasOwnProperty('_property')) {
+            return '';
         }
 
-        this.width = 'auto';
-        this.sortOrder = this.hasOwnProperty('_sortOrder') ? this.sortOrder : 0;
-        this.sortable = this.hasOwnProperty('_sortable') ? this.sortable : false;
-        this.direction = this.hasOwnProperty('_direction') ? this.direction : null;
-        this.filterable = this.hasOwnProperty('_filterable') ? this.filterable : false;
+        return this._property;
     }
 
     set width (width) {
@@ -23,15 +20,23 @@ export default class Column {
     }
 
     get width () {
+        if (!this.hasOwnProperty('_width')) {
+            return 'auto';
+        }
+
         return this._width;
     }
 
-    set sortOrder (sortOrder) {
-        this._sortOrder = sortOrder;
+    set order (order) {
+        this._order = order;
     }
 
-    get sortOrder () {
-        return this._sortOrder;
+    get order () {
+        if (!this.hasOwnProperty('_order')) {
+            return 0;
+        }
+
+        return this._order;
     }
 
     set sortable (sortable) {
@@ -39,6 +44,10 @@ export default class Column {
     }
 
     get sortable () {
+        if (!this.hasOwnProperty('_sortable')) {
+            return false;
+        }
+
         return this._sortable;
     }
 
@@ -53,6 +62,10 @@ export default class Column {
     }
 
     get direction () {
+        if (!this.hasOwnProperty('_direction')) {
+            return null;
+        }
+
         return this._direction;
     }
 
@@ -61,11 +74,15 @@ export default class Column {
     }
 
     get filterable () {
+        if (!this.hasOwnProperty('_filterable')) {
+            return false;
+        }
+
         return this._filterable;
     }
 
-    sort (sortOrder) {
+    sort (order) {
         this.direction = !this.direction;
-        this.sortOrder = sortOrder;
+        this.order = order;
     }
 }

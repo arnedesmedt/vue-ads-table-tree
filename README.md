@@ -103,15 +103,15 @@ export default {
 ### Properties
 
 - `styling`: *(type: object)* Contains styling classes from the tailwind library. [Here](https://tailwindcss.com/docs/background-color) you can find all available classes. Combinations are possible by separating them by a space.
-    - `rowsEven`: *(type: string, default: 'bg-grey-lightest')* Classes to add on the even rows.
-    - `rowsOdd`: *(type: string, default: 'bg-white')* Classes to add on the odd rows.
-    - `rowsAll`: *(type: string, default: 'hover:bg-grey-lighter')* Classes to add on all rows.
-    - `rowsAllExceptLast`: *(type: string, default: 'border-b')* Classes to add on all rows except on the last one.
-    - `columnsEven`: *(type: string)* Classes to add on the even columns.
-    - `columnsOdd`: *(type: string)* Classes to add on the odd columns.
-    - `columnsAll`: *(type: string)*Classes to add on all columns.
-    - `columnsAllExceptLast`: *(type: string, default: 'border-r')* Classes to add on all columns except on the last one.
-    - `table`: *(type: string, default: 'border')* Classes to add on the whole table.
+    - `rowsEven`: *(type: string, default: 'bg-grey-lightest')* ClassProcessor to add on the even rows.
+    - `rowsOdd`: *(type: string, default: 'bg-white')* ClassProcessor to add on the odd rows.
+    - `rowsAll`: *(type: string, default: 'hover:bg-grey-lighter')* ClassProcessor to add on all rows.
+    - `rowsAllExceptLast`: *(type: string, default: 'border-b')* ClassProcessor to add on all rows except on the last one.
+    - `columnsEven`: *(type: string)* ClassProcessor to add on the even columns.
+    - `columnsOdd`: *(type: string)* ClassProcessor to add on the odd columns.
+    - `columnsAll`: *(type: string)*ClassProcessor to add on all columns.
+    - `columnsAllExceptLast`: *(type: string, default: 'border-r')* ClassProcessor to add on all columns except on the last one.
+    - `table`: *(type: string, default: 'border')* ClassProcessor to add on the whole table.
 - `columns`: *(type: array, required)* An array containing all the column objects. Each column object can contain the following properties:
     - `property`: *(type: string, required)* The corresponding value will be shown in the column of the given row property. 
     - `title`: *(type: string)* The title that will be shown in the header. 

@@ -49,6 +49,6 @@ describe('Column model', () => {
         column.sort(1);
 
         expect(column.direction).toBeTruthy();
-        expect(column.sortOrder).toBe(1);
+        expect(column.order).toBe(1);
     });
 });

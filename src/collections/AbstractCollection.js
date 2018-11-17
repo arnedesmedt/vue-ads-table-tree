@@ -6,17 +6,21 @@ export default class AbstractCollection {
         this.items = items;
     }
 
-    get length () {
-        return this._items.length;
-    }
-
     set items (items) {
         this.clear();
-        this.addItemsFromIndex(items);
+        this.push(items);
     }
 
     get items () {
         return this._items;
+    }
+
+    get length () {
+        return this.items.length;
+    }
+
+    set length (length) {
+        this._items.length = length;
     }
 
     get first () {
@@ -31,57 +35,30 @@ export default class AbstractCollection {
         this._items.splice(0, this.length);
     }
 
-    addItemOnIndex (item, index = null) {
-        index = index === null ? this.length : index;
-        Vue.set(this._items, index, item);
-
-        return item;
-    }
-
-    addItemsFromIndex (items, startIndex = null) {
-        if (!(items instanceof Array)) {
-            throw new Error(
-                'Items has to be an Array, if you want to add items to a collection. \'' + typeof items + '\' given.'
-            );
+    push (items, startIndex = null) {
+        if (Array.isArray(items)) {
+            return items.map((item, index) => {
+                return this.push(item, startIndex !== null ? startIndex + index : null);
+            });
         }
 
-        return items.map((item, index) => {
-            return this.addItemOnIndex(
-                item,
-                startIndex !== null ? startIndex + index : null
-            );
-        });
+        Vue.set(this._items, startIndex || this.length, items);
+
+        return items;
     }
 
-    isEmpty () {
+    empty () {
         return this.length === 0;
     }
 
-    allItemsAreFilled () {
-        return AbstractCollection.itemsAreFilled(this.items);
-    }
+    filled (start = undefined, end = undefined) {
+        let items = this.items.slice(start, end);
 
-    static itemsAreFilled (items) {
-        return items.length === items.filter(item => item).length;
-    }
+        start = start < 0 ? this.length + start : start;
+        start = start < 0 ? 0 : start;
+        end = end < 0 ? this.length + end : end;
+        end = end < 0 ? 0 : end;
 
-    allItemsAreFilledInRange (range) {
-        let slicedItems = this.items.slice(range.start, range.end);
-
-        if ((range.end - range.start) === 0) {
-            return true;
-        }
-
-        if (slicedItems.length < range.end - range.start) {
-            return false;
-        }
-
-        return AbstractCollection.itemsAreFilled(slicedItems);
-    }
-
-    extendToLength (length) {
-        for (let i = this.length; i < length; i++) {
-            this.addItemOnIndex(undefined, i);
-        }
+        return end - start === items.filter(item => item).length;
     }
 }
