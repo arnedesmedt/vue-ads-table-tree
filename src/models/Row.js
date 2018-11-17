@@ -2,22 +2,30 @@ import RowCollection from '../collections/RowCollection';
 
 export default class Row {
     constructor (properties) {
+        this._showChildren = false;
+        this._loading = false;
         this.children = new RowCollection();
-        this.processedChildren = null;
-        this.showChildren = false;
-        this.hasChildren = false;
-        this.childrenLoading = false;
         Object.assign(this, properties);
     }
 
-    set parent (parent) {
-        if (!(parent instanceof Row)) {
-            throw new Error(
-                'Parent of a row has to be a row'
-            );
-        }
+    set classes (classes) {
+        this._classes = classes;
+    }
 
-        this._parent = parent;
+    get classes () {
+        return this._classes;
+    }
+
+    set loading (loading) {
+        this._loading = loading;
+    }
+
+    get loading () {
+        return this._loading;
+    }
+
+    set parent (parent) {
+        this._parent = parent instanceof Row ? parent : undefined;
     }
 
     get parent () {
@@ -26,38 +34,13 @@ export default class Row {
 
     set children (children) {
         this._children = children instanceof RowCollection ? children : new RowCollection(children);
-        this._children.items
-            .forEach(childRow => {
-                childRow.parent = this;
-            });
+        this._children.initParent(this);
 
-        this.hasChildren = !this._children.isEmpty();
+        this.hasChildren = !this._children.empty();
     }
 
     get children () {
         return this._children;
-    }
-
-    set childrenLoading (childrenLoading) {
-        this._childrenLoading = childrenLoading;
-    }
-
-    get childrenLoading () {
-        return this._childrenLoading;
-    }
-
-    set processedChildren (processedChildren) {
-        this._processedChildren = processedChildren;
-
-        // wss voor async calls.
-        // this._processedChildren.items
-        //     .forEach(filteredChild => {
-        //         filteredChild.parent = this;
-        //     });
-    }
-
-    get processedChildren () {
-        return this._processedChildren === null ? this.children : this._processedChildren;
     }
 
     set hasChildren (hasChildren) {
@@ -76,8 +59,22 @@ export default class Row {
         return this._showChildren;
     }
 
+    set visibleChildren (visibleChildren) {
+        this._visibleChildren = visibleChildren;
+        this._visibleChildren.initParent(this);
+    }
+
+    get visibleChildren () {
+        if (!this.showChildren) {
+            return new RowCollection();
+        }
+
+        return this._visibleChildren ? this._visibleChildren : this.children;
+    }
+
     get properties () {
-        return Object.getOwnPropertyNames(this)
+        return Object
+            .getOwnPropertyNames(this)
             .filter(property => {
                 return property[0] !== '_';
             });
@@ -87,12 +84,16 @@ export default class Row {
         this.showChildren = !this.showChildren;
     }
 
+    toggleLoading () {
+        this.loading = !this.loading;
+    }
+
     childrenLoaded () {
-        return this.hasChildren && !this.children.isEmpty();
+        return this.hasChildren && !this.children.empty();
     }
 
     loadChildren () {
-        return this.showChildren && this.hasChildren && this.children.isEmpty();
+        return this.showChildren && this.hasChildren && this.children.empty();
     }
 
     countParents () {

@@ -5,8 +5,8 @@ describe('Row model', () => {
     it('initializes the default values if no arguments are given', () => {
         const row = new Row();
 
-        expect(row.children.isEmpty()).toBeTruthy();
-        expect(row.processedChildren.isEmpty()).toBeTruthy();
+        expect(row.children.empty()).toBeTruthy();
+        expect(row.visibleChildren.empty()).toBeTruthy();
         expect(row.showChildren).toBeFalsy();
         expect(row.hasChildren).toBeFalsy();
         expect(row.childrenLoaded()).toBeFalsy();
@@ -17,14 +17,15 @@ describe('Row model', () => {
             name: 'arne',
             showChildren: true,
             hasChildren: true,
-            childrenLoading: true,
             children: new RowCollection([{name: 'de smedt'}]),
         });
 
-        expect(row.children.isEmpty()).toBeFalsy();
+        row.children.loading = true;
+
+        expect(row.children.empty()).toBeFalsy();
         expect(row.showChildren).toBeTruthy();
         expect(row.hasChildren).toBeTruthy();
-        expect(row.childrenLoading).toBeTruthy();
+        expect(row.children.loading).toBeTruthy();
         expect(row.name).toBe('arne');
         expect(row.children.first.name).toBe('de smedt');
     });
@@ -35,7 +36,7 @@ describe('Row model', () => {
             children: new RowCollection([{name: 'de smedt'}]),
         });
 
-        expect(row.children.isEmpty()).toBeFalsy();
+        expect(row.children.empty()).toBeFalsy();
         expect(row.hasChildren).toBeTruthy();
     });
 
@@ -116,9 +117,9 @@ describe('Row model', () => {
             children: new RowCollection([{name: 'arne'}]),
         });
 
-        expect(row.processedChildren.first.name).toBe('arne');
-        row.processedChildren = new RowCollection();
-        expect(row.processedChildren.isEmpty()).toBeTruthy();
+        expect(row.visibleChildren.first.name).toBe('arne');
+        row.visibleChildren = new RowCollection();
+        expect(row.visibleChildren.empty()).toBeTruthy();
     });
 
     it('throws an error if the parent of a row is not a row', () => {

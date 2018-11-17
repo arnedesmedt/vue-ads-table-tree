@@ -52,7 +52,7 @@ describe('RowCollection', () => {
     it('add rows to a specific index', () => {
         const rowCollection = new RowCollection();
 
-        rowCollection.addItemsFromIndex([{}, {}], 1);
+        rowCollection.push([{}, {}], 1);
 
         expect(rowCollection.first).toBeUndefined();
         expect(rowCollection.length).toBe(3);
@@ -72,7 +72,7 @@ describe('RowCollection', () => {
             },
         ]);
 
-        expect(rowCollection.allRowsLoaded(2)).toBeTruthy();
+        expect(rowCollection.fullyFilled(2)).toBeTruthy();
     });
 
     it('checks that not all rows are loaded', () => {
@@ -89,7 +89,7 @@ describe('RowCollection', () => {
             {},
         ]);
 
-        expect(rowCollection.allRowsLoaded(3)).toBeFalsy();
+        expect(rowCollection.fullyFilled(3)).toBeFalsy();
     });
 
     it('checks that not all rows are loaded', () => {
@@ -105,12 +105,12 @@ describe('RowCollection', () => {
             },
         ]);
 
-        expect(rowCollection.allRowsLoaded(3)).toBeFalsy();
+        expect(rowCollection.fullyFilled(3)).toBeFalsy();
     });
 
     it('checks that all rows in a range are loaded', () => {
         const rowCollection = new RowCollection();
-        rowCollection.extendToLength(6);
+        rowCollection.length = 6;
 
         expect(rowCollection.allRowsInRangeLoaded({start: 0, end: 4})).toBeFalsy();
     });

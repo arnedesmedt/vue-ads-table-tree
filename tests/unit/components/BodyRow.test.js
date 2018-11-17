@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
-import BodyRow from '../../../src/components/BodyRow';
+import BodyRow from '../../../src/components/Row.vue';
 import Row from '../../../src/models/Row';
 import Column from '../../../src/models/Column';
 import Styling from '../../../src/models/Styling';

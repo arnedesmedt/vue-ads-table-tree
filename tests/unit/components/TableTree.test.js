@@ -88,9 +88,9 @@ describe('TableTree', () => {
         let lastRow = tableTree.vm.rowCollection.last;
 
         await tableTree.vm.pageChange(1, {start: 1, end: 3});
-        expect(tableTree.vm.visibleRowCollection.items).toHaveLength(2);
+        expect(tableTree.vm.visibleRows.items).toHaveLength(2);
         await tableTree.vm.toggleChildren(lastRow);
-        expect(tableTree.vm.visibleRowCollection.items).toHaveLength(4);
+        expect(tableTree.vm.visibleRows.items).toHaveLength(4);
     });
 
     it('filters the rows', async () => {
@@ -130,10 +130,10 @@ describe('TableTree', () => {
 
         await tableTree.vm.pageChange(0, {start: 0, end: 2});
         await tableTree.vm.toggleChildren(lastRow);
-        expect(tableTree.vm.visibleRowCollection.first.firstName).toBe('Arnold');
+        expect(tableTree.vm.visibleRows.first.firstName).toBe('Arnold');
         await tableTree.vm.sortColumn(firstColumn);
-        expect(tableTree.vm.visibleRowCollection.first.firstName).toBe('Arne');
-        expect(tableTree.vm.visibleRowCollection.items[1].firstName).toBe('Alice');
+        expect(tableTree.vm.visibleRows.first.firstName).toBe('Arne');
+        expect(tableTree.vm.visibleRows.items[1].firstName).toBe('Alice');
     });
 
     it('paginates the rows', async () => {
@@ -142,9 +142,9 @@ describe('TableTree', () => {
         });
 
         await tableTree.vm.pageChange(0, {start: 0, end: 1});
-        expect(tableTree.vm.visibleRowCollection.first.firstName).toBe('Arnold');
+        expect(tableTree.vm.visibleRows.first.firstName).toBe('Arnold');
         await tableTree.vm.pageChange(1, {start: 1, end: 2});
-        expect(tableTree.vm.visibleRowCollection.first.firstName).toBe('Peter');
+        expect(tableTree.vm.visibleRows.first.firstName).toBe('Peter');
     });
 
     it('load rows with an async call', async () => {
@@ -154,8 +154,8 @@ describe('TableTree', () => {
 
         await tableTree.vm.pageChange(0, {start: 0, end: 1});
 
-        expect(tableTree.vm.visibleRowCollection.items).toHaveLength(3);
-        expect(tableTree.vm.visibleRowCollection.first.firstName).toBe('Arne');
+        expect(tableTree.vm.visibleRows.items).toHaveLength(3);
+        expect(tableTree.vm.visibleRows.first.firstName).toBe('Arne');
     });
 
     it('stores the rows in the cache on the start index', async () => {
@@ -189,7 +189,7 @@ describe('TableTree', () => {
                 page: 0,
             },
             scopedSlots: {
-                'vue-ads-pagination': '<div id="mySlot" slot-scope="props">' +
+                'vue-ads-pagination': '<div id="mySlot" columnSlot-scope="props">' +
                     'Mijn items {{ props.range.start }} - {{ props.range.end }} van de {{ props.range.total }}' +
                     '</div>',
             },
@@ -205,7 +205,7 @@ describe('TableTree', () => {
                 rows,
             },
             scopedSlots: {
-                'firstName': '<div :id="`mySlot_${props.index}`" slot-scope="props">' +
+                'firstName': '<div :id="`mySlot_${props.index}`" columnSlot-scope="props">' +
                     'Dit is mijn naam {{ props.row.firstName }}' +
                     '</div>',
             },

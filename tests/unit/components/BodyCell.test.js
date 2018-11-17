@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
-import BodyCell from '../../../src/components/BodyCell';
+import BodyCell from '../../../src/components/Cell';
 import Row from '../../../src/models/Row';
 import Column from '../../../src/models/Column';
 import Styling from '../../../src/models/Styling';
@@ -26,7 +26,7 @@ describe('BodyCell', () => {
     });
 
     it('returns the default cell classes', () => {
-        expect(bodyCell.vm.cellClasses).toEqual({
+        expect(bodyCell.vm.classes).toEqual({
             'border-r': true,
             'px-4': true,
             'py-2': true,
@@ -35,7 +35,7 @@ describe('BodyCell', () => {
         });
 
         expect(bodyCell.vm.first).toBeTruthy();
-        expect(bodyCell.vm.cellStyle['padding-left']).toBe('1rem');
+        expect(bodyCell.vm.style['padding-left']).toBe('1rem');
 
         expect(bodyCell.html()).toMatchSnapshot();
     });
@@ -47,7 +47,7 @@ describe('BodyCell', () => {
             }),
         });
 
-        expect(bodyCell.vm.cellStyle['padding-left']).toBe('2.5rem');
+        expect(bodyCell.vm.style['padding-left']).toBe('2.5rem');
     });
 
     it('adds a toggle children button if the row has children', () => {

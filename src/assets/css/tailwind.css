@@ -3,7 +3,3 @@
 @tailwind components;
 
 @tailwind utilities;
-
-table.vue-ads-table-tree {
-    @apply .text-grey-darker;
-}
