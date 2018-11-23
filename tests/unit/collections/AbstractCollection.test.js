@@ -11,12 +11,6 @@ describe('AbstractCollection', () => {
         expect(abstractCollection.items).toHaveLength(0);
     });
 
-    it('throws an error if new items are not in an array', () => {
-        abstractCollection = () => new AbstractCollection(1);
-
-        expect(abstractCollection).toThrow('Items has to be an Array, if you want to add items to a collection. \'number\' given.');
-    });
-
     it('can add items on a specific start index', () => {
         abstractCollection.push([1, 2], 5);
 
@@ -80,5 +74,25 @@ describe('AbstractCollection', () => {
         abstractCollection.push([1, 2], 0);
 
         expect(abstractCollection.last).toBe(2);
+    });
+
+    it('checks if the collection is empty', () => {
+        expect(abstractCollection.empty()).toBeTruthy();
+    });
+
+    it('checks if the collection is not empty', () => {
+        abstractCollection.push([0]);
+
+        expect(abstractCollection.empty()).toBeFalsy();
+    });
+
+    it('checks if the collection is cleared', () => {
+        abstractCollection.push([0]);
+
+        expect(abstractCollection.length).toBe(1);
+
+        abstractCollection.clear();
+
+        expect(abstractCollection.empty()).toBeTruthy();
     });
 });

@@ -115,19 +115,12 @@ describe('Row model', () => {
     it('returns the processed children otherwise the default children', () => {
         const row = new Row({
             children: new RowCollection([{name: 'arne'}]),
+            showChildren: true,
         });
 
         expect(row.visibleChildren.first.name).toBe('arne');
         row.visibleChildren = new RowCollection();
         expect(row.visibleChildren.empty()).toBeTruthy();
-    });
-
-    it('throws an error if the parent of a row is not a row', () => {
-        const row = new Row();
-
-        expect(() => {
-            row.parent = 1;
-        }).toThrow('Parent of a row has to be a row');
     });
 
     it('sets loadChildren on true, if the row has to show the children, it has children and the children are empty', () => {

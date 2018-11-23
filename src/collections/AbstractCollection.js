@@ -52,6 +52,9 @@ export default class AbstractCollection {
     }
 
     filled (start = undefined, end = undefined) {
+        start = start === undefined ? 0 : start;
+        end = end === undefined ? this.length : end;
+
         let items = this.items.slice(start, end);
 
         start = start < 0 ? this.length + start : start;

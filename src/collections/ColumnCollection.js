@@ -45,13 +45,16 @@ export default class ColumnCollection extends AbstractCollection {
     }
 
     maxOrder () {
-        let sortColumns = this.sortableColumns();
+        let sortColumns = this.sortColumns();
+
+        if (sortColumns.length === 0) {
+            return 0;
+        }
 
         return sortColumns[sortColumns.length - 1].order;
     }
 
     hasFilterColumns () {
-        console.log(this.filterColumnNames);
         return this.filterColumnNames.length > 0;
     }
 }
