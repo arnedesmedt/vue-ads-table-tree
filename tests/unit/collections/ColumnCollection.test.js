@@ -2,147 +2,93 @@ import ColumnCollection from '../../../src/collections/ColumnCollection';
 import Column from '../../../src/models/Column';
 
 describe('ColumnCollection', () => {
-    it('adds all columns', () => {
-        const columnCollection = new ColumnCollection([
-            new Column({
-                property: 'firstName',
-            }),
-            new Column({
-                property: 'lastName',
-            }),
-        ]);
+    let columnCollection;
 
-        expect(columnCollection.length).toBe(2);
+    beforeEach(() => {
+        columnCollection = new ColumnCollection([
+            {
+                property: 'firstName',
+            },
+            {
+                property: 'lastName',
+            },
+        ]);
     });
 
     it('maps all columns', () => {
-        const columnCollection = new ColumnCollection([
-            {property: 'firstName'},
-            {property: 'lastName'},
-        ]);
-
         expect(columnCollection.length).toBe(2);
         expect(columnCollection.first).toBeInstanceOf(Column);
     });
 
-    it('returns the filterValue columns', () => {
-        const columnCollection = new ColumnCollection([
-            {
-                property: 'arne',
-            },
-            {
-                property: 'de smedt',
-                filterable: true,
-            },
-            {
-                property: 'table',
-                filterable: false,
-            },
-            {
-                property: 'tree',
-                filterable: true,
-            },
-        ]);
+    it('returns all column properties', () => {
+        expect(columnCollection.properties).toEqual(['firstName', 'lastName']);
+    });
 
-        expect(columnCollection.filterColumns()).toEqual([
-            'de smedt',
-            'tree',
-        ]);
+    it('returns the filterValue columns', () => {
+        columnCollection.first.filterable = true;
+
+        expect(columnCollection.filterColumnNames).toEqual(['firstName']);
     });
 
     it('returns the sortable columns', () => {
-        const columnCollection = new ColumnCollection([
-            {
-                property: 'arne',
-            },
-            {
-                property: 'de smedt',
-                sortable: true,
-            },
-            {
-                property: 'table',
-                sortable: false,
-            },
-            {
-                property: 'tree',
-                sortable: true,
-            },
-        ]);
+        columnCollection.last.sortable = true;
 
-        expect(columnCollection.sortColumns()[0]).toBeInstanceOf(Column);
-        expect(columnCollection.sortColumns()[0].property).toBe('de smedt');
+        expect(columnCollection.sortableColumns()[0]).toBeInstanceOf(Column);
+        expect(columnCollection.sortableColumns()[0].property).toBe('lastName');
     });
 
-    it('throws an error if the columns are not unique', () => {
-        const columnCollection = () => new ColumnCollection([
-            new Column({property: 'notUnique'}),
-            new Column({property: 'notUnique'}),
-        ]);
+    it('returns 0 as maxSortOrder if no column is sortable', () => {
+        columnCollection.first.order = 6;
+        columnCollection.last.order = 8;
 
-        expect(columnCollection).toThrow('ColumnCollection is not unique');
+        expect(columnCollection.maxOrder()).toBe(0);
     });
 
-    it('returns the max sort order', () => {
-        const columnCollection = new ColumnCollection([
-            {
-                property: 'arne',
-                sortOrder: 5,
-                sortable: true,
-            },
-            {
-                property: 'de smedt',
-                sortOrder: 8,
-            },
-            {
-                property: 'test',
-                sortOrder: 4,
-                sortable: true,
-            },
-            {
-                property: 'otherTest',
-                sortOrder: 16,
-                sortable: true,
-            },
-        ]);
+    it('returns 0 as maxSortOrder if no sort direction is set', () => {
+        columnCollection.first.order = 6;
+        columnCollection.first.sortable = true;
+        columnCollection.last.order = 8;
+        columnCollection.last.sortable = true;
 
-        expect(columnCollection.maxSortOrder()).toBe(16);
+        expect(columnCollection.maxOrder()).toBe(0);
+    });
+
+    it('returns the heighest sort order for maxSortOrder', () => {
+        columnCollection.first.order = 6;
+        columnCollection.first.sortable = true;
+        columnCollection.first.direction = true;
+        columnCollection.last.order = 8;
+        columnCollection.last.sortable = true;
+        columnCollection.last.direction = true;
+
+        expect(columnCollection.maxOrder()).toBe(8);
     });
 
     it('sorts on a specific column', () => {
-        const column = new Column({
-            property: 'name',
-            sortable: true,
-        });
+        columnCollection.first.sortable = true;
+        columnCollection.sort(columnCollection.first);
 
-        const columnCollection = new ColumnCollection([
-            column,
-        ]);
-
-        columnCollection.sort(column);
-
-        expect(column.sortOrder).toBe(1);
+        expect(columnCollection.first.order).toBe(1);
     });
 
     it('sorts the columns desc if they are sorting', () => {
-        const column = new Column({
-            property: 'name',
-            sortable: true,
-        });
+        columnCollection.first.sortable = true;
+        columnCollection.last.sortable = true;
 
-        const column2 = new Column({
-            property: 'address',
-            sortable: true,
-        });
+        columnCollection.sort(columnCollection.last);
+        columnCollection.sort(columnCollection.first);
 
-        const columnCollection = new ColumnCollection([
-            column,
-            column2,
-        ]);
+        expect(columnCollection.last.order).toBe(1);
+        expect(columnCollection.first.order).toBe(2);
+    });
 
-        columnCollection.sort(column2);
-        columnCollection.sort(column);
+    it('checks if their are no filter columns ', () => {
+        expect(columnCollection.hasFilterColumns()).toBeFalsy();
+    });
 
-        expect(column2.sortOrder).toBe(1);
-        expect(column.sortOrder).toBe(2);
+    it('checks if their are filter columns ', () => {
+        columnCollection.first.filterable = true;
+
+        expect(columnCollection.hasFilterColumns()).toBeTruthy();
     });
 });

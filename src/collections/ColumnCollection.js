@@ -2,71 +2,59 @@ import Column from '../models/Column';
 import AbstractCollection from './AbstractCollection';
 
 export default class ColumnCollection extends AbstractCollection {
-    set items (items) {
-        let columns = ColumnCollection.mapToColumns(items);
-        this.checkUniqueColumns(columns);
-
-        super.items = columns;
-    }
-
-    get items () {
-        return super.items;
-    }
-
     get properties () {
         return this.items.map(column => column.property);
     }
 
-    static mapToColumns (items) {
-        return items.map(item => {
-            if (!(item instanceof Column)) {
-                item = new Column(item);
-            }
-
-            return item;
-        });
-    }
-
-    checkUniqueColumns (columns) {
-        let columnProperties = columns.map(column => column.property);
-        let set = new Set(columnProperties);
-
-        if (set.size !== columnProperties.length) {
-            throw new Error(
-                'ColumnCollection is not unique'
-            );
-        }
-    }
-
-    filterColumns () {
+    get filterColumnNames () {
         return this.items
-            .filter(column => {
-                return column.filterable || false;
-            })
+            .filter(column => column.filterable)
             .map(column => column.property);
     }
 
-    sortColumns () {
-        return this.items
-            .filter(column => {
-                return column.sortable || false;
-            })
-            .sort((columnA, columnB) => {
-                if (columnA.sortOrder === columnB.sortOrder) {
-                    return 0;
+    push (items, startIndex) {
+        if (!Array.isArray(items)) {
+            return super.push(items, startIndex);
+        }
+
+        return super.push(
+            items.map(item => {
+                if (item instanceof Column) {
+                    return item;
                 }
 
-                return columnA.sortOrder < columnB.sortOrder ? -1 : 1;
-            });
+                return new Column(item);
+            }),
+            startIndex
+        );
+    }
+
+    sortableColumns () {
+        return this.items
+            .filter(column => column.sortable);
+    }
+
+    sortColumns () {
+        return this.sortableColumns()
+            .filter(column => column.direction !== null)
+            .sort((columnA, columnB) => columnA.order - columnB.order);
     }
 
     sort (column) {
-        column.sort(this.maxSortOrder() + 1);
+        column.sort(this.maxOrder() + 1);
     }
 
-    maxSortOrder () {
+    maxOrder () {
         let sortColumns = this.sortColumns();
 
-        return sortColumns[sortColumns.length - 1].sortOrder;
+        if (sortColumns.length === 0) {
+            return 0;
+        }
+
+        return sortColumns[sortColumns.length - 1].order;
+    }
+
+    hasFilterColumns () {
+        return this.filterColumnNames.length > 0;
     }
 }

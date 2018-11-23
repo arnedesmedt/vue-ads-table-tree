@@ -1,117 +1,217 @@
 import RowCollection from '../../../src/collections/RowCollection';
 import Row from '../../../src/models/Row';
+import Column from '../../../src/models/Column';
 
 describe('RowCollection', () => {
-    it('adds all rows', () => {
-        const rowCollection = new RowCollection([
-            new Row(),
-            new Row(),
-        ]);
+    let rowCollection;
 
-        expect(rowCollection.length).toBe(2);
+    beforeEach(() => {
+        rowCollection = new RowCollection([
+            {
+                name: 'arne',
+                showChildren: true,
+                children: [
+                    {
+                        name: 'hanne',
+                    },
+                ],
+            },
+            {
+                name: 'liese',
+                showChildren: true,
+                children: [
+                    {
+                        name: 'lien',
+                    },
+                ],
+            },
+        ]);
     });
 
     it('maps all rows', () => {
-        const rowCollection = new RowCollection([
-            {},
-            {},
-        ]);
-
         expect(rowCollection.length).toBe(2);
         expect(rowCollection.first).toBeInstanceOf(Row);
     });
 
     it('flattens the rows', () => {
-        const rowCollection = new RowCollection([
-            {
-                name: 'arne',
-                children: [
-                    {
-                        name: 'de smedt',
-                    },
-                ],
-            },
-            {
-                name: 'table',
-                showChildren: true,
-                children: [
-                    {
-                        name: 'tree',
-                    },
-                ],
-            },
+        const flattenedRowCollection = rowCollection.flatten().map(row => row.name);
+
+        expect(flattenedRowCollection).toEqual([
+            'arne',
+            'hanne',
+            'liese',
+            'lien',
         ]);
-
-        const flattenedRowCollection = rowCollection.flatten();
-
-        expect(flattenedRowCollection[0].name).toBe('arne');
-        expect(flattenedRowCollection[1].name).toBe('table');
-        expect(flattenedRowCollection[2].name).toBe('tree');
-    });
-
-    it('add rows to a specific index', () => {
-        const rowCollection = new RowCollection();
-
-        rowCollection.addItemsFromIndex([{}, {}], 1);
-
-        expect(rowCollection.first).toBeUndefined();
-        expect(rowCollection.length).toBe(3);
-        expect(rowCollection.items[2]).toBeInstanceOf(Row);
     });
 
     it('checks that all rows are loaded', () => {
-        const rowCollection = new RowCollection([
-            {
-                hasChildren: true,
-                children: [
-                    {},
-                ],
-            },
-            {
-                hasChildren: false,
-            },
-        ]);
-
-        expect(rowCollection.allRowsLoaded(2)).toBeTruthy();
+        expect(rowCollection.fullyFilled(2)).toBeTruthy();
     });
 
     it('checks that not all rows are loaded', () => {
-        const rowCollection = new RowCollection([
-            {
-                hasChildren: true,
-                children: [
-                    {},
-                ],
-            },
-            {
-                hasChildren: true,
-            },
-            {},
-        ]);
+        rowCollection.push([{hasChildren: true}]);
 
-        expect(rowCollection.allRowsLoaded(3)).toBeFalsy();
-    });
-
-    it('checks that not all rows are loaded', () => {
-        const rowCollection = new RowCollection([
-            {
-                hasChildren: true,
-                children: [
-                    {},
-                ],
-            },
-            {
-                hasChildren: true,
-            },
-        ]);
-
-        expect(rowCollection.allRowsLoaded(3)).toBeFalsy();
+        expect(rowCollection.fullyFilled(3)).toBeFalsy();
     });
 
     it('checks that all rows in a range are loaded', () => {
-        const rowCollection = new RowCollection();
-        rowCollection.extendToLength(6);
+        rowCollection.length = 6;
 
-        expect(rowCollection.allRowsInRangeLoaded({start: 0, end: 4})).toBeFalsy();
+        expect(rowCollection.filled(2, 0)).toBeTruthy();
+    });
+
+    it('checks that not all rows in a range are loaded', () => {
+        rowCollection.length = 6;
+
+        expect(rowCollection.filled(5, 0)).toBeFalsy();
+    });
+
+    it('filters nothing for an empty filter', () => {
+        expect(rowCollection.filter(new RegExp(''), ['name']).flatten().length).toBe(4);
+    });
+
+    it('doesn\'t filter if their are no properties', () => {
+        expect(rowCollection.filter(new RegExp('arne'), []).flatten().length).toBe(4);
+    });
+
+    it('filters the root rows', () => {
+        const filteredCollection = rowCollection.filter(new RegExp('arne'), ['name']).flatten();
+
+        expect(filteredCollection.length).toBe(2);
+        expect(filteredCollection[0].name).toBe('arne');
+        expect(filteredCollection[1].name).toBe('hanne');
+    });
+
+    it('filters the child rows', () => {
+        const filteredCollection = rowCollection.filter(new RegExp('lien'), ['name']).flatten();
+
+        expect(filteredCollection.length).toBe(2);
+        expect(filteredCollection[0].name).toBe('liese');
+        expect(filteredCollection[1].name).toBe('lien');
+    });
+
+    it('expand the child rows for a filter if it was collapsed', () => {
+        rowCollection.last.showChildren = false;
+        expect(rowCollection.flatten().length).toBe(3);
+
+        const filteredCollection = rowCollection.filter(new RegExp('lien'), ['name']).flatten();
+
+        expect(filteredCollection.length).toBe(2);
+        expect(filteredCollection[0].name).toBe('liese');
+        expect(filteredCollection[1].name).toBe('lien');
+    });
+
+    it('sorts nothing if no sort columns are defined', () => {
+        expect(rowCollection.sort([]).flatten().map(row => row.name)).toEqual([
+            'arne',
+            'hanne',
+            'liese',
+            'lien',
+        ]);
+    });
+
+    it('sorts desc on name', () => {
+        let result = rowCollection.sort([new Column({
+            property: 'name',
+            direction: false,
+        })]);
+
+        expect(result.flatten().map(row => row.name)).toEqual([
+            'liese',
+            'lien',
+            'arne',
+            'hanne',
+        ]);
+    });
+
+    it('sorts children on name', () => {
+        rowCollection = new RowCollection([
+            {
+                name: 'arne',
+                showChildren: true,
+                children: [
+                    {
+                        name: 'hanne',
+                    },
+                    {
+                        name: 'lien',
+                    },
+                    {
+                        name: 'liese',
+                    },
+                ],
+            },
+        ]);
+
+        let result = rowCollection.sort([new Column({
+            property: 'name',
+            direction: false,
+        })]);
+
+        expect(result.flatten().map(row => row.name)).toEqual([
+            'arne',
+            'liese',
+            'lien',
+            'hanne',
+        ]);
+    });
+
+    it('sorts on multiple columns', () => {
+        rowCollection = new RowCollection([
+            {
+                name: 'arne',
+                lastName: 'de smedt',
+            },
+            {
+                name: 'hanne',
+                lastName: 'vandenhende',
+            },
+            {
+                name: 'lien',
+                lastName: 'vandenhende',
+            },
+            {
+                name: 'liese',
+                lastName: 'de smedt',
+            },
+        ]);
+
+        let result = rowCollection
+            .sort(
+                [
+                    new Column({
+                        property: 'name',
+                        direction: false,
+                    }),
+                ]
+            )
+            .sort(
+                [
+                    new Column({
+                        property: 'lastName',
+                        direction: false,
+                    }),
+                ]
+            );
+
+        expect(result.flatten().map(row => row.name)).toEqual([
+            'lien',
+            'hanne',
+            'liese',
+            'arne',
+        ]);
+    });
+
+    it('paginates the rowCollection', () => {
+        expect(rowCollection.paginate(0, 1).length).toBe(1);
+    });
+
+    it('initialzes the parent', () => {
+        let parent = new Row();
+        rowCollection.initParent(parent);
+
+        rowCollection.items.forEach(row => {
+            expect(row.parent === parent).toBeTruthy();
+        });
     });
 });

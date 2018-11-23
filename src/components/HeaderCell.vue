@@ -1,16 +1,16 @@
 <template>
     <th
-        class="px-4 py-2 text-left cursor-pointer"
+        class="vue-ads-px-4 vue-ads-py-2 vue-ads-text-left vue-ads-cursor-pointer"
         :class="headerClasses"
         @click="$emit('sort')"
     >
-        <div class="flex">
-            <span class="flex-grow">
-                {{ column.title || '' }}
+        <div class="vue-ads-flex">
+            <span class="vue-ads-flex-grow ">
+                {{ title }}
             </span>
             <i
-                v-if="column.sortable"
-                class="ml-2 fa leading-normal"
+                v-if="sortable"
+                class="vue-ads-ml-2 fa "
                 :class="sortIconClasses"
             ></i>
         </div>
@@ -18,50 +18,63 @@
 </template>
 
 <script>
-import Column from '../models/Column';
-import Styling from '../models/Styling';
+
+import ClassProcessor from '../services/ClassProcessor';
 
 export default {
-    name: 'HeaderCell',
+    name: 'VueAdsHeaderCell',
 
     props: {
-        column: {
-            type: Column,
-            required: true,
+        width: {
+            type: [Number, String],
+            required: false,
+            default: 'auto',
         },
 
-        index: {
-            type: Number,
-            required: true,
+        title: {
+            type: String,
+            required: false,
+            default: '',
         },
 
-        styling: {
-            type: Styling,
-            required: true,
-        },
-
-        last: {
+        sortable: {
             type: Boolean,
             required: false,
             default: false,
+        },
+
+        direction: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
+
+        classes: {
+            type: ClassProcessor,
+            required: true,
         },
     },
 
     computed: {
         headerClasses () {
             return Object.assign(
-                this.styling.columnClasses(this.index, this.last),
                 {
-                    ['w-' + this.column.width]: true,
-                }
+                    ['vue-ads-w-' + this.width]: true,
+                },
+                this.classes.process(null, this.$vnode.key),
+                this.classes.process(0, this.$vnode.key),
             );
         },
 
         sortIconClasses () {
+            if (!this.sortable) {
+                return {};
+            }
+
             return {
-                'fa-sort': this.column.sortable && this.column.direction === null,
-                'fa-sort-desc': this.column.sortable && this.column.direction === false,
-                'fa-sort-asc': this.column.sortable && this.column.direction === true,
+                'fa-sort': this.direction === null,
+                'fa-sort-down': this.direction === false,
+                'fa-sort-up': this.direction === true,
             };
         },
     },

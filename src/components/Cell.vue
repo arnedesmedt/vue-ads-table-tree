@@ -1,24 +1,26 @@
 <script>
 import Row from '../models/Row';
 import Column from '../models/Column';
-import ToggleChildrenButton from './ToggleChildrenButton';
-import Styling from '../models/Styling';
+
+import VueAdsChildrenButton from './ChildrenButton';
+
+import ClassProcessor from '../services/ClassProcessor';
 
 export default {
-    name: 'BodyCell',
+    name: 'VueAdsCell',
 
     components: {
-        ToggleChildrenButton,
+        VueAdsChildrenButton,
     },
 
     props: {
-        styling: {
-            type: Styling,
+        row: {
+            type: Row,
             required: true,
         },
 
-        row: {
-            type: Row,
+        rowIndex: {
+            type: Number,
             required: true,
         },
 
@@ -27,25 +29,21 @@ export default {
             required: true,
         },
 
+        classes: {
+            type: ClassProcessor,
+            required: true,
+        },
+
         columnSlot: {
             required: false,
-        },
-
-        index: {
-            type: Number,
-            required: true,
-        },
-
-        rowIndex: {
-            type: Number,
-            required: true,
+            default: null,
         },
     },
 
     render (createElement) {
         return createElement('td', {
             class: this.cellClasses,
-            style: this.cellStyle,
+            style: this.style,
         }, [
             createElement('span', {}, this.value(createElement)),
         ]);
@@ -54,26 +52,30 @@ export default {
     computed: {
         cellClasses () {
             return Object.assign(
-                this.styling.columnClasses(0, this.column.last),
                 {
-                    'px-4': true,
-                    'py-2': true,
-                    'text-sm': true,
-                    ['w-' + this.column.width]: true,
-                }
+                    'vue-ads-px-4': true,
+                    'vue-ads-py-2': true,
+                    'vue-ads-text-sm': true,
+                    ['vue-ads-w-' + this.column.width]: true,
+                },
+                this.classes.process(null, this.key, this.column),
+                this.classes.process(this.rowIndex + 1, this.key, this.row, this.column),
+                this.classes.processFixed(this.row.classes, this.key, this.row, this.column)
             );
         },
 
-        cellStyle () {
-            let paddingLeft = 1 + this.first * this.row.countParents() * 1.5;
-
+        style () {
             return {
-                'padding-left': paddingLeft + 'rem',
+                'padding-left': (1 + this.first * this.row.countParents() * 1.5) + 'rem',
             };
         },
 
         first () {
-            return this.index === 0;
+            return this.key === 0;
+        },
+
+        key () {
+            return this.$vnode.key || 0;
         },
     },
 
@@ -83,10 +85,10 @@ export default {
 
             if (this.first && this.row.hasChildren) {
                 elements.push(
-                    createElement(ToggleChildrenButton, {
+                    createElement(VueAdsChildrenButton, {
                         props: {
                             expanded: this.row.showChildren,
-                            loading: this.row.childrenLoading,
+                            loading: this.row.loading,
                         },
                         nativeOn: {
                             'click': this.toggleChildren,
@@ -96,7 +98,7 @@ export default {
             }
 
             if (this.columnSlot) {
-                elements.push(this.columnSlot({row: this.row, index: this.rowIndex}));
+                elements.push(this.columnSlot({row: this.row}));
             } else if (this.column.property && this.row.hasOwnProperty(this.column.property)) {
                 elements.push(this.row[this.column.property]);
             }

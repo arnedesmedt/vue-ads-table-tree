@@ -2,81 +2,111 @@ import Row from '../models/Row';
 import AbstractCollection from './AbstractCollection';
 
 export default class RowCollection extends AbstractCollection {
-    set items (items) {
-        super.items = RowCollection.mapToRows(items);
-    }
+    push (items, startIndex = null) {
+        if (!Array.isArray(items)) {
+            return super.push(items, startIndex);
+        }
 
-    get items () {
-        return super.items;
-    }
+        super.push(
+            items.map(item => {
+                if (item === undefined || item instanceof Row) {
+                    return item;
+                }
 
-    static mapToRows (items) {
-        return items.map(item => {
-            if (item === undefined) {
-                return item;
-            }
-
-            if (!(item instanceof Row)) {
-                item = new Row(item);
-            }
-
-            return item;
-        });
+                return new Row(item);
+            }),
+            startIndex
+        );
     }
 
     flatten () {
-        let result = [];
-
-        this.items.forEach(row => {
-            if (row === undefined) {
-                return;
-            }
-
-            result.push(row);
-
-            if (row.showChildren) {
-                result = result.concat(row.processedChildren.flatten());
-            }
-        });
-
-        return result;
+        return [].concat(...this.items
+            .map(row => [row].concat(row.visibleChildren ? row.visibleChildren.flatten() : []))
+        );
     }
 
-    addItemsFromIndex (items, startIndex = null) {
-        super.addItemsFromIndex(RowCollection.mapToRows(items), startIndex);
+    fullyFilled (totalRows) {
+        return this.filled(totalRows) && this.childrenFilled();
     }
 
-    allRowsLoaded (totalRows) {
-        if (!this.allRootRowsLoaded(totalRows)) {
-            return false;
+    filled (end, start = 0) {
+        return super.filled(start, end);
+    }
+
+    childrenFilled () {
+        return this.items
+            .filter(row => row.hasChildren)
+            .map(row => !row.childrenLoaded() || !row.children.childrenFilled())
+            .filter(row => row)
+            .length === 0;
+    }
+
+    filter (regex, properties) {
+        if (regex.toString() === '/(?:)/i' || properties.length === 0) {
+            return this;
         }
 
-        return RowCollection.allChildRowsLoaded(this);
-    }
+        let items = this.items.filter(row => {
+            let rowMatch = row.properties
+                .filter(rowProperty => properties.includes(rowProperty))
+                .filter(filterProperty => regex.test(row[filterProperty]))
+                .length > 0;
 
-    allRootRowsLoaded (totalRows) {
-        return this.length === totalRows && this.allItemsAreFilled();
-    }
-
-    static allChildRowsLoaded (rowCollection) {
-        return rowCollection.items.reduce((start, row) => {
-            if (!start) {
-                return start;
+            if (!row.childrenLoaded()) {
+                return rowMatch;
             }
 
-            if (!row.hasChildren) {
-                return true;
+            let filteredChildren = row.children.filter(regex, properties);
+
+            if (filteredChildren.length === 0) {
+                return rowMatch;
             }
 
-            if (row.children.isEmpty()) {
-                return false;
-            }
+            row.showChildren = true;
+            row.visibleChildren = filteredChildren;
 
-            return this.allChildRowsLoaded(row.children);
-        }, true);
+            return true;
+        });
+
+        return new RowCollection(items);
     }
 
-    allRowsInRangeLoaded (range) {
-        return this.allItemsAreFilledInRange(range);
+    sort (columns) {
+        if (!columns.length) {
+            return this;
+        }
+
+        let rowsToSort = this.items;
+
+        columns
+            .forEach(column => {
+                rowsToSort.sort((rowA, rowB) => {
+                    let sortValueA = rowA[column.property];
+                    let sortValueB = rowB[column.property];
+
+                    return (column.direction ? 1 : -1) * ('' + sortValueA.localeCompare(sortValueB));
+                });
+            });
+
+        rowsToSort
+            .filter(row => row.childrenLoaded())
+            .filter(row => !row.visibleChildren.empty())
+            .forEach(row => {
+                row.visibleChildren = row.visibleChildren.sort(columns);
+            });
+
+        return new RowCollection(rowsToSort);
+    }
+
+    paginate (start, end) {
+        return new RowCollection(this.items.slice(start, end));
+    }
+
+    initParent (parent) {
+        this.items
+            .filter(row => !row.parent)
+            .forEach(row => {
+                row.parent = parent;
+            });
     }
 }

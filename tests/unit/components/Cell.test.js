@@ -1,76 +1,75 @@
 import { shallowMount } from '@vue/test-utils';
 
-import BodyCell from '../../../src/components/BodyCell';
+import Cell from '../../../src/components/Cell';
 import Row from '../../../src/models/Row';
 import Column from '../../../src/models/Column';
-import Styling from '../../../src/models/Styling';
+import ClassProcessor from '../../../src/services/ClassProcessor';
 
-describe('BodyCell', () => {
-    let bodyCell;
+describe('Cell', () => {
+    let cell;
 
     beforeEach(() => {
-        bodyCell = shallowMount(BodyCell, {
+        cell = shallowMount(Cell, {
             propsData: {
-                styling: new Styling({
-                    columnsAllExceptLast: 'border-r',
-                }),
                 row: new Row({
                     firstName: 'arne',
                 }),
                 column: new Column({
                     property: 'firstName',
                 }),
-                index: 0,
+                rowIndex: 0,
+                classes: new ClassProcessor({}, 0),
             },
         });
     });
 
     it('returns the default cell classes', () => {
-        expect(bodyCell.vm.cellClasses).toEqual({
-            'border-r': true,
-            'px-4': true,
-            'py-2': true,
-            'text-sm': true,
-            'w-auto': true,
+        expect(cell.vm.cellClasses).toEqual({
+            'vue-ads-px-4': true,
+            'vue-ads-py-2': true,
+            'vue-ads-text-sm': true,
+            'vue-ads-w-auto': true,
         });
 
-        expect(bodyCell.vm.first).toBeTruthy();
-        expect(bodyCell.vm.cellStyle['padding-left']).toBe('1rem');
+        expect(cell.vm.first).toBeTruthy();
+        expect(cell.vm.style['padding-left']).toBe('1rem');
 
-        expect(bodyCell.html()).toMatchSnapshot();
+        expect(cell.html()).toMatchSnapshot();
     });
 
     it('changes the padding if the number of parents changes', () => {
-        bodyCell.setProps({
+        cell.setProps({
             row: new Row({
                 parent: new Row(),
             }),
         });
 
-        expect(bodyCell.vm.cellStyle['padding-left']).toBe('2.5rem');
+        expect(cell.vm.style['padding-left']).toBe('2.5rem');
     });
 
     it('adds a toggle children button if the row has children', () => {
-        bodyCell.setProps({
+        cell.setProps({
             row: new Row({
                 hasChildren: true,
             }),
         });
 
-        expect(bodyCell.html()).toMatchSnapshot();
+        expect(cell.html()).toMatchSnapshot();
     });
 
     it('is empty with no matching properties', () => {
-        bodyCell.setProps({
+        cell.setProps({
             row: new Row({
                 lastName: 'de smedt',
             }),
         });
+
+        expect(cell.text()).toBe('');
     });
 
     it('emits toggle children, when calling toggle children', () => {
-        bodyCell.vm.toggleChildren();
+        cell.vm.toggleChildren();
 
-        expect(bodyCell.emitted().toggleChildren).toBeTruthy();
+        expect(cell.emitted().toggleChildren).toBeTruthy();
     });
 });
