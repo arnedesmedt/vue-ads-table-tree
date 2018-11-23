@@ -58,9 +58,9 @@ export default {
                     'vue-ads-text-sm': true,
                     ['vue-ads-w-' + this.column.width]: true,
                 },
-                this.classes.process(null, this.$vnode.key, this.column),
-                this.classes.process(this.rowIndex + 1, this.$vnode.key, this.row, this.column),
-                this.classes.processFixed(this.row.classes, this.$vnode.key, this.row, this.column)
+                this.classes.process(null, this.key, this.column),
+                this.classes.process(this.rowIndex + 1, this.key, this.row, this.column),
+                this.classes.processFixed(this.row.classes, this.key, this.row, this.column)
             );
         },
 
@@ -71,7 +71,11 @@ export default {
         },
 
         first () {
-            return this.$vnode.key === 0;
+            return this.key === 0;
+        },
+
+        key () {
+            return this.$vnode.key || 0;
         },
     },
 

@@ -20,9 +20,9 @@ export default class RowCollection extends AbstractCollection {
     }
 
     flatten () {
-        return  this.items
+        return  [].concat(...this.items
             .map(row => [row].concat(row.visibleChildren ? row.visibleChildren.flatten() : []))
-            .flat();
+        );
     }
 
     fullyFilled (totalRows) {
@@ -42,7 +42,7 @@ export default class RowCollection extends AbstractCollection {
     }
 
     filter (regex, properties) {
-        if (regex.toString() === '/(?:)/i') {
+        if (regex.toString() === '/(?:)/i' || properties.length === 0) {
             return this;
         }
 

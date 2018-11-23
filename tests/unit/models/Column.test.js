@@ -29,22 +29,6 @@ describe('Column model', () => {
         expect(column.direction).toBeFalsy();
     });
 
-    it('throws an error if the direction is not true, false or null', () => {
-        const columnThrow = () => {
-            column.direction = 1;
-        };
-
-        expect(columnThrow).toThrow(Error);
-    });
-
-    it('throws an error if the column has no property attribute of the type string', () => {
-        const columnThrow = () => {
-            new Column();
-        };
-
-        expect(columnThrow).toThrow('Each column needs a unique property attribute of the type string');
-    });
-
     it('changes the sort direction on a sort and sets the sortorder', () => {
         column.sort(1);
 
