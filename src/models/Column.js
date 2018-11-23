@@ -9,7 +9,7 @@ export default class Column {
 
     get property () {
         if (!this.hasOwnProperty('_property')) {
-            return '';
+            this._property = '';
         }
 
         return this._property;
@@ -21,7 +21,7 @@ export default class Column {
 
     get width () {
         if (!this.hasOwnProperty('_width')) {
-            return 'auto';
+            this._width = 'auto';
         }
 
         return this._width;
@@ -45,7 +45,7 @@ export default class Column {
 
     get sortable () {
         if (!this.hasOwnProperty('_sortable')) {
-            return false;
+            this._sortable = false;
         }
 
         return this._sortable;
@@ -63,7 +63,7 @@ export default class Column {
 
     get direction () {
         if (!this.hasOwnProperty('_direction')) {
-            return null;
+            this._direction = null;
         }
 
         return this._direction;
@@ -75,7 +75,7 @@ export default class Column {
 
     get filterable () {
         if (!this.hasOwnProperty('_filterable')) {
-            return false;
+            this._filterable = false;
         }
 
         return this._filterable;

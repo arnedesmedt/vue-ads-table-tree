@@ -18,6 +18,7 @@
             </div>
             <div
                 class="vue-ads-flex-grow vue-ads-justify-end vue-ads-text-right"
+                v-if="columnCollection.hasFilterColumns()"
             >
                 <slot
                     name="filter"
