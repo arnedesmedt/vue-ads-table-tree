@@ -287,6 +287,10 @@ export default {
         end: {
             handler: 'endChange',
         },
+
+        visibleRows (visibleRows) {
+            this.classProcessor.totalRows = visibleRows.length + 1;
+        },
     },
 
     computed: {
@@ -308,8 +312,9 @@ export default {
         },
 
         sortedRows () {
-            return this.filteredRows
-                .sort(this.sortColumns);
+            let filteredRows = this.filteredRows;
+
+            return filteredRows.sort(this.sortColumns);
         },
 
         paginatedRows () {
@@ -318,11 +323,7 @@ export default {
         },
 
         visibleRows () {
-            let rows = this.call ? this.asyncCollection.flatten() : this.paginatedRows.flatten();
-
-            this.classProcessor.totalRows = rows.length + 1;
-
-            return rows;
+            return this.call ? this.asyncCollection.flatten() : this.paginatedRows.flatten();
         },
 
         call () {

@@ -11,10 +11,9 @@ describe('ColumnCollection', () => {
             },
             {
                 property: 'lastName',
-            }
+            },
         ]);
     });
-
 
     it('maps all columns', () => {
         expect(columnCollection.length).toBe(2);
