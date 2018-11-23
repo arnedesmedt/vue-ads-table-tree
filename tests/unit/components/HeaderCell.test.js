@@ -1,6 +1,5 @@
 import {shallowMount} from '@vue/test-utils';
 
-import Column from '../../../src/models/Column';
 import HeaderCell from '../../../src/components/HeaderCell';
 import ClassProcessor from '../../../src/services/ClassProcessor';
 
