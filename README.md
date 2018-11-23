@@ -9,8 +9,10 @@ Another cool feature, is the choice to load your rows in advance or via an async
 You can even load a small part of your data, for example the first page, and then load all the other pages
 with async calls to the backend.
 
-It uses the handy
-[tailwind](https://tailwindcss.com/docs/what-is-tailwind/) css library for styling.
+A lot of templates are used, so you can change some parts of it.
+
+The design of the table is fully customizable. All rows, columns, cells can be changed.
+You can even apply a design for one specific row. That stays fixed after sorting the table.
 
 ## Demo
 
@@ -33,7 +35,7 @@ You can install the package via npm or yarn.
 ## Usage
 
 You can add the vue-ads-table-tree component by using the following code in your project.
-This is the most simple example.
+This is a very simple example.
 
 ```vue
 <template>
@@ -43,12 +45,9 @@ This is the most simple example.
             :rows="rows"
         >
             <template>
-                <h2 class="block pl-3 leading-normal">
+                <h2>
                     My own title
                 </h2>
-            </template>
-            <template slot="vue-ads-pagination" slot-scope="props">
-                Items {{ props.range.start}} tot {{ props.range.end }} van de {{ props.range.total }}
             </template>
             <template slot="firstName" slot-scope="props">
                 <a :href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`" target="_blank">{{props.row.firstName}}</a>
@@ -102,76 +101,136 @@ export default {
 
 ### Properties
 
-- `styling`: *(type: object)* Contains styling classes from the tailwind library. [Here](https://tailwindcss.com/docs/background-color) you can find all available classes. Combinations are possible by separating them by a space.
-    - `rowsEven`: *(type: string, default: 'bg-grey-lightest')* ClassProcessor to add on the even rows.
-    - `rowsOdd`: *(type: string, default: 'bg-white')* ClassProcessor to add on the odd rows.
-    - `rowsAll`: *(type: string, default: 'hover:bg-grey-lighter')* ClassProcessor to add on all rows.
-    - `rowsAllExceptLast`: *(type: string, default: 'border-b')* ClassProcessor to add on all rows except on the last one.
-    - `columnsEven`: *(type: string)* ClassProcessor to add on the even columns.
-    - `columnsOdd`: *(type: string)* ClassProcessor to add on the odd columns.
-    - `columnsAll`: *(type: string)*ClassProcessor to add on all columns.
-    - `columnsAllExceptLast`: *(type: string, default: 'border-r')* ClassProcessor to add on all columns except on the last one.
-    - `table`: *(type: string, default: 'border')* ClassProcessor to add on the whole table.
 - `columns`: *(type: array, required)* An array containing all the column objects. Each column object can contain the following properties:
     - `property`: *(type: string, required)* The corresponding value will be shown in the column of the given row property. 
     - `title`: *(type: string)* The title that will be shown in the header. 
     - `filterable`: *(type: boolean)* Filter on this column? 
     - `sortable`: *(type: boolean)* Is this column sortable? 
+    - `order`: *(type: number)* Column order to sort the rows. 
     - `direction`: *(type: boolean or null)* The initial sort direction. If null, the column is not sorted. If true, the sorting is ascending. If false, the sorting is descending.
+    - `width`: *(type: number or string, default: 'auto')* If you want to increase the default width, add this option.
+       Only use the valid, numeric [Tailwindcss width options](https://tailwindcss.com/docs/width)
 - `rows`: *(type: array, default: [])* An array containing all the row objects. Each row object has his own key value pairs and extra meta data:
     - `children`: *(type: array)* An array with child row objects.
     - `hasChildren`: *(type: boolean, default: false)* Indicates if this row has children. This property will automatically be set to true if the children attribute is set.
-    - `showChildren`: *(type: boolean)* Indicates if the children has to be shown on create. If this is true, and hasChildren is true, but no children attribute is found, an async call will be initiated to get the children.  
+    - `showChildren`: *(type: boolean)* Indicates if the children has to be shown on create. If this is true, and hasChildren is true, but no children attribute is found, an async call will be initiated to get the children.
+    - `classes`: *(type: Object)* fixed styling for the current row. The key is a column indication (see classes prop). And the value is vue based class object.  
 - `totalRows`: *(type: number, default: rows.length)* The total number of rows. If this is greater than the current rows length, async calls will be executed if the unknown rows are requested.
-- `asyncCall`: *(type: function)* The function that is called when making an async request. It takes the following parameters:
-    - `range`: *(type: object)* The paginated range with a start and end index.
-        - `start`: *(type: number)* Contains the current zero based start index.
-        - `end`: *(type: number)* Contains the current zero based end index.
+- `filter`: *(type: string)* A value to change the filter.
+- `page`: *(type: number, default: 0)* A zero-based number to change the page.
+- `start`: *(type: number)* If you use the pagination template add these props to set the start row index of the current page.
+- `end`: *(type: number)* If you use the pagination template add these props to set the end row index of the current page.
+- `async`: *(type: function)* The function that is called when making an async request. It takes the following parameters:
     - `filter`: *(type: string)* The filter value.
     - `sortColumns`: *(type: array)* A list of all columns that are sortable. The last sorted column is the last column in this list. A column has the following interesting properties for sorting:
         - `direction`: *(type: boolean or null)* See columns => direction
+    - `start`: *(type: number)* Contains the current zero based start index.
+    - `end`: *(type: number)* Contains the current zero based end index.
     - `parent`: *(type: Row)* If the child rows are called. This value is a Row object that contains all the info from the parent row.
 - `useCache`: *(type: boolean)* Async called rows will be stored in the cache if no sorting or filtering is done and this value is true.
-- `itemsPerPage`: *(type: number, default: 10)* The max amount of items on one page.
-- `page`: *(type: number, default: 0)* A zero-based number to set the initial page.
-- `filter`: *(type: string)* The initial filter value.
-- `paginationDetailClasses`: *(type: array)* A list of (tailwind) classes you can add to change the pagination detail box ui.
-- `paginationButtonClasses`: *(type: object)* An object to change the pagination buttons ui for each state:
-    - `default`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the default pagination button. These classes are added on all pagination buttons.
-    - `active`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the active pagination button.
-    - `disabled`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the disabled pagination button.
-    - `dots`: *(type: array)* A list of (tailwind) classes you can add to change the ui of the pagination dots.
+- `maxSequentialCalls`: *(type: number, default: 5)* If children of requested rows needs to be loaded but are not set in the row date another async call needs to be executed.
+   So a lot of calls can be executed sequentially. If this is endless, the browser will block, so we need a max sequential calls value.
+- `classes`: *(type: Object)* An object where that regulates the design of the table. The latter items can override the earlier ones.:
+    - The key is a sort of selector for rows, columns, and cells. You have two type of selectors: fixed selectors and row/column selectors:
+        - fixed selectors: use the preserver words `table` or `info` to style the whole table or to style the info row (shown while loading or no rows are found)
+        - row/column selectors: These selectors are divided by a slash. So you can have a row selector or a column selector. 
+        The header row has index 0. The first data row has index 1. Some examples:
+            - 'all': select all rows/columns.
+            - 'even': select all even rows/columns.
+            - 'odd': select all odd rows/columns.
+            - '3': select row/column with index 3,
+            - '5_7': select row/column 5 and 6,
+            - '0_-1': select all rows/columns except the last one.
+            - '1_4,5_8': select rows/columns 1,2,3,5,6,7
+    - The value is a vue based class object.
+    - Examples: 
+        - '0_-1/': {'test-row': true} => will add the test class for all rows except the last one for all columns. 
+        - '/1_3,5': {'test-column': true} => will add the test-column class for column 1,2,5 on all rows.
+        - 'even/1': {'cell': true} => will add the cell class for column 1 on all even rows. 
+ 
     
 ### Templates
 
-#### Default
+#### Title
 
-The default template is used to change the title section. It has no scope.
+The title template is used to change the title section. It has no scope.
 
 ```vue
-<template>
-    <h2 class="block pl-3 leading-normal">
+<template slot="title">
+    <h2>
         My own title
     </h2>
 </template>
 ```
 
-#### Pagination
+#### Filter
 
-The pagination template used in the [vue-ads-pagination](https://www.npmjs.com/package/vue-ads-pagination) component, to customize the pagination details.
+The filter template is used to change the filter section. It has no scope.
+
+Don't forget to pass the updated filter to the vue-ads-table-tree component via the filter property.
+
 
 ```vue
-<template slot="vue-ads-pagination" scope="props">
-    Items {{ props.range.start}} - {{ props.range.end }}. Total: {{ props.range.total }}
+<template slot="filter">
+    <h3>Filter:</h3>
+    <input
+        type="text"
+        placeholder="Filter..."
+        @input="debounceFilter($event)"
+    >
+</template>
+```
+
+#### Pagination
+
+The pagination template is used to change the [vue-ads-pagination](https://www.npmjs.com/package/vue-ads-pagination) component. The scoped properties are:
+
+- `total`: *(type: number)* The total number of rows.
+- `loading`: *(type: boolean)* Is the table loading extra pages?
+- `page`: *(type: number)* The current page.
+
+Don't forget to pass the page on a pagechange to the vue-ads-table-tree component via the page property.
+
+```vue
+<template slot="pagination" slot-scope="props">
+    <vue-ads-pagination
+        :totalItems="props.total"
+        :page="props.page"
+        @page-change="pageChange"
+        :loading="props.loading"
+        :itemsPerPage="5"
+    >
+        <template slot-scope="props">
+            <div class="vue-ads-pr-2 vue-ads-leading-loose">
+                Items {{ props.start }} tot {{ props.end }} van de {{ props.total }}
+            </div>
+        </template>
+        <template
+            slot="buttons"
+            slot-scope="props"
+        >
+            <vue-ads-page-button
+                v-for="(button, key) in props.buttons"
+                :key="key"
+                v-bind="button"
+                :class="{'vue-ads-bg-yellow-dark': button.active}"
+                @page-change="page = button.page"
+            />
+        </template>
+    </vue-ads-pagination>
 </template>
 ```
 
 #### Column templates
 
-If you want to use custom content in a cell, you can use the column templates. Name the template to the column properties. The scope is an object with the following parameters:
+If you want to use custom content in a cell, you can use the column templates. Name the template to the column properties. 
+The scope is an object with the following parameters:
 
 - `row`: *(type: Row)* The current row.
 - `index`: *(type: number)* The zero-based index of the row.
+
+If you don't want that custom content in the whole column, you can add the value of the column as a suffix.
+So in this example you could use: `slot="firstName_bart"`
 
 ```vue
 <template slot="firstName" slot-scope="props">
