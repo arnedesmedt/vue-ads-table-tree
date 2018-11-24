@@ -1,5 +1,12 @@
 ## Changelog
 
+#### v1.2.1 - 24/11/2018
+
+- Removed the width property for columns because it's now possible with the styling object.
+- Removed the start and end properties used by the pagination template. Now you have to call the pagination pageChange method.
+- Seperate config files from the package.json
+- Update eslint
+
 #### v1.2.0 - 23/11/2018
 
 - Make a template of the filter input field and label.

@@ -10,7 +10,6 @@ describe('Column model', () => {
     });
 
     it('initializes the default values if no arguments are given', () => {
-        expect(column.width).toBe('auto');
         expect(column.sortable).toBeFalsy();
         expect(column.direction).toBeNull();
         expect(column.filterable).toBeFalsy();

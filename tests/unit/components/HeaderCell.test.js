@@ -15,12 +15,6 @@ describe('HeaderCell', () => {
         });
     });
 
-    it('returns the default header classes', () => {
-        expect(headerCell.vm.headerClasses).toEqual({
-            'vue-ads-w-auto': true,
-        });
-    });
-
     it('shows no sort icon if it\'s not sortable', () => {
         headerCell.setProps({
             sortable: false,

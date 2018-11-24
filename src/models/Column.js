@@ -15,18 +15,6 @@ export default class Column {
         return this._property;
     }
 
-    set width (width) {
-        this._width = width;
-    }
-
-    get width () {
-        if (!this.hasOwnProperty('_width')) {
-            this._width = 'auto';
-        }
-
-        return this._width;
-    }
-
     set order (order) {
         this._order = order;
     }

@@ -1,9 +1,8 @@
 <template>
     <i
-        class="fa vue-ads-pr-2 vue-ads-cursor-pointer"
         :class="classes"
-    >
-    </i>
+        class="fa vue-ads-pr-2 vue-ads-cursor-pointer"
+    />
 </template>
 
 <script>

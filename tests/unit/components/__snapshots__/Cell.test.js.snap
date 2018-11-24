@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Cell adds a toggle children button if the row has children 1`] = `<td class="vue-ads-px-4 vue-ads-py-2 vue-ads-text-sm vue-ads-w-auto" style="padding-left: 1rem;"><span><i class="fa vue-ads-pr-2 vue-ads-cursor-pointer fa-plus-square"></i></span></td>`;
+exports[`Cell adds a toggle children button if the row has children 1`] = `<td class="vue-ads-px-4 vue-ads-py-2 vue-ads-text-sm" style="padding-left: 1rem;"><span><i class="fa vue-ads-pr-2 vue-ads-cursor-pointer fa-plus-square"></i></span></td>`;
 
-exports[`Cell returns the default cell classes 1`] = `<td class="vue-ads-px-4 vue-ads-py-2 vue-ads-text-sm vue-ads-w-auto" style="padding-left: 1rem;"><span>arne</span></td>`;
+exports[`Cell returns the default cell classes 1`] = `<td class="vue-ads-px-4 vue-ads-py-2 vue-ads-text-sm" style="padding-left: 1rem;"><span>arne</span></td>`;
