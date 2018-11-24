@@ -10,15 +10,15 @@
                     name="title"
                 >
                     <h2
-                        class="vue-ads-block vue-ads-pl-3 vue-ads-leading-normal"
+                        class="vue-ads-block vue-ads-pl-3"
                     >
                         Title
                     </h2>
                 </slot>
             </div>
             <div
-                class="vue-ads-flex-grow vue-ads-justify-end vue-ads-text-right"
                 v-if="columnCollection.hasFilterColumns()"
+                class="vue-ads-flex-grow vue-ads-justify-end vue-ads-text-right"
             >
                 <slot
                     name="filter"
@@ -44,7 +44,6 @@
                     <vue-ads-header-cell
                         v-for="(column, key) in columnCollection.items"
                         :key="key"
-                        :width="column.width"
                         :direction="column.direction"
                         :sortable="column.sortable"
                         :classes="classProcessor"
@@ -75,28 +74,26 @@
                         :row="row"
                         :columns="columnCollection"
                         :slots="slots"
-                        @toggleChildren="toggleChildren(row)"
                         :classes="classProcessor"
-                    >
-
-                    </vue-ads-row>
+                        @toggleChildren="toggleChildren(row)"
+                    />
                 </slot>
             </tbody>
         </table>
         <slot
-            name="pagination"
             :total="currentTotalRows"
             :page="currentPage"
             :loading="loading"
+            :pageChange="pageChange"
+            name="pagination"
         >
             <vue-ads-pagination
-                :totalItems="currentTotalRows"
+                :total-items="currentTotalRows"
                 :page="currentPage"
-                @page-change="pageChange"
                 :loading="loading"
-                :itemsPerPage="10"
-            >
-            </vue-ads-pagination>
+                :items-per-page="10"
+                @page-change="pageChange"
+            />
         </slot>
     </div>
 </template>
@@ -147,6 +144,7 @@ export default {
         filter: {
             type: String,
             required: false,
+            default: '',
         },
 
         page: {
@@ -158,27 +156,10 @@ export default {
             },
         },
 
-        start: {
-            type: Number,
-            required: false,
-            default: 0,
-            validator: (start) => {
-                return start >= 0;
-            },
-        },
-
-        end: {
-            type: Number,
-            required: false,
-            default: 0,
-            validator: (end) => {
-                return end >= 0;
-            },
-        },
-
         async: {
             type: Function,
             required: false,
+            default: null,
         },
 
         useCache: {
@@ -201,11 +182,11 @@ export default {
             required: false,
             default: () => {
                 return {
-                    'table': {
+                    table: {
                         'vue-ads-border': true,
                         'vue-ads-w-full': true,
                     },
-                    'info': {
+                    info: {
                         'vue-ads-text-center': true,
                         'vue-ads-py-6': true,
                         'vue-ads-text-sm': true,
@@ -243,54 +224,13 @@ export default {
             debounceFilter: debounce(e => this.filterChange(e.target.value), 500),
             sortColumns: [],
             currentPage: this.page,
-            currentStart: null,
-            currentEnd: null,
+            start: null,
+            end: null,
             loading: false,
             sequentialCalls: 0,
             asyncCollection: new RowCollection(),
             asyncTotalRows: null,
         };
-    },
-
-    async created () {
-        if (!(this.async instanceof Function)) {
-            return;
-        }
-
-        await this.callChildRowsOfCollection(this.rowCollection);
-        this.sequentialCalls = 0;
-    },
-
-    watch: {
-        totalRows: {
-            handler: 'totalRowsChange',
-            immediate: true,
-        },
-
-        filter: {
-            handler: 'filterChange',
-            immediate: true,
-        },
-
-        currentFilter: {
-            handler: 'currentFilterChange',
-        },
-
-        page: {
-            handler: 'pageChange',
-        },
-
-        start: {
-            handler: 'startChange',
-        },
-
-        end: {
-            handler: 'endChange',
-        },
-
-        visibleRows (visibleRows) {
-            this.classProcessor.totalRows = visibleRows.length + 1;
-        },
     },
 
     computed: {
@@ -319,7 +259,7 @@ export default {
 
         paginatedRows () {
             return this.sortedRows
-                .paginate(this.currentStart, this.currentEnd);
+                .paginate(this.start, this.end);
         },
 
         visibleRows () {
@@ -342,18 +282,19 @@ export default {
             }
 
             if (this.currentFilter) {
+
                 return true;
             }
-
             if (this.rowCollection.filled(this.rowCollection.length)) {
+
                 return false;
             }
-
             if (this.sortColumns.length) {
+
                 return true;
             }
 
-            return !this.rowCollection.filled(this.currentEnd, this.currentStart);
+            return !this.rowCollection.filled(this.end, this.start);
         },
 
         slots () {
@@ -383,6 +324,39 @@ export default {
         },
     },
 
+    watch: {
+        totalRows: {
+            handler: 'totalRowsChange',
+            immediate: true,
+        },
+
+        filter: {
+            handler: 'filterChange',
+            immediate: true,
+        },
+
+        currentFilter: {
+            handler: 'currentFilterChange',
+        },
+
+        page: {
+            handler: 'pageChange',
+        },
+
+        visibleRows (visibleRows) {
+            this.classProcessor.totalRows = visibleRows.length === 0 ? 2 : visibleRows.length + 1;
+        },
+    },
+
+    async created () {
+        if (!(this.async instanceof Function)) {
+            return;
+        }
+
+        await this.callChildRowsOfCollection(this.rowCollection);
+        this.sequentialCalls = 0;
+    },
+
     methods: {
         totalRowsChange (totalRows) {
             if (totalRows > this.rowCollection.length) {
@@ -410,37 +384,21 @@ export default {
         },
 
         async pageChange (page, start = null, end = null) {
-            if (page === this.currentPage && this.currentStart !== null && this.currentEnd !== null) {
+            if (page === this.currentPage && this.start !== null && this.end !== null) {
                 return;
             }
 
             this.currentPage = page;
 
             if (start !== null) {
-                this.currentStart = start;
+                this.start = start;
             }
 
             if (end !== null) {
-                this.currentEnd = end;
+                this.end = end;
             }
 
             await this.callRootRows();
-        },
-
-        startChange (start) {
-            if (this.currentStart === start) {
-                return;
-            }
-
-            this.currentStart = start;
-        },
-
-        endChange (end) {
-            if (this.currentEnd === end) {
-                return;
-            }
-
-            this.currentEnd = end;
         },
 
         async toggleChildren (row) {
@@ -471,7 +429,7 @@ export default {
             this.sequentialCalls = 0;
 
             if (!this.processed && this.useCache) {
-                this.rowCollection.push(result.rows.items, this.currentStart);
+                this.rowCollection.push(result.rows.items, this.start);
                 this.asyncCollection.clear();
                 this.asyncTotalRows = null;
             } else {
@@ -487,7 +445,7 @@ export default {
                 return false;
             }
 
-            let result = await this.async(this.currentFilter, this.sortColumns, this.currentStart, this.currentEnd, parent);
+            let result = await this.async(this.currentFilter, this.sortColumns, this.start, this.end, parent);
             result.rows = new RowCollection(result.rows);
 
             await this.callChildRowsOfCollection(result.rows);

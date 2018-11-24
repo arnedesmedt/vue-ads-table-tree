@@ -28,7 +28,6 @@ describe('Cell', () => {
             'vue-ads-px-4': true,
             'vue-ads-py-2': true,
             'vue-ads-text-sm': true,
-            'vue-ads-w-auto': true,
         });
 
         expect(cell.vm.first).toBeTruthy();

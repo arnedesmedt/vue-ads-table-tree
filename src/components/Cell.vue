@@ -35,18 +35,10 @@ export default {
         },
 
         columnSlot: {
+            type: Function,
             required: false,
             default: null,
         },
-    },
-
-    render (createElement) {
-        return createElement('td', {
-            class: this.cellClasses,
-            style: this.style,
-        }, [
-            createElement('span', {}, this.value(createElement)),
-        ]);
     },
 
     computed: {
@@ -56,7 +48,6 @@ export default {
                     'vue-ads-px-4': true,
                     'vue-ads-py-2': true,
                     'vue-ads-text-sm': true,
-                    ['vue-ads-w-' + this.column.width]: true,
                 },
                 this.classes.process(null, this.key, this.column),
                 this.classes.process(this.rowIndex + 1, this.key, this.row, this.column),
@@ -91,7 +82,7 @@ export default {
                             loading: this.row.loading,
                         },
                         nativeOn: {
-                            'click': this.toggleChildren,
+                            click: this.toggleChildren,
                         },
                     }),
                 );
@@ -109,6 +100,15 @@ export default {
         toggleChildren () {
             this.$emit('toggleChildren');
         },
+    },
+
+    render (createElement) {
+        return createElement('td', {
+            class: this.cellClasses,
+            style: this.style,
+        }, [
+            createElement('span', {}, this.value(createElement)),
+        ]);
     },
 };
 </script>

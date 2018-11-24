@@ -1,7 +1,9 @@
 {
   "name": "vue-ads-table-tree",
-  "version": "1.2.0",
+  "version": "1.2.1",
+  "private": false,
   "main": "./dist/vue-ads-table-tree.common.js",
+  "description": "A vue table tree plugin.",
   "files": [
     "/dist"
   ],
@@ -16,94 +18,44 @@
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.4.1",
-    "vue": "^2.5.16",
-    "vue-ads-pagination": "file:../vue-ads-pagination"
+    "@fortawesome/fontawesome-free": "^5.5.0",
+    "vue": "^2.5.17",
+    "vue-ads-pagination": "^2.0.4"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^1.1.0",
-    "@vue/cli-plugin-babel": "^3.0.0-rc.7",
-    "@vue/cli-plugin-eslint": "^3.0.0-rc.7",
-    "@vue/cli-plugin-unit-jest": "^3.0.0-rc.7",
-    "@vue/cli-service": "^3.0.0-rc.7",
-    "@vue/eslint-config-standard": "^3.0.0-rc.7",
-    "@vue/test-utils": "^1.0.0-beta.20",
+    "@vue/cli-plugin-babel": "^3.1.1",
+    "@vue/cli-plugin-eslint": "^3.1.5",
+    "@vue/cli-plugin-unit-jest": "^3.1.1",
+    "@vue/cli-service": "^3.1.4",
+    "@vue/eslint-config-standard": "^3.0.5",
+    "@vue/test-utils": "^1.0.0-beta.25",
     "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "^23.0.1",
+    "babel-jest": "^23.6.0",
     "postcss-import": "^11.1.0",
     "postcss-url": "^7.3.2",
-    "tailwindcss": "^0.6.4",
-    "vue-template-compiler": "^2.5.16"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "@vue/standard"
-    ],
-    "rules": {
-      "indent": [
-        "error",
-        4
-      ],
-      "comma-dangle": [
-        "error",
-        "always-multiline"
-      ],
-      "semi": [
-        "error",
-        "always"
-      ],
-      "no-extra-semi": "error"
-    },
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
+    "tailwindcss": "^0.6.6",
+    "vue-template-compiler": "^2.5.17"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
   ],
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.vue$": "vue-jest",
-      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
-      "^.+\\.jsx?$": "babel-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "snapshotSerializers": [
-      "jest-serializer-vue"
-    ],
-    "testMatch": [
-      "<rootDir>/(tests/unit/*/*.test.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx))"
-    ],
-    "testURL": "http://localhost",
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.{js,vue}",
-      "!src/*.{js,vue}",
-      "!**/node_modules/**"
-    ],
-    "coverageDirectory": "<rootDir>/tests/coverage"
-  },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/arnedesmedt/vue-ads-table-tree.git"
+    "url": "https://github.com/arnedesmedt/vue-ads-table-tree.git"
   },
   "bugs": {
-    "url": "https://gitlab.com/arnedesmedt/vue-ads-table-tree/issues"
+    "url": "https://github.com/arnedesmedt/vue-ads-table-tree/issues"
   },
-  "homepage": "https://gitlab.com/arnedesmedt/vue-ads-table-tree"
+  "homepage": "https://github.com/arnedesmedt/vue-ads-table-tree",
+  "author": "Arne De Smedt <arnedesmdt@gmail.com> (https://twitter.com/ArneSmedt)",
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "component",
+    "table",
+    "tree"
+  ]
 }

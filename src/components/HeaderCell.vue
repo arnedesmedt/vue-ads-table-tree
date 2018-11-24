@@ -1,7 +1,7 @@
 <template>
     <th
-        class="vue-ads-px-4 vue-ads-py-2 vue-ads-text-left vue-ads-cursor-pointer"
         :class="headerClasses"
+        class="vue-ads-px-4 vue-ads-py-2 vue-ads-text-left vue-ads-cursor-pointer"
         @click="$emit('sort')"
     >
         <div class="vue-ads-flex">
@@ -10,9 +10,9 @@
             </span>
             <i
                 v-if="sortable"
-                class="vue-ads-ml-2 fa "
                 :class="sortIconClasses"
-            ></i>
+                class="vue-ads-ml-2 fa "
+            />
         </div>
     </th>
 </template>
@@ -25,12 +25,6 @@ export default {
     name: 'VueAdsHeaderCell',
 
     props: {
-        width: {
-            type: [Number, String],
-            required: false,
-            default: 'auto',
-        },
-
         title: {
             type: String,
             required: false,
@@ -58,9 +52,6 @@ export default {
     computed: {
         headerClasses () {
             return Object.assign(
-                {
-                    ['vue-ads-w-' + this.width]: true,
-                },
                 this.classes.process(null, this.$vnode.key),
                 this.classes.process(0, this.$vnode.key),
             );

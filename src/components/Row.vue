@@ -4,16 +4,14 @@
     >
         <vue-ads-cell
             v-for="(column, key) in columns.items"
+            slot="slot(column)"
             :key="key"
-            :rowIndex="$vnode.key"
+            :row-index="$vnode.key"
             :row="row"
             :column="column"
             :classes="classes"
-            :columnSlot="slot(column)"
             @toggleChildren="$emit('toggleChildren');"
-        >
-
-        </vue-ads-cell>
+        />
     </tr>
 </template>
 
@@ -63,7 +61,7 @@ export default {
     },
 
     methods: {
-        slot (column) {
+        columnSlot (column) {
             return this.slots[column.property + '_' + this.row[column.property]] ||
                 this.slots[column.property] ||
                 null;

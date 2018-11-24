@@ -1,95 +1,83 @@
 <template>
-    <div id="app">
-        <vue-ads-table-tree
-            :columns="columns"
-            :rows="rows"
-            :filter="filterValue"
-            :page="page"
-            :start="start"
-            :end="end"
-            :classes="classes"
-        >
-            <template slot="firstName_Jef" slot-scope="props">
-                <a :href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`" target="_blank">{{props.row.firstName}}</a>
-            </template>
-            <template slot="title">
-                <h2
-                    class="vue-ads-block vue-ads-pl-3 vue-ads-leading-normal"
-                >
-                    My own title
-                </h2>
-            </template>
-            <template slot="filter">
-                <h3 class="vue-ads-inline vue-ads-pr-2">Filter:</h3>
-                <input
-                    class="vue-ads-appearance-none vue-ads-border vue-ads-py-2 vue-ads-px-3"
-                    type="text"
-                    placeholder="Filter..."
-                    @input="debounceFilter($event)"
-                >
-            </template>
-            <template slot="pagination" slot-scope="props">
-                <vue-ads-pagination
-                    :totalItems="props.total"
-                    :page="props.page"
-                    @page-change="pageChange"
-                    :loading="props.loading"
-                    :itemsPerPage="5"
-                >
-                    <template slot-scope="props">
-                        <div class="vue-ads-pr-2 vue-ads-leading-loose">
-                            Items {{ props.start }} tot {{ props.end }} van de {{ props.total }}
-                        </div>
-                    </template>
-                    <template
-                        slot="buttons"
-                        slot-scope="props"
+    <div
+        id="app"
+        class="m-6">
+        <div class="mb-6">
+            <vue-ads-table-tree
+                :columns="columns"
+                :rows="rows"
+                :filter="filterValue"
+                :page="1"
+                :classes="classes"
+                :async="asyncCall"
+                :total-rows="50"
+            >
+                <template slot="title">
+                    <h2 class="leading-loose font-bold uppercase">
+                        Belgium royal family
+                    </h2>
+                </template>
+                <template
+                    slot="firstName"
+                    slot-scope="props">
+                    <a
+                        :href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`"
+                        target="_blank">{{ props.row.firstName }}</a>
+                </template>
+                <template slot="filter">
+                    <h3 class="inline pr-2">Filter:</h3>
+                    <input
+                        v-model="filterValue"
+                        class="appearance-none border py-2 px-3"
+                        type="text"
+                        placeholder="Filter..."
                     >
-                        <vue-ads-page-button
-                            v-for="(button, key) in props.buttons"
-                            :key="key"
-                            v-bind="button"
-                            :class="{'vue-ads-bg-yellow-dark': button.active}"
-                            @page-change="page = button.page"
-                        />
-                    </template>
-                </vue-ads-pagination>
-            </template>
-        </vue-ads-table-tree>
-
-        <!--<vue-ads-table-tree-->
-            <!--:columns="columns"-->
-            <!--:rows="rows"-->
-            <!--:async="asyncCall"-->
-            <!--:totalRows="25"-->
-        <!--&gt;-->
-        <!--</vue-ads-table-tree>-->
-
-        <!--<vue-ads-table-tree-->
-            <!--:columns="columns"-->
-            <!--:rows="rows"-->
-            <!--:async="asyncCall"-->
-        <!--&gt;-->
-        <!--</vue-ads-table-tree>-->
-
-        <!--<vue-ads-table-tree-->
-            <!--:columns="columns"-->
-            <!--:rows="rows"-->
-        <!--&gt;-->
-        <!--</vue-ads-table-tree>-->
-  </div>
+                </template>
+                <template
+                    slot="pagination"
+                    slot-scope="props"
+                >
+                    <vue-ads-pagination
+                        :total-items="props.total"
+                        :page="page"
+                        :loading="props.loading"
+                        :items-per-page="5"
+                        @page-change="props.pageChange"
+                    >
+                        <template slot-scope="props">
+                            <div class="vue-ads-pr-2 vue-ads-leading-loose">
+                                Items {{ props.start }} tot {{ props.end }} van de {{ props.total }}
+                            </div>
+                        </template>
+                        <template
+                            slot="buttons"
+                            slot-scope="props"
+                        >
+                            <vue-ads-page-button
+                                v-for="(button, key) in props.buttons"
+                                :key="key"
+                                v-bind="button"
+                                :class="{'bg-yellow-dark': button.active}"
+                                @page-change="page = button.page"
+                            />
+                        </template>
+                    </vue-ads-pagination>
+                </template>
+            </vue-ads-table-tree>
+        </div>
+    </div>
 </template>
 
 <script>
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import VueAdsTableTree from './components/TableTree';
 import VueAdsPagination, { VueAdsPageButton } from '../node_modules/vue-ads-pagination/dist/vue-ads-pagination.common';
-import debounce from './services/debounce';
 
-// todo styling on row
+// todo outline title and filter
+// todo show pagination on loading
 
 export default {
-    name: 'app',
+    name: 'App',
 
     components: {
         VueAdsTableTree,
@@ -99,17 +87,14 @@ export default {
 
     data () {
         return {
-            page: 0,
-            start: 0,
-            end: 0,
+            page: 1,
             filterValue: '',
-            debounceFilter: debounce(e => { this.filterValue = e.target.value; }, 500),
             classes: {
-                'table': {
+                table: {
                     'vue-ads-border': true,
                     'vue-ads-w-full': true,
                 },
-                'info': {
+                info: {
                     'vue-ads-text-center': true,
                     'vue-ads-py-6': true,
                     'vue-ads-text-sm': true,
@@ -150,104 +135,86 @@ export default {
             ],
             rows: [
                 {
-                    firstName: 'Jef',
-                    lastName: 'Vandenhende',
-                    showChildren: false,
-                    classes: {
-                        'row': {
-                            'vue-ads-text-red': true,
-                        },
-                    },
-                    children: [
-                        {
-                            firstName: 'Jane',
-                            lastName: 'Delanghe',
-                            showChildren: false,
-                            children: [
-                                {
-                                    firstName: 'Hendrik',
-                                    lastName: 'Eeckhout',
-                                    classes: {
-                                        'row': {
-                                            'vue-ads-text-red': true,
-                                        },
-                                        '0_1': {
-                                            'vue-ads-font-bold': true,
-                                        },
-                                    },
-                                },
-                                {
-                                    firstName: 'Bert',
-                                    lastName: 'De Smedt',
-                                },
-                            ],
-                        },
-                        {
-                            firstName: 'Bart',
-                            lastName: 'Delanghe',
-                        },
-                    ],
+                    firstName: 'Josephine',
+                    lastName: 'Astrid',
                 },
                 {
-                    firstName: 'Alice',
-                    lastName: 'De Smedt',
-                    hasChildren: true,
+                    firstName: 'Boudewijn',
+                    lastName: 'Van Brabandt',
                 },
                 {
-                    firstName: 'Sander',
-                    lastName: 'De Smedt',
-                },
-                {
-                    firstName: 'Stan',
-                    lastName: 'Vandenhende',
-                },
-                {
-                    firstName: 'Lieve',
-                    lastName: 'Desplintere',
-                },
-                {
-                    firstName: 'Iebe',
-                    lastName: 'Meirhaege',
-                    showChildren: false,
+                    firstName: 'Albert II',
+                    lastName: 'Van Belgie',
                     children: [
                         {
                             firstName: 'Filip',
-                            lastName: 'Meirhaege',
-                        },
-                        {
-                            firstName: 'Haike',
-                            lastName: 'Lewyllie',
-                            showChildren: false,
+                            lastName: 'Van Belgie',
                             children: [
                                 {
-                                    firstName: 'Niel',
-                                    lastName: 'De Smedt',
+                                    firstName: 'Elisabeth',
+                                    lastName: 'Van Brabant',
                                 },
                                 {
-                                    firstName: 'Jana',
-                                    lastName: 'Vandenhende',
+                                    firstName: 'Gabriel',
+                                    lastName: 'Boudwijn',
+                                },
+                                {
+                                    firstName: 'Emmanuel',
+                                    lastName: 'Van Belgie',
+                                },
+                                {
+                                    firstName: 'Eleonore',
+                                    lastName: 'Boudwijn',
+                                    hasChildren: true,
                                 },
                             ],
                         },
+                        {
+                            firstName: 'Astrid',
+                            lastName: 'Van Belgie',
+                        },
+                        {
+                            firstName: 'Laurent',
+                            lastName: 'Van Belgie',
+                        },
+
                     ],
                 },
                 {
-                    firstName: 'Bob',
-                    lastName: 'Debouwer',
+                    firstName: 'Alexander',
+                    lastName: 'Van Belgie',
                 },
                 {
-                    firstName: 'Alice',
-                    lastName: 'Vandermeer',
-                    hasChildren: true,
-                    showChildren: false,
+                    firstName: 'Marie-Christine',
+                    lastName: 'Leopoldine',
                 },
                 {
-                    firstName: 'Bert',
-                    lastName: 'De Smedt',
+                    firstName: 'Marie-Esmeralda',
+                    lastName: 'Leopoldine',
                 },
                 {
-                    firstName: 'Hendrik',
-                    lastName: 'Vandenhende',
+                    firstName: 'Alexander',
+                    lastName: 'Van Belgie',
+                },
+                {
+                    firstName: 'Marie-Christine',
+                    lastName: 'Leopoldine',
+                },
+                {
+                    firstName: 'Marie-Esmeralda',
+                    lastName: 'Leopoldine',
+                },
+                {
+                    firstName: 'Alexander',
+                    lastName: 'Van Belgie',
+                },
+                {
+                    firstName: 'Marie-Christine',
+                    lastName: 'Leopoldine',
+                },
+                {
+                    firstName: 'Marie-Esmeralda',
+                    lastName: 'Leopoldine',
                 },
             ],
         };
@@ -255,7 +222,7 @@ export default {
 
     methods: {
         async asyncCall (filter, sortColumns, start, end, parent) {
-            await this.sleep(3000);
+            await this.sleep(1000);
 
             let startRows = this.rows;
             if (parent) {
@@ -269,7 +236,6 @@ export default {
             let rows = parent ? sortedRows : sortedRows.slice(start % 10, end - diff);
 
             return {
-                // total: filter ? filteredRows.length : 25,
                 total: filter ? 100 : 25,
                 rows,
             };
@@ -310,18 +276,6 @@ export default {
 
         sleep (ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
-        },
-
-        pageChange (page, start, end) {
-            if (page !== this.page) {
-                this.page = page;
-            }
-            if (start !== this.start) {
-                this.start = start;
-            }
-            if (end !== this.end) {
-                this.end = end;
-            }
         },
     },
 };

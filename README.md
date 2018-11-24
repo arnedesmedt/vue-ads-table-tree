@@ -108,18 +108,14 @@ export default {
     - `sortable`: *(type: boolean)* Is this column sortable? 
     - `order`: *(type: number)* Column order to sort the rows. 
     - `direction`: *(type: boolean or null)* The initial sort direction. If null, the column is not sorted. If true, the sorting is ascending. If false, the sorting is descending.
-    - `width`: *(type: number or string, default: 'auto')* If you want to increase the default width, add this option.
-       Only use the valid, numeric [Tailwindcss width options](https://tailwindcss.com/docs/width)
 - `rows`: *(type: array, default: [])* An array containing all the row objects. Each row object has his own key value pairs and extra meta data:
     - `children`: *(type: array)* An array with child row objects.
     - `hasChildren`: *(type: boolean, default: false)* Indicates if this row has children. This property will automatically be set to true if the children attribute is set.
     - `showChildren`: *(type: boolean)* Indicates if the children has to be shown on create. If this is true, and hasChildren is true, but no children attribute is found, an async call will be initiated to get the children.
-    - `classes`: *(type: Object)* fixed styling for the current row. The key is a column indication (see classes prop). And the value is vue based class object.  
+    - `classes`: *(type: Object)* fixed styling for the current row. The key is a column indication and the value is vue based class object (see classes property below).  
 - `totalRows`: *(type: number, default: rows.length)* The total number of rows. If this is greater than the current rows length, async calls will be executed if the unknown rows are requested.
 - `filter`: *(type: string)* A value to change the filter.
 - `page`: *(type: number, default: 0)* A zero-based number to change the page.
-- `start`: *(type: number)* If you use the pagination template add these props to set the start row index of the current page.
-- `end`: *(type: number)* If you use the pagination template add these props to set the end row index of the current page.
 - `async`: *(type: function)* The function that is called when making an async request. It takes the following parameters:
     - `filter`: *(type: string)* The filter value.
     - `sortColumns`: *(type: array)* A list of all columns that are sortable. The last sorted column is the last column in this list. A column has the following interesting properties for sorting:
@@ -188,17 +184,23 @@ The pagination template is used to change the [vue-ads-pagination](https://www.n
 - `total`: *(type: number)* The total number of rows.
 - `loading`: *(type: boolean)* Is the table loading extra pages?
 - `page`: *(type: number)* The current page.
+- `pageChange`: *(type: Function)* Call this function if the pageChange event is emitted.
 
-Don't forget to pass the page on a pagechange to the vue-ads-table-tree component via the page property.
+Don't update the page property of the vue-ads-table-tree component after a pageChange event is emitted from the vue-ads-pagination component, 
+otherwise the pageChange method is called twice and will trigger race conditions. If you want to change the page externally only change the page
+property of the vue-ads-pagination component.
 
 ```vue
-<template slot="pagination" slot-scope="props">
+<template
+    slot="pagination"
+    slot-scope="props"
+>
     <vue-ads-pagination
-        :totalItems="props.total"
-        :page="props.page"
-        @page-change="pageChange"
+        :total-items="props.total"
+        :page="page"
         :loading="props.loading"
-        :itemsPerPage="5"
+        :items-per-page="5"
+        @page-change="props.pageChange"
     >
         <template slot-scope="props">
             <div class="vue-ads-pr-2 vue-ads-leading-loose">
@@ -213,7 +215,7 @@ Don't forget to pass the page on a pagechange to the vue-ads-table-tree componen
                 v-for="(button, key) in props.buttons"
                 :key="key"
                 v-bind="button"
-                :class="{'vue-ads-bg-yellow-dark': button.active}"
+                :class="{'bg-yellow-dark': button.active}"
                 @page-change="page = button.page"
             />
         </template>
