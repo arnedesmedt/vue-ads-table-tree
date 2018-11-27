@@ -16,8 +16,6 @@ You can even apply a design for one specific row. That stays fixed after sorting
 
 ## Demo
 
-![Demo](https://media.giphy.com/media/jyINAhKJhEGpZGmOL1/giphy.gif)
-
 I've written a demo in [JSFiddle](https://jsfiddle.net/arnedesmedt/7my8L42q)
 
 ## Installation
