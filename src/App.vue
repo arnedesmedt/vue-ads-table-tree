@@ -13,7 +13,7 @@
                 :total-rows="50"
             >
                 <template slot="title">
-                    <h2 class="leading-loose font-bold uppercase">
+                    <h2 class="font-bold uppercase">
                         Belgium royal family
                     </h2>
                 </template>
