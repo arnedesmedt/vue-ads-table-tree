@@ -10,7 +10,6 @@ module.exports = {
             whitelistPatterns: [
                 /^body$/,
                 /^html$/,
-                /^vue-ads-w-\d{1,3}$/,
                 /^fa-sort-(.*)$/,
             ],
         },

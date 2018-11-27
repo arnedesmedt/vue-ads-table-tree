@@ -5,12 +5,14 @@
         <div
             class="vue-ads-mt-3 vue-ads-mb-6 vue-ads-flex"
         >
-            <div>
+            <div
+                class="vue-ads-flex vue-ads-justify-center vue-ads-flex-col"
+            >
                 <slot
                     name="title"
                 >
                     <h2
-                        class="vue-ads-block vue-ads-pl-3"
+                        class="vue-ads-block vue-ads-pl-3 justify-center"
                     >
                         Title
                     </h2>
