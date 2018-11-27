@@ -1,5 +1,10 @@
 ## Changelog
 
+#### v1.2.2 - 27/11/2018
+
+- Small improvements
+- Update pagination component
+
 #### v1.2.1 - 24/11/2018
 
 - Removed the width property for columns because it's now possible with the styling object.
