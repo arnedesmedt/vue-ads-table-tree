@@ -57,12 +57,8 @@ export default {
 
         style () {
             return {
-                'padding-left': (1 + this.first * this.row.countParents() * 1.5) + 'rem',
+                'padding-left': (1 + this.column.collapseIcon * this.row.countParents() * 1.5) + 'rem',
             };
-        },
-
-        first () {
-            return this.key === 0;
         },
 
         key () {
@@ -74,7 +70,7 @@ export default {
         value (createElement) {
             let elements = [];
 
-            if (this.first && this.row.hasChildren) {
+            if (this.column.collapseIcon && this.row.hasChildren) {
                 elements.push(
                     createElement(VueAdsChildrenButton, {
                         props: {

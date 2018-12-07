@@ -1,5 +1,15 @@
 ## Changelog
 
+#### v1.2.4 - 07/12/2018
+
+- Bugfix on formatting the cell
+- Add the collapse/expand icon in a preferred column.
+
+#### v1.2.3 - 07/12/2018
+
+- Bugfix if an item was loaded on the zero index.
+- Only remove the pagination on filtering and loading.
+
 #### v1.2.2 - 27/11/2018
 
 - Small improvements

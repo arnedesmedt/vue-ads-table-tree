@@ -81,6 +81,7 @@ export default {
                     title: 'Last Name',
                     filterable: true,
                     sortable: true,
+                    collapseIcon: true,
                 },
             ],
             rows: [
@@ -108,6 +109,7 @@ export default {
     - `sortable`: *(type: boolean)* Is this column sortable? 
     - `order`: *(type: number)* Column order to sort the rows. 
     - `direction`: *(type: boolean or null)* The initial sort direction. If null, the column is not sorted. If true, the sorting is ascending. If false, the sorting is descending.
+    - 'collapseIcon': *(type: boolean)* Indicates if this column will contain the collapse icon.
 - `rows`: *(type: array, default: [])* An array containing all the row objects. Each row object has his own key value pairs and extra meta data:
     - `children`: *(type: array)* An array with child row objects.
     - `hasChildren`: *(type: boolean, default: false)* Indicates if this row has children. This property will automatically be set to true if the children attribute is set.
