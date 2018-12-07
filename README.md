@@ -56,6 +56,8 @@ This is a very simple example.
 
 <script>
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
+import '../node_modules/vue-ads-table-tree/dist/vue-ads-table-tree.css';
+
 import VueAdsTableTree from 'vue-ads-table-tree';
 
 export default {

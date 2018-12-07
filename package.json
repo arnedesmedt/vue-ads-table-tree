@@ -1,6 +1,6 @@
 {
   "name": "vue-ads-table-tree",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "private": false,
   "main": "./dist/vue-ads-table-tree.common.js",
   "description": "A vue table tree plugin.",
@@ -37,11 +37,6 @@
     "tailwindcss": "^0.6.6",
     "vue-template-compiler": "^2.5.17"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/arnedesmedt/vue-ads-table-tree.git"

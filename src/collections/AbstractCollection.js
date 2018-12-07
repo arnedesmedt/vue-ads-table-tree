@@ -42,7 +42,7 @@ export default class AbstractCollection {
             });
         }
 
-        Vue.set(this._items, startIndex || this.length, items);
+        Vue.set(this._items, startIndex !== null ? startIndex : this.length, items);
 
         return items;
     }

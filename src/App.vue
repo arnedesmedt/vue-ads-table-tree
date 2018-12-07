@@ -73,7 +73,6 @@ import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import VueAdsTableTree from './components/TableTree';
 import VueAdsPagination, { VueAdsPageButton } from '../node_modules/vue-ads-pagination/dist/vue-ads-pagination.common';
 
-// todo outline title and filter
 // todo show pagination on loading
 
 export default {
