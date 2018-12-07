@@ -237,7 +237,7 @@ export default {
 
     computed: {
         currentTotalRows () {
-            if (this.loading) {
+            if (this.loading && this.currentFilter) {
                 return 0;
             }
 
