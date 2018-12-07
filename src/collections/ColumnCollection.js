@@ -2,6 +2,14 @@ import Column from '../models/Column';
 import AbstractCollection from './AbstractCollection';
 
 export default class ColumnCollection extends AbstractCollection {
+    constructor (items = []) {
+        super(items);
+
+        if (!this.hasCollapseIcon()) {
+            this.first.collapseIcon = true;
+        }
+    }
+
     get properties () {
         return this.items.map(column => column.property);
     }
@@ -56,5 +64,9 @@ export default class ColumnCollection extends AbstractCollection {
 
     hasFilterColumns () {
         return this.filterColumnNames.length > 0;
+    }
+
+    hasCollapseIcon () {
+        return this.items.find(column => column.collapseIcon);
     }
 }

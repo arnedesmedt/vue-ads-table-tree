@@ -27,6 +27,18 @@ export default class Column {
         return this._order;
     }
 
+    set collapseIcon (collapseIcon) {
+        this._collapseIcon = collapseIcon;
+    }
+
+    get collapseIcon () {
+        if (!this.hasOwnProperty('_collapseIcon')) {
+            this._collapseIcon = false;
+        }
+
+        return this._collapseIcon;
+    }
+
     set sortable (sortable) {
         this._sortable = sortable;
     }

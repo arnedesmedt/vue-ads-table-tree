@@ -16,6 +16,7 @@ describe('Cell', () => {
                 }),
                 column: new Column({
                     property: 'firstName',
+
                 }),
                 rowIndex: 0,
                 classes: new ClassProcessor({}, 0),
@@ -30,7 +31,6 @@ describe('Cell', () => {
             'vue-ads-text-sm': true,
         });
 
-        expect(cell.vm.first).toBeTruthy();
         expect(cell.vm.style['padding-left']).toBe('1rem');
 
         expect(cell.html()).toMatchSnapshot();
@@ -40,6 +40,10 @@ describe('Cell', () => {
         cell.setProps({
             row: new Row({
                 parent: new Row(),
+            }),
+
+            column: new Column({
+                collapseIcon: true,
             }),
         });
 

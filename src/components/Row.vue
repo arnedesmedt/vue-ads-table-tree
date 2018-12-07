@@ -4,7 +4,7 @@
     >
         <vue-ads-cell
             v-for="(column, key) in columns.items"
-            slot="slot(column)"
+            :column-slot="columnSlot(column)"
             :key="key"
             :row-index="$vnode.key"
             :row="row"
