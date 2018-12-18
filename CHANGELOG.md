@@ -1,5 +1,10 @@
 ## Changelog
 
+#### v1.2.5 - 18/12/2018
+
+- Use system ui as the table tree font
+- Remove the table title by default becaus you will not use a title with the value 'title'.
+
 #### v1.2.4 - 07/12/2018
 
 - Bugfix on formatting the cell
