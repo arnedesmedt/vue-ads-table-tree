@@ -276,15 +276,14 @@ export default {
             }
 
             if (this.currentFilter) {
-
                 return true;
             }
-            if (this.rowCollection.filled(this.rowCollection.length)) {
 
+            if (this.rowCollection.filled(this.rowCollection.length)) {
                 return false;
             }
-            if (this.sortColumns.length) {
 
+            if (this.sortColumns.length) {
                 return true;
             }
 
