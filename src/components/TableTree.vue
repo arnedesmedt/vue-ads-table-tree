@@ -1,6 +1,6 @@
 <template>
     <div
-        class="vue-ads-w-full vue-ads-p-3"
+        class="vue-ads-w-full vue-ads-p-3 vue-ads-font-sans"
     >
         <div
             class="vue-ads-mt-3 vue-ads-mb-6 vue-ads-flex"
