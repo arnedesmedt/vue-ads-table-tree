@@ -1,6 +1,6 @@
 {
   "name": "vue-ads-table-tree",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "private": false,
   "main": "./dist/vue-ads-table-tree.common.js",
   "description": "A vue table tree plugin.",
