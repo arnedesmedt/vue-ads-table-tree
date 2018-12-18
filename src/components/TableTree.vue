@@ -8,15 +8,7 @@
             <div
                 class="vue-ads-flex vue-ads-justify-center vue-ads-flex-col"
             >
-                <slot
-                    name="title"
-                >
-                    <h2
-                        class="vue-ads-block vue-ads-pl-3 justify-center"
-                    >
-                        Title
-                    </h2>
-                </slot>
+                <slot name="title"/>
             </div>
             <div
                 v-if="columnCollection.hasFilterColumns()"
