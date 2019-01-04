@@ -1,15 +1,18 @@
 <template>
     <div
-        class="vue-ads-w-full vue-ads-p-3 vue-ads-font-sans"
+        class="vue-ads-w-full vue-ads-font-sans"
     >
+        <!-- HEADER -->
         <div
             class="vue-ads-mt-3 vue-ads-mb-6 vue-ads-flex"
         >
+            <!-- TITLE -->
             <div
                 class="vue-ads-flex vue-ads-justify-center vue-ads-flex-col"
             >
                 <slot name="title"/>
             </div>
+            <!-- FILTER -->
             <div
                 v-if="columnCollection.hasFilterColumns()"
                 class="vue-ads-flex-grow vue-ads-justify-end vue-ads-text-right"
@@ -27,10 +30,12 @@
                 </slot>
             </div>
         </div>
+        <!-- TABLE -->
         <table
             :class="tableClasses"
             style="border-collapse: collapse;"
         >
+            <!-- TABLE HEADER -->
             <thead>
                 <tr
                     :class="headerRowClasses"
@@ -46,6 +51,7 @@
                     />
                 </tr>
             </thead>
+            <!-- TABLE ROWS -->
             <tbody>
                 <tr
                     v-if="visibleRows.length === 0 || loading"
@@ -74,6 +80,7 @@
                 </slot>
             </tbody>
         </table>
+        <!-- PAGINATION -->
         <slot
             :total="currentTotalRows"
             :page="currentPage"
