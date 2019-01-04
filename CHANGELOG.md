@@ -1,5 +1,9 @@
 ## Changelog
 
+#### v1.3.0 - 04/01/2019
+
+- make the properties of the rows reactive.
+
 #### v1.2.5 - 18/12/2018
 
 - Use system ui as the table tree font
