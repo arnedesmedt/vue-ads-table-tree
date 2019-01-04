@@ -2,10 +2,14 @@ import RowCollection from '../collections/RowCollection';
 
 export default class Row {
     constructor (properties) {
-        this._showChildren = false;
-        this._loading = false;
-        this.children = new RowCollection();
-        Object.assign(this, properties);
+
+        this.loading = false;
+        this.showChildren = properties.showChildren || false;
+        this.children = properties.children || [];
+        this.hasChildren = properties.hasChildren || this.hasChildren;
+        this.classes = properties.classes;
+
+        this.properties = properties;
     }
 
     set classes (classes) {
@@ -72,12 +76,18 @@ export default class Row {
         return this._visibleChildren ? this._visibleChildren : this.children;
     }
 
+    set properties (properties) {
+        this._properties = properties;
+    }
+
     get properties () {
+        return this._properties;
+    }
+
+    get propertyNames () {
         return Object
-            .getOwnPropertyNames(this)
-            .filter(property => {
-                return property[0] !== '_';
-            });
+            .getOwnPropertyNames(this.properties)
+            .filter(property => !['showChildren', 'classes', 'children', 'hasChildren'].includes(property));
     }
 
     toggleChildren () {

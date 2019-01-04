@@ -7,7 +7,7 @@
                 :columns="columns"
                 :rows="rows"
                 :filter="filterValue"
-                :page="1"
+                :page="page"
                 :classes="classes"
                 :async="asyncCall"
                 :total-rows="50"
@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import './assets/css/tailwind.css';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import VueAdsTableTree from './components/TableTree';
 import VueAdsPagination, { VueAdsPageButton } from '../node_modules/vue-ads-pagination/dist/vue-ads-pagination.common';
@@ -86,7 +87,7 @@ export default {
 
     data () {
         return {
-            page: 1,
+            page: 0,
             filterValue: '',
             classes: {
                 table: {

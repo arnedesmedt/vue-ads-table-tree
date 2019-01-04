@@ -47,7 +47,7 @@ export default class RowCollection extends AbstractCollection {
         }
 
         let items = this.items.filter(row => {
-            let rowMatch = row.properties
+            let rowMatch = row.propertyNames
                 .filter(rowProperty => properties.includes(rowProperty))
                 .filter(filterProperty => regex.test(row[filterProperty]))
                 .length > 0;

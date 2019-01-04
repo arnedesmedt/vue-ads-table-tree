@@ -85,9 +85,9 @@ export default {
             }
 
             if (this.columnSlot) {
-                elements.push(this.columnSlot({row: this.row}));
-            } else if (this.column.property && this.row.hasOwnProperty(this.column.property)) {
-                elements.push(this.row[this.column.property]);
+                elements.push(this.columnSlot({row: this.row.properties}));
+            } else if (this.column.property && this.row.properties.hasOwnProperty(this.column.property)) {
+                elements.push(this.row.properties[this.column.property]);
             }
 
             return elements.length > 0 ? elements : [''];

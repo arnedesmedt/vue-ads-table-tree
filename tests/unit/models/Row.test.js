@@ -68,7 +68,7 @@ describe('Row model', () => {
             lastName: 'de smedt',
         });
 
-        expect(row.properties).toEqual([
+        expect(row.propertyNames).toEqual([
             'firstName',
             'lastName',
         ]);

@@ -93,8 +93,6 @@
 </template>
 
 <script>
-import '../assets/css/tailwind.css';
-
 import debounce from '../services/debounce';
 import ClassProcessor from '../services/ClassProcessor';
 
