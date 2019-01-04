@@ -63,27 +63,25 @@ export default class ClassProcessor {
             return Array.from(Array(total).keys()).filter(item => (++item % 2) === 0);
         }
 
-        return [].concat(
-            ...selector.split(',')
-                .map(selector => selector.trim())
-                .map(selector => {
-                    if (selector.includes('_')) {
-                        let range = selector.split('_')
-                            .map(index => Number.parseInt(index))
-                            .map(index => index < 0 ? total + index : index);
+        return [].concat(...selector.split(',')
+            .map(selector => selector.trim())
+            .map(selector => {
+                if (selector.includes('_')) {
+                    let range = selector.split('_')
+                        .map(index => Number.parseInt(index))
+                        .map(index => index < 0 ? total + index : index);
 
-                        if (range[0] < 0 || range[1] < 0 || range[0] > range[1]) {
-                            return null;
-                        }
-
-                        return Array.from(Array(range[1] - range[0]).keys())
-                            .map(number => number + range[0]);
+                    if (range[0] < 0 || range[1] < 0 || range[0] > range[1]) {
+                        return null;
                     }
 
-                    return Number.parseInt(selector);
-                })
-                .filter(selector => selector !== null)
-        );
+                    return Array.from(Array(range[1] - range[0]).keys())
+                        .map(number => number + range[0]);
+                }
+
+                return Number.parseInt(selector);
+            })
+            .filter(selector => selector !== null));
     }
 
     process (rowIndex = null, columnIndex = null, ...args) {

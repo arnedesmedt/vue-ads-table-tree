@@ -52,10 +52,12 @@ export default class Column {
     }
 
     set direction (direction) {
-        if (![true, false, null].includes(direction)) {
-            throw new Error(
-                'Sort direction has to be true (asc), false (desc) or null (no sorting)',
-            );
+        if (![
+            true,
+            false,
+            null,
+        ].includes(direction)) {
+            throw new Error('Sort direction has to be true (asc), false (desc) or null (no sorting)',);
         }
 
         this._direction = direction;

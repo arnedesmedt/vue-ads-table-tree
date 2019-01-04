@@ -71,26 +71,28 @@ export default {
             let elements = [];
 
             if (this.column.collapseIcon && this.row.hasChildren) {
-                elements.push(
-                    createElement(VueAdsChildrenButton, {
-                        props: {
-                            expanded: this.row.showChildren,
-                            loading: this.row.loading,
-                        },
-                        nativeOn: {
-                            click: this.toggleChildren,
-                        },
-                    }),
-                );
+                elements.push(createElement(VueAdsChildrenButton, {
+                    props: {
+                        expanded: this.row.showChildren,
+                        loading: this.row.loading,
+                    },
+                    nativeOn: {
+                        click: this.toggleChildren,
+                    },
+                }),);
             }
 
             if (this.columnSlot) {
-                elements.push(this.columnSlot({row: this.row.properties}));
+                elements.push(this.columnSlot({
+                    row: this.row.properties,
+                }));
             } else if (this.column.property && this.row.properties.hasOwnProperty(this.column.property)) {
                 elements.push(this.row.properties[this.column.property]);
             }
 
-            return elements.length > 0 ? elements : [''];
+            return elements.length > 0 ? elements : [
+                '',
+            ];
         },
 
         toggleChildren () {

@@ -49,7 +49,11 @@ describe('RowCollection', () => {
     });
 
     it('checks that not all rows are loaded', () => {
-        rowCollection.push([{hasChildren: true}]);
+        rowCollection.push([
+            {
+                hasChildren: true,
+            },
+        ]);
 
         expect(rowCollection.fullyFilled(3)).toBeFalsy();
     });
@@ -67,7 +71,9 @@ describe('RowCollection', () => {
     });
 
     it('filters nothing for an empty filter', () => {
-        expect(rowCollection.filter(new RegExp(''), ['name']).flatten().length).toBe(4);
+        expect(rowCollection.filter(new RegExp(''), [
+            'name',
+        ]).flatten().length).toBe(4);
     });
 
     it('doesn\'t filter if their are no properties', () => {
@@ -75,7 +81,9 @@ describe('RowCollection', () => {
     });
 
     it('filters the root rows', () => {
-        const filteredCollection = rowCollection.filter(new RegExp('arne'), ['name']).flatten();
+        const filteredCollection = rowCollection.filter(new RegExp('arne'), [
+            'name',
+        ]).flatten();
 
         expect(filteredCollection.length).toBe(2);
         expect(filteredCollection[0].name).toBe('arne');
@@ -83,7 +91,9 @@ describe('RowCollection', () => {
     });
 
     it('filters the child rows', () => {
-        const filteredCollection = rowCollection.filter(new RegExp('lien'), ['name']).flatten();
+        const filteredCollection = rowCollection.filter(new RegExp('lien'), [
+            'name',
+        ]).flatten();
 
         expect(filteredCollection.length).toBe(2);
         expect(filteredCollection[0].name).toBe('liese');
@@ -94,7 +104,9 @@ describe('RowCollection', () => {
         rowCollection.last.showChildren = false;
         expect(rowCollection.flatten().length).toBe(3);
 
-        const filteredCollection = rowCollection.filter(new RegExp('lien'), ['name']).flatten();
+        const filteredCollection = rowCollection.filter(new RegExp('lien'), [
+            'name',
+        ]).flatten();
 
         expect(filteredCollection.length).toBe(2);
         expect(filteredCollection[0].name).toBe('liese');
@@ -111,10 +123,12 @@ describe('RowCollection', () => {
     });
 
     it('sorts desc on name', () => {
-        let result = rowCollection.sort([new Column({
-            property: 'name',
-            direction: false,
-        })]);
+        let result = rowCollection.sort([
+            new Column({
+                property: 'name',
+                direction: false,
+            }),
+        ]);
 
         expect(result.flatten().map(row => row.name)).toEqual([
             'liese',
@@ -143,10 +157,12 @@ describe('RowCollection', () => {
             },
         ]);
 
-        let result = rowCollection.sort([new Column({
-            property: 'name',
-            direction: false,
-        })]);
+        let result = rowCollection.sort([
+            new Column({
+                property: 'name',
+                direction: false,
+            }),
+        ]);
 
         expect(result.flatten().map(row => row.name)).toEqual([
             'arne',
@@ -177,22 +193,18 @@ describe('RowCollection', () => {
         ]);
 
         let result = rowCollection
-            .sort(
-                [
-                    new Column({
-                        property: 'name',
-                        direction: false,
-                    }),
-                ]
-            )
-            .sort(
-                [
-                    new Column({
-                        property: 'lastName',
-                        direction: false,
-                    }),
-                ]
-            );
+            .sort([
+                new Column({
+                    property: 'name',
+                    direction: false,
+                }),
+            ])
+            .sort([
+                new Column({
+                    property: 'lastName',
+                    direction: false,
+                }),
+            ]);
 
         expect(result.flatten().map(row => row.name)).toEqual([
             'lien',

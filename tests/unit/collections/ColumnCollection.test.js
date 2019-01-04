@@ -21,13 +21,18 @@ describe('ColumnCollection', () => {
     });
 
     it('returns all column properties', () => {
-        expect(columnCollection.properties).toEqual(['firstName', 'lastName']);
+        expect(columnCollection.properties).toEqual([
+            'firstName',
+            'lastName',
+        ]);
     });
 
     it('returns the filterValue columns', () => {
         columnCollection.first.filterable = true;
 
-        expect(columnCollection.filterColumnNames).toEqual(['firstName']);
+        expect(columnCollection.filterColumnNames).toEqual([
+            'firstName',
+        ]);
     });
 
     it('returns the sortable columns', () => {

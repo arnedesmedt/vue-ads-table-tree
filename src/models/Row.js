@@ -87,7 +87,12 @@ export default class Row {
     get propertyNames () {
         return Object
             .getOwnPropertyNames(this.properties)
-            .filter(property => !['showChildren', 'classes', 'children', 'hasChildren'].includes(property));
+            .filter(property => ![
+                'showChildren',
+                'classes',
+                'children',
+                'hasChildren',
+            ].includes(property));
     }
 
     toggleChildren () {

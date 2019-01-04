@@ -17,7 +17,11 @@ describe('Row model', () => {
             name: 'arne',
             showChildren: true,
             hasChildren: true,
-            children: new RowCollection([{name: 'de smedt'}]),
+            children: new RowCollection([
+                {
+                    name: 'de smedt',
+                },
+            ]),
         });
 
         row.children.loading = true;
@@ -33,7 +37,11 @@ describe('Row model', () => {
     it('sets hasChildren on true if children is not empty', () => {
         const row = new Row({
             hasChildren: false,
-            children: new RowCollection([{name: 'de smedt'}]),
+            children: new RowCollection([
+                {
+                    name: 'de smedt',
+                },
+            ]),
         });
 
         expect(row.children.empty()).toBeFalsy();
@@ -43,7 +51,11 @@ describe('Row model', () => {
     it('adds a parent to all children', () => {
         const row = new Row({
             name: 'arne',
-            children: new RowCollection([{name: 'de smedt'}]),
+            children: new RowCollection([
+                {
+                    name: 'de smedt',
+                },
+            ]),
         });
 
         expect(row.children.first.parent.name).toBe('arne');
@@ -88,7 +100,11 @@ describe('Row model', () => {
     it('checks if the children are loaded', () => {
         const row = new Row({
             hasChildren: true,
-            children: new RowCollection([{name: 'de smedt'}]),
+            children: new RowCollection([
+                {
+                    name: 'de smedt',
+                },
+            ]),
         });
 
         expect(row.childrenLoaded()).toBeTruthy();
@@ -114,7 +130,11 @@ describe('Row model', () => {
 
     it('returns the processed children otherwise the default children', () => {
         const row = new Row({
-            children: new RowCollection([{name: 'arne'}]),
+            children: new RowCollection([
+                {
+                    name: 'arne',
+                },
+            ]),
             showChildren: true,
         });
 

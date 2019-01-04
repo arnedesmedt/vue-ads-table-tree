@@ -21,8 +21,9 @@ export default class RowCollection extends AbstractCollection {
 
     flatten () {
         return [].concat(...this.items
-            .map(row => [row].concat(row.visibleChildren ? row.visibleChildren.flatten() : []))
-        );
+            .map(row => [
+                row,
+            ].concat(row.visibleChildren ? row.visibleChildren.flatten() : [])));
     }
 
     fullyFilled (totalRows) {
