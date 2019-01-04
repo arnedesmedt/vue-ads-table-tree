@@ -37,11 +37,15 @@ describe('Cell', () => {
     });
 
     it('changes the padding if the number of parents changes', () => {
-        cell.setProps({
-            row: new Row({
-                parent: new Row(),
-            }),
+        let child = new Row();
+        new Row({
+            children: [
+                child,
+            ],
+        });
 
+        cell.setProps({
+            row: child,
             column: new Column({
                 collapseIcon: true,
             }),

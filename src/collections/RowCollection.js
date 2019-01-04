@@ -50,7 +50,7 @@ export default class RowCollection extends AbstractCollection {
         let items = this.items.filter(row => {
             let rowMatch = row.propertyNames
                 .filter(rowProperty => properties.includes(rowProperty))
-                .filter(filterProperty => regex.test(row[filterProperty]))
+                .filter(filterProperty => regex.test(row.properties[filterProperty]))
                 .length > 0;
 
             if (!row.childrenLoaded()) {
@@ -82,8 +82,8 @@ export default class RowCollection extends AbstractCollection {
         columns
             .forEach(column => {
                 rowsToSort.sort((rowA, rowB) => {
-                    let sortValueA = rowA[column.property];
-                    let sortValueB = rowB[column.property];
+                    let sortValueA = rowA.properties[column.property];
+                    let sortValueB = rowB.properties[column.property];
 
                     return (column.direction ? 1 : -1) * ('' + sortValueA.localeCompare(sortValueB));
                 });

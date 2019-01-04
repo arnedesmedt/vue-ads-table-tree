@@ -1,7 +1,7 @@
 import RowCollection from '../collections/RowCollection';
 
 export default class Row {
-    constructor (properties) {
+    constructor (properties = {}) {
 
         this.loading = false;
         this.showChildren = properties.showChildren || false;

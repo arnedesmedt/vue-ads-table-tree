@@ -34,7 +34,7 @@ describe('RowCollection', () => {
     });
 
     it('flattens the rows', () => {
-        const flattenedRowCollection = rowCollection.flatten().map(row => row.name);
+        const flattenedRowCollection = rowCollection.flatten().map(row => row.properties.name);
 
         expect(flattenedRowCollection).toEqual([
             'arne',
@@ -86,8 +86,8 @@ describe('RowCollection', () => {
         ]).flatten();
 
         expect(filteredCollection.length).toBe(2);
-        expect(filteredCollection[0].name).toBe('arne');
-        expect(filteredCollection[1].name).toBe('hanne');
+        expect(filteredCollection[0].properties.name).toBe('arne');
+        expect(filteredCollection[1].properties.name).toBe('hanne');
     });
 
     it('filters the child rows', () => {
@@ -96,8 +96,8 @@ describe('RowCollection', () => {
         ]).flatten();
 
         expect(filteredCollection.length).toBe(2);
-        expect(filteredCollection[0].name).toBe('liese');
-        expect(filteredCollection[1].name).toBe('lien');
+        expect(filteredCollection[0].properties.name).toBe('liese');
+        expect(filteredCollection[1].properties.name).toBe('lien');
     });
 
     it('expand the child rows for a filter if it was collapsed', () => {
@@ -109,12 +109,12 @@ describe('RowCollection', () => {
         ]).flatten();
 
         expect(filteredCollection.length).toBe(2);
-        expect(filteredCollection[0].name).toBe('liese');
-        expect(filteredCollection[1].name).toBe('lien');
+        expect(filteredCollection[0].properties.name).toBe('liese');
+        expect(filteredCollection[1].properties.name).toBe('lien');
     });
 
     it('sorts nothing if no sort columns are defined', () => {
-        expect(rowCollection.sort([]).flatten().map(row => row.name)).toEqual([
+        expect(rowCollection.sort([]).flatten().map(row => row.properties.name)).toEqual([
             'arne',
             'hanne',
             'liese',
@@ -130,7 +130,7 @@ describe('RowCollection', () => {
             }),
         ]);
 
-        expect(result.flatten().map(row => row.name)).toEqual([
+        expect(result.flatten().map(row => row.properties.name)).toEqual([
             'liese',
             'lien',
             'arne',
@@ -164,7 +164,7 @@ describe('RowCollection', () => {
             }),
         ]);
 
-        expect(result.flatten().map(row => row.name)).toEqual([
+        expect(result.flatten().map(row => row.properties.name)).toEqual([
             'arne',
             'liese',
             'lien',
@@ -206,7 +206,7 @@ describe('RowCollection', () => {
                 }),
             ]);
 
-        expect(result.flatten().map(row => row.name)).toEqual([
+        expect(result.flatten().map(row => row.properties.name)).toEqual([
             'lien',
             'hanne',
             'liese',

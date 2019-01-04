@@ -30,8 +30,8 @@ describe('Row model', () => {
         expect(row.showChildren).toBeTruthy();
         expect(row.hasChildren).toBeTruthy();
         expect(row.children.loading).toBeTruthy();
-        expect(row.name).toBe('arne');
-        expect(row.children.first.name).toBe('de smedt');
+        expect(row.properties.name).toBe('arne');
+        expect(row.children.first.properties.name).toBe('de smedt');
     });
 
     it('sets hasChildren on true if children is not empty', () => {
@@ -58,7 +58,7 @@ describe('Row model', () => {
             ]),
         });
 
-        expect(row.children.first.parent.name).toBe('arne');
+        expect(row.children.first.parent.properties.name).toBe('arne');
     });
 
     it('creates a RowCollection if the children attribute is an array', () => {
@@ -138,7 +138,7 @@ describe('Row model', () => {
             showChildren: true,
         });
 
-        expect(row.visibleChildren.first.name).toBe('arne');
+        expect(row.visibleChildren.first.properties.name).toBe('arne');
         row.visibleChildren = new RowCollection();
         expect(row.visibleChildren.empty()).toBeTruthy();
     });

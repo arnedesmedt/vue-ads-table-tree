@@ -62,7 +62,7 @@ export default {
 
     methods: {
         columnSlot (column) {
-            return this.slots[column.property + '_' + this.row[column.property]] ||
+            return this.slots[column.property + '_' + this.row.properties[column.property]] ||
                 this.slots[column.property] ||
                 null;
         },
