@@ -1,7 +1,7 @@
 <template>
     <th
         :class="headerClasses"
-        class="vue-ads-px-4 vue-ads-py-2 vue-ads-text-left vue-ads-cursor-pointer"
+        class="vue-ads-px-4 vue-ads-py-2 vue-ads-text-left"
         @click="$emit('sort')"
     >
         <div class="vue-ads-flex">
@@ -52,6 +52,9 @@ export default {
     computed: {
         headerClasses () {
             return Object.assign(
+                {
+                    'vue-ads-cursor-pointer': this.sortable,
+                },
                 this.classes.process(null, this.$vnode.key),
                 this.classes.process(0, this.$vnode.key),
             );
