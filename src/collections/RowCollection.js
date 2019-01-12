@@ -23,7 +23,7 @@ export default class RowCollection extends AbstractCollection {
         return [].concat(...this.items
             .map(row => [
                 row,
-            ].concat(row.visibleChildren ? row.visibleChildren.flatten() : [])));
+            ].concat(row.visibleChildren.flatten())));
     }
 
     fullyFilled (totalRows) {
@@ -85,7 +85,19 @@ export default class RowCollection extends AbstractCollection {
                     let sortValueA = rowA.properties[column.property];
                     let sortValueB = rowB.properties[column.property];
 
-                    return (column.direction ? 1 : -1) * ('' + sortValueA.localeCompare(sortValueB));
+                    if (typeof sortValueA === 'string' && typeof  sortValueB === 'string') {
+                        return (column.direction ? 1 : -1) * ('' + sortValueA.localeCompare(sortValueB));
+                    }
+
+                    if (sortValueA < sortValueB) {
+                        return -1;
+                    }
+
+                    if (sortValueA > sortValueB) {
+                        return 1;
+                    }
+
+                    return 0;
                 });
             });
 

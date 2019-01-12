@@ -5,7 +5,7 @@ export default class ColumnCollection extends AbstractCollection {
     constructor (items = []) {
         super(items);
 
-        if (!this.hasCollapseIcon()) {
+        if (!this.hasCollapseIcon() && !this.empty()) {
             this.first.collapseIcon = true;
         }
     }

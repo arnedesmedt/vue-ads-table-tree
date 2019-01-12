@@ -60,6 +60,15 @@ describe('AbstractCollection', () => {
         expect(abstractCollection.filled(5, 7)).toBeTruthy();
     });
 
+    it('checks if all items are filled in a negative range', () => {
+        abstractCollection.push([
+            1,
+            2,
+        ], 5);
+
+        expect(abstractCollection.filled(-2, -1)).toBeTruthy();
+    });
+
     it('checks that not all items are filled in a range', () => {
         abstractCollection.push([
             1,
@@ -67,6 +76,15 @@ describe('AbstractCollection', () => {
         ], 5);
 
         expect(abstractCollection.filled(6, 8)).toBeFalsy();
+    });
+
+    it('checks that the start and end range are converted to zero if the negative value is greater than the length', () => {
+        abstractCollection.push([
+            1,
+            2,
+        ], 5);
+
+        expect(abstractCollection.filled(-9, -8)).toBeTruthy();
     });
 
     it('checks if all items are filled in a range when the range has a lenght of 0', () => {

@@ -44,6 +44,19 @@ describe('RowCollection', () => {
         ]);
     });
 
+    it('flattens rows without visible Children', () => {
+        rowCollection.first.showChildren = false;
+        rowCollection.last.showChildren = false;
+
+        const flattenedRowCollection = rowCollection.flatten().map(row => row.properties.name);
+
+        expect(flattenedRowCollection).toEqual([
+            'arne',
+            'liese',
+        ]);
+
+    });
+
     it('checks that all rows are loaded', () => {
         expect(rowCollection.fullyFilled(2)).toBeTruthy();
     });
@@ -122,6 +135,22 @@ describe('RowCollection', () => {
         ]);
     });
 
+    it('sorts on name', () => {
+        let result = rowCollection.sort([
+            new Column({
+                property: 'name',
+                direction: true,
+            }),
+        ]);
+
+        expect(result.flatten().map(row => row.properties.name)).toEqual([
+            'arne',
+            'hanne',
+            'liese',
+            'lien',
+        ]);
+    });
+
     it('sorts desc on name', () => {
         let result = rowCollection.sort([
             new Column({
@@ -135,6 +164,63 @@ describe('RowCollection', () => {
             'lien',
             'arne',
             'hanne',
+        ]);
+    });
+
+    it('sorts booleans', () => {
+        rowCollection = new RowCollection([
+            {
+                id: 1,
+                name: true,
+            },
+            {
+                id: 2,
+                name: false,
+            },
+            {
+                id: 3,
+                name: true,
+            },
+        ]);
+
+        let result = rowCollection.sort([
+            new Column({
+                property: 'name',
+                direction: true,
+            }),
+        ]);
+
+        expect(result.flatten().map(row => row.properties.id)).toEqual([
+            2,
+            1,
+            3,
+        ]);
+    });
+
+    it('sorts integers', () => {
+        rowCollection = new RowCollection([
+            {
+                id: 3,
+            },
+            {
+                id: 1,
+            },
+            {
+                id: 2,
+            },
+        ]);
+
+        let result = rowCollection.sort([
+            new Column({
+                property: 'id',
+                direction: true,
+            }),
+        ]);
+
+        expect(result.flatten().map(row => row.properties.id)).toEqual([
+            1,
+            2,
+            3,
         ]);
     });
 
@@ -160,15 +246,15 @@ describe('RowCollection', () => {
         let result = rowCollection.sort([
             new Column({
                 property: 'name',
-                direction: false,
+                direction: true,
             }),
         ]);
 
         expect(result.flatten().map(row => row.properties.name)).toEqual([
             'arne',
-            'liese',
-            'lien',
             'hanne',
+            'lien',
+            'liese',
         ]);
     });
 

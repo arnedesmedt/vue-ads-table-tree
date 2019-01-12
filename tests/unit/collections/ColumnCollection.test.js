@@ -15,8 +15,22 @@ describe('ColumnCollection', () => {
         ]);
     });
 
+    it('can generate an empty collection', () => {
+        expect((new ColumnCollection()).empty()).toBeTruthy();
+    });
+
     it('maps all columns', () => {
         expect(columnCollection.length).toBe(2);
+        expect(columnCollection.first).toBeInstanceOf(Column);
+    });
+
+    it('doesn\'t map existing columns', () => {
+        columnCollection = new ColumnCollection([
+            new Column({
+                property: 'firstName',
+            }),
+        ]);
+
         expect(columnCollection.first).toBeInstanceOf(Column);
     });
 
@@ -87,13 +101,27 @@ describe('ColumnCollection', () => {
         expect(columnCollection.first.order).toBe(2);
     });
 
-    it('checks if their are no filter columns ', () => {
+    it('checks if their are no filter columns', () => {
         expect(columnCollection.hasFilterColumns()).toBeFalsy();
     });
 
-    it('checks if their are filter columns ', () => {
+    it('checks if their are filter columns', () => {
         columnCollection.first.filterable = true;
 
         expect(columnCollection.hasFilterColumns()).toBeTruthy();
+    });
+
+    it('can change the collapse icon', () => {
+        columnCollection = new ColumnCollection([
+            {
+                property: 'firstName',
+            },
+            {
+                property: 'lastName',
+                collapseIcon: true,
+            },
+        ]);
+
+        expect(columnCollection.first.collapseIcon).toBeFalsy();
     });
 });
