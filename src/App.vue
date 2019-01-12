@@ -75,6 +75,7 @@ import VueAdsTableTree from './components/TableTree';
 import VueAdsPagination, { VueAdsPageButton } from '../node_modules/vue-ads-pagination/dist/vue-ads-pagination.common';
 
 // todo show pagination on loading
+// todo find more unique way to show slots for one specific cell => now the cell value is used, but what if a cell contains booleans?
 
 export default {
     name: 'App',
