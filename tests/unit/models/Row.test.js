@@ -10,6 +10,7 @@ describe('Row model', () => {
         expect(row.showChildren).toBeFalsy();
         expect(row.hasChildren).toBeFalsy();
         expect(row.childrenLoaded()).toBeFalsy();
+        expect(row.classes).toEqual({});
     });
 
     it('initializes the given values from the argument', () => {
@@ -22,6 +23,9 @@ describe('Row model', () => {
                     name: 'de smedt',
                 },
             ]),
+            classes: {
+                test: 'test',
+            },
         });
 
         row.children.loading = true;
@@ -32,6 +36,7 @@ describe('Row model', () => {
         expect(row.children.loading).toBeTruthy();
         expect(row.properties.name).toBe('arne');
         expect(row.children.first.properties.name).toBe('de smedt');
+        expect(row.classes.test).toBe('test');
     });
 
     it('sets hasChildren on true if children is not empty', () => {
@@ -97,6 +102,15 @@ describe('Row model', () => {
         expect(row.showChildren).toBeFalsy();
     });
 
+    it('shows/hide the loading on a toggleLoading call', () => {
+        const row = new Row();
+
+        row.toggleLoading();
+        expect(row.loading).toBeTruthy();
+        row.toggleLoading();
+        expect(row.loading).toBeFalsy();
+    });
+
     it('checks if the children are loaded', () => {
         const row = new Row({
             hasChildren: true,
@@ -150,5 +164,13 @@ describe('Row model', () => {
         });
 
         expect(row.loadChildren()).toBeTruthy();
+    });
+
+    it('doesn\'t set a parent if it is not a row', () => {
+        const row = new Row();
+
+        row.parent = 'test';
+
+        expect(row.parent).toBeUndefined();
     });
 });

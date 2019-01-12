@@ -2,12 +2,11 @@ import RowCollection from '../collections/RowCollection';
 
 export default class Row {
     constructor (properties = {}) {
-
         this.loading = false;
         this.showChildren = properties.showChildren || false;
         this.children = properties.children || [];
         this.hasChildren = properties.hasChildren || this.hasChildren;
-        this.classes = properties.classes;
+        this.classes = properties.classes || {};
 
         this.properties = properties;
     }

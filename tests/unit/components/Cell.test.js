@@ -7,17 +7,23 @@ import ClassProcessor from '../../../src/services/ClassProcessor';
 
 describe('Cell', () => {
     let cell;
+    let row;
+    let column;
 
     beforeEach(() => {
+        row = new Row({
+            firstName: 'arne',
+        });
+
+        column = new Column({
+            property: 'firstName',
+
+        });
+
         cell = shallowMount(Cell, {
             propsData: {
-                row: new Row({
-                    firstName: 'arne',
-                }),
-                column: new Column({
-                    property: 'firstName',
-
-                }),
+                row,
+                column,
                 rowIndex: 0,
                 classes: new ClassProcessor({}, 0),
             },
@@ -54,14 +60,35 @@ describe('Cell', () => {
         expect(cell.vm.style['padding-left']).toBe('2.5rem');
     });
 
-    it('adds a toggle children button if the row has children', () => {
-        cell.setProps({
-            row: new Row({
-                hasChildren: true,
-            }),
+    it('adds a toggle children button if the row has children and the column owns the button', () => {
+        row = new Row({
+            firstName: 'arne',
+            hasChildren: true,
         });
 
-        expect(cell.html()).toMatchSnapshot();
+        column = new Column({
+            property: 'firstName',
+            collapseIcon: true,
+
+        });
+
+        cell.setProps({
+            row,
+            column,
+        });
+
+
+        expect(cell.html()).toContain('fa-plus-square');
+    });
+
+    it('creates a column slot', () => {
+        cell.setProps({
+            columnSlot: props => {
+                return `Test: ${props.row.firstName}`;
+            },
+        });
+
+        expect(cell.text()).toBe('Test: arne');
     });
 
     it('is empty with no matching properties', () => {
