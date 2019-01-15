@@ -1,10 +1,6 @@
 <script>
-import Row from '../models/Row';
-import Column from '../models/Column';
-
 import VueAdsChildrenButton from './ChildrenButton';
-
-import ClassProcessor from '../services/ClassProcessor';
+import CSSProcessor from "../services/CSSProcessor";
 
 export default {
     name: 'VueAdsCell',
@@ -15,7 +11,7 @@ export default {
 
     props: {
         row: {
-            type: Row,
+            type: Object,
             required: true,
         },
 
@@ -25,12 +21,17 @@ export default {
         },
 
         column: {
-            type: Column,
+            type: Object,
             required: true,
         },
 
-        classes: {
-            type: ClassProcessor,
+        columnIndex: {
+            type: Number,
+            required: true,
+        },
+
+        cssProcessor: {
+            type: CSSProcessor,
             required: true,
         },
 
@@ -49,20 +50,16 @@ export default {
                     'vue-ads-py-2': true,
                     'vue-ads-text-sm': true,
                 },
-                this.classes.process(null, this.key, this.column),
-                this.classes.process(this.rowIndex + 1, this.key, this.row, this.column),
-                this.classes.processFixed(this.row.classes, this.key, this.row, this.column)
+                this.cssProcessor.process(null, this.columnIndex, this.column),
+                this.cssProcessor.process(this.rowIndex + 1, this.columnIndex, this.row, this.column),
+                this.cssProcessor.processFixed(this.row.classes, this.columnIndex, this.row, this.column)
             );
         },
 
         style () {
             return {
-                'padding-left': (1 + this.column.collapseIcon * this.row.countParents() * 1.5) + 'rem',
+                'padding-left': (1 + (this.column.collapseIcon ? 1 : 0) * (this.row.parent) * 1.5) + 'rem',
             };
-        },
-
-        key () {
-            return this.$vnode.key || 0;
         },
     },
 
@@ -70,11 +67,11 @@ export default {
         value (createElement) {
             let elements = [];
 
-            if (this.column.collapseIcon && this.row.hasChildren) {
+            if (this.column.collapseIcon && (this.row.hasChildren || this.row.children.length > 0)) {
                 elements.push(createElement(VueAdsChildrenButton, {
                     props: {
-                        expanded: this.row.showChildren,
-                        loading: this.row.loading,
+                        expanded: this.row.showChildren || false,
+                        loading: this.row.loading || false,
                     },
                     nativeOn: {
                         click: this.toggleChildren,
@@ -84,10 +81,10 @@ export default {
 
             if (this.columnSlot) {
                 elements.push(this.columnSlot({
-                    row: this.row.properties,
+                    row: this.row,
                 }));
-            } else if (this.column.property && this.row.properties.hasOwnProperty(this.column.property)) {
-                elements.push(this.row.properties[this.column.property]);
+            } else if (this.column.property && this.row.hasOwnProperty(this.column.property)) {
+                elements.push(this.row[this.column.property]);
             }
 
             return elements.length > 0 ? elements : [

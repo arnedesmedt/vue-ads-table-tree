@@ -1,68 +1,68 @@
 <template>
     <div
         id="app"
-        class="m-6">
+        class="m-6"
+    >
+        <div class="w-6 h-6 bg-green" @click="addRow"></div>
+        <div class="w-6 h-6 bg-blue" @click="addColumn"></div>
         <div class="mb-6">
             <vue-ads-table-tree
                 :columns="columns"
                 :rows="rows"
                 :filter="filterValue"
-                :page="page"
-                :classes="classes"
-                :async="asyncCall"
-                :total-rows="50"
+                @filter-change="filterChange"
             >
-                <template slot="title">
-                    <h2 class="font-bold uppercase">
-                        Belgium royal family
-                    </h2>
-                </template>
-                <template
-                    slot="firstName"
-                    slot-scope="props">
-                    <a
-                        :href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`"
-                        target="_blank">{{ props.row.firstName }}</a>
-                </template>
-                <template slot="filter">
-                    <h3 class="inline pr-2">Filter:</h3>
-                    <input
-                        v-model="filterValue"
-                        class="appearance-none border py-2 px-3"
-                        type="text"
-                        placeholder="Filter..."
-                    >
-                </template>
-                <template
-                    slot="pagination"
-                    slot-scope="props"
-                >
-                    <vue-ads-pagination
-                        :total-items="props.total"
-                        :page="page"
-                        :loading="props.loading"
-                        :items-per-page="5"
-                        @page-change="props.pageChange"
-                    >
-                        <template slot-scope="props">
-                            <div class="vue-ads-pr-2 vue-ads-leading-loose">
-                                Items {{ props.start }} tot {{ props.end }} van de {{ props.total }}
-                            </div>
-                        </template>
-                        <template
-                            slot="buttons"
-                            slot-scope="props"
-                        >
-                            <vue-ads-page-button
-                                v-for="(button, key) in props.buttons"
-                                :key="key"
-                                v-bind="button"
-                                :class="{'bg-yellow-dark': button.active}"
-                                @page-change="page = button.page"
-                            />
-                        </template>
-                    </vue-ads-pagination>
-                </template>
+                <!--<template slot="title">-->
+                <!--<h2 class="font-bold uppercase">-->
+                <!--Belgium royal family-->
+                <!--</h2>-->
+                <!--</template>-->
+                <!--<template-->
+                <!--slot="firstName"-->
+                <!--slot-scope="props">-->
+                <!--<a-->
+                <!--:href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`"-->
+                <!--target="_blank">{{ props.row.firstName }}</a>-->
+                <!--</template>-->
+                <!--<template slot="filter">-->
+                <!--<h3 class="inline pr-2">Filter:</h3>-->
+                <!--<input-->
+                <!--v-model="filterValue"-->
+                <!--class="appearance-none border py-2 px-3"-->
+                <!--type="text"-->
+                <!--placeholder="Filter..."-->
+                <!--&gt;-->
+                <!--</template>-->
+                <!--<template-->
+                <!--slot="pagination"-->
+                <!--slot-scope="props"-->
+                <!--&gt;-->
+                <!--<vue-ads-pagination-->
+                <!--:total-items="props.total"-->
+                <!--:page="page"-->
+                <!--:loading="props.loading"-->
+                <!--:items-per-page="5"-->
+                <!--@page-change="props.pageChange"-->
+                <!--&gt;-->
+                <!--<template slot-scope="props">-->
+                <!--<div class="vue-ads-pr-2 vue-ads-leading-loose">-->
+                <!--Items {{ props.start }} tot {{ props.end }} van de {{ props.total }}-->
+                <!--</div>-->
+                <!--</template>-->
+                <!--<template-->
+                <!--slot="buttons"-->
+                <!--slot-scope="props"-->
+                <!--&gt;-->
+                <!--<vue-ads-page-button-->
+                <!--v-for="(button, key) in props.buttons"-->
+                <!--:key="key"-->
+                <!--v-bind="button"-->
+                <!--:class="{'bg-yellow-dark': button.active}"-->
+                <!--@page-change="page = button.page"-->
+                <!--/>-->
+                <!--</template>-->
+                <!--</vue-ads-pagination>-->
+                <!--</template>-->
             </vue-ads-table-tree>
         </div>
     </div>
@@ -87,7 +87,12 @@ export default {
     },
 
     data () {
+        let first = {
+            firstName: 'Josephine',
+            lastName: 'Astrid',
+        };
         return {
+            first,
             page: 0,
             filterValue: '',
             classes: {
@@ -124,21 +129,12 @@ export default {
                 {
                     property: 'firstName',
                     title: 'First Name',
-                    sortable: true,
+                    direction: null,
                     filterable: true,
-                },
-                {
-                    property: 'lastName',
-                    title: 'Last Name',
-                    filterable: true,
-                    sortable: true,
                 },
             ],
             rows: [
-                {
-                    firstName: 'Josephine',
-                    lastName: 'Astrid',
-                },
+                first,
                 {
                     firstName: 'Boudewijn',
                     lastName: 'Van Brabandt',
@@ -184,6 +180,12 @@ export default {
                 {
                     firstName: 'Alexander',
                     lastName: 'Van Belgie',
+                    children: [
+                        {
+                            firstName: 'Alexander Junior',
+                            lastName: 'Van Belgie',
+                        },
+                    ],
                 },
                 {
                     firstName: 'Marie-Christine',
@@ -277,6 +279,47 @@ export default {
 
         sleep (ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
+        },
+
+        addRow () {
+            // this.rows.push({
+            //     firstName: 'Arend',
+            //     lastName: 'Van Belgie',
+            //     children: [
+            //         {
+            //             firstName: 'Arne',
+            //             lastName: 'De Smedt',
+            //         },
+            //     ],
+            // });
+
+            this.first.children.push({
+                firstName: 'Arne',
+                children: [
+                    {
+                        firstName: 'Hanne',
+                        lastName: 'test',
+                        children: [
+                            {
+                                firstName: 'bla',
+                            },
+                        ],
+                    },
+                ],
+            });
+        },
+
+        addColumn () {
+            this.columns.push({
+                property: 'lastName',
+                title: 'Last Name',
+                direction: null,
+                filterable: true,
+            });
+        },
+
+        filterChange (filter) {
+            this.filterValue = filter;
         },
     },
 };

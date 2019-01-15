@@ -2,7 +2,7 @@
 
 exports[`Row renders a row 1`] = `
 <tr class="">
-  <vueadscell-stub row="[object Object]" column="[object Object]" classes="[object Object]"></vueadscell-stub>
-  <vueadscell-stub row="[object Object]" column="[object Object]" classes="[object Object]"></vueadscell-stub>
+  <vueadscell-stub row="[object Object]" rowindex="0" column="[object Object]" classes="[object Object]"></vueadscell-stub>
+  <vueadscell-stub row="[object Object]" rowindex="0" column="[object Object]" classes="[object Object]"></vueadscell-stub>
 </tr>
 `;

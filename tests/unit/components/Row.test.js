@@ -4,7 +4,7 @@ import RowComponent from '../../../src/components/Row';
 import Row from '../../../src/models/Row';
 import Column from '../../../src/models/Column';
 import ColumnCollection from '../../../src/collections/ColumnCollection';
-import ClassProcessor from '../../../src/services/ClassProcessor';
+import ClassesProcessor from '../../../src/services/ClassProcessor';
 
 describe('Row', () => {
     let component;
@@ -36,7 +36,8 @@ describe('Row', () => {
             propsData: {
                 row,
                 columns,
-                classes: new ClassProcessor({}, 0),
+                rowIndex: 0,
+                classes: new ClassesProcessor({}, 0),
             },
         });
     });

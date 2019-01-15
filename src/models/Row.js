@@ -3,20 +3,10 @@ import RowCollection from '../collections/RowCollection';
 export default class Row {
     constructor (properties = {}) {
         this.loading = false;
-        this.showChildren = properties.showChildren || false;
+        this.properties = properties;
+
         this.children = properties.children || [];
         this.hasChildren = properties.hasChildren || this.hasChildren;
-        this.classes = properties.classes || {};
-
-        this.properties = properties;
-    }
-
-    set classes (classes) {
-        this._classes = classes;
-    }
-
-    get classes () {
-        return this._classes;
     }
 
     set loading (loading) {
@@ -33,6 +23,10 @@ export default class Row {
 
     get parent () {
         return this._parent;
+    }
+
+    get classes () {
+        return this.properties.classes || {};
     }
 
     set children (children) {
@@ -54,12 +48,8 @@ export default class Row {
         return this._hasChildren;
     }
 
-    set showChildren (showChildren) {
-        this._showChildren = showChildren;
-    }
-
     get showChildren () {
-        return this._showChildren;
+        return this.properties.showChildren || false;
     }
 
     set visibleChildren (visibleChildren) {

@@ -1,7 +1,7 @@
 import {shallowMount} from '@vue/test-utils';
 
 import HeaderCell from '../../../src/components/HeaderCell';
-import ClassProcessor from '../../../src/services/ClassProcessor';
+import ClassesProcessor from '../../../src/services/ClassProcessor';
 
 describe('HeaderCell', () => {
     let headerCell;
@@ -10,7 +10,7 @@ describe('HeaderCell', () => {
         headerCell = shallowMount(HeaderCell, {
             propsData: {
                 title: 'Title',
-                classes: new ClassProcessor({}, 0),
+                classes: new ClassesProcessor({}, 0),
             },
         });
     });

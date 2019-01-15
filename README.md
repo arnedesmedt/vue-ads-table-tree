@@ -128,8 +128,8 @@ export default {
 - `useCache`: *(type: boolean)* Async called rows will be stored in the cache if no sorting or filtering is done and this value is true.
 - `maxSequentialCalls`: *(type: number, default: 5)* If children of requested rows needs to be loaded but are not set in the row date another async call needs to be executed.
    So a lot of calls can be executed sequentially. If this is endless, the browser will block, so we need a max sequential calls value.
-- `classes`: *(type: Object)* An object where that regulates the design of the table. The latter items can override the earlier ones.:
-    - The key is a sort of selector for rows, columns, and cells. You have two type of selectors: fixed selectors and row/column selectors:
+- `classes`: *(type: Object)* An object that regulates the design of the table. The latter items can override the earlier ones:
+    - The key is a selector for rows, columns, and cells. You have two type of selectors: fixed selectors and row/column selectors:
         - fixed selectors: use the preserver words `table` or `info` to style the whole table or to style the info row (shown while loading or no rows are found)
         - row/column selectors: These selectors are divided by a slash. So you can have a row selector or a column selector. 
         The header row has index 0. The first data row has index 1. Some examples:

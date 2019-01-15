@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Cell from '../../../src/components/Cell';
 import Row from '../../../src/models/Row';
 import Column from '../../../src/models/Column';
-import ClassProcessor from '../../../src/services/ClassProcessor';
+import ClassesProcessor from '../../../src/services/ClassProcessor';
 
 describe('Cell', () => {
     let cell;
@@ -25,7 +25,7 @@ describe('Cell', () => {
                 row,
                 column,
                 rowIndex: 0,
-                classes: new ClassProcessor({}, 0),
+                classes: new ClassesProcessor({}, 0),
             },
         });
     });

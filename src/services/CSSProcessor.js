@@ -1,8 +1,9 @@
 
-export default class ClassProcessor {
-    constructor (classes, totalColumns) {
-        this.totalColumns = totalColumns;
-        this.classes = classes;
+export default class CSSProcessor {
+    constructor (totalColumns, classes) {
+        this._totalColumns = totalColumns;
+        this._classes = classes;
+        this.processClasses();
     }
 
     set classes (classes) {
@@ -11,12 +12,14 @@ export default class ClassProcessor {
     }
 
     get classes () {
-        return this._classes || [];
+        return this._classes || {};
     }
 
     set totalRows (totalRows) {
-        this._totalRows = totalRows;
-        this.processClasses();
+        if (this._totalRows !== totalRows) {
+            this._totalRows = totalRows;
+            this.processClasses();
+        }
     }
 
     get totalRows () {
@@ -24,8 +27,10 @@ export default class ClassProcessor {
     }
 
     set totalColumns (totalColumns) {
-        this._totalColumns = totalColumns;
-        this.processClasses();
+        if (this._totalColumns !== totalColumns) {
+            this._totalColumns = totalColumns;
+            this.processClasses();
+        }
     }
 
     get totalColumns () {
@@ -60,7 +65,7 @@ export default class ClassProcessor {
         case 'even':
             return Array.from(Array(total).keys()).filter(item => (item % 2) === 0);
         case 'odd':
-            return Array.from(Array(total).keys()).filter(item => (++item % 2) === 0);
+            return Array.from(Array(total).keys()).filter(item => (item % 2) === 1);
         }
 
         return [].concat(...selector.split(',')
@@ -97,7 +102,7 @@ export default class ClassProcessor {
                     return null;
                 }
 
-                return ClassProcessor.processValue(classes.value, ...args);
+                return CSSProcessor.processValue(classes.value, ...args);
             })
             .filter(classes => classes)
             .reduce((result, classes) => Object.assign(result, classes), {});
@@ -121,12 +126,13 @@ export default class ClassProcessor {
         }
 
         return Object.keys(classes)
+            .filter(key => key === 'row')
             .map(key => {
                 if (!this.toRange(key, this.totalColumns).includes(columnIndex)) {
                     return null;
                 }
 
-                return ClassProcessor.processValue(classes[key], ...args);
+                return CSSProcessor.processValue(classes[key], ...args);
             })
             .filter(classes => classes)
             .reduce((result, classes) => Object.assign(result, classes), {});
