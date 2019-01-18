@@ -100,7 +100,7 @@
         </table>
         <!-- PAGINATION -->
         <slot
-            :total="totalRows"
+            :total="totalFilteredRows"
             :page="page"
             :loading="loading"
             :pageChange="pageChange"
@@ -109,7 +109,7 @@
             name="pagination"
         >
             <vue-ads-pagination
-                :total-items="totalRows"
+                :total-items="totalFilteredRows"
                 :page="page"
                 :loading="loading"
                 :items-per-page="itemsPerPage"
@@ -221,6 +221,11 @@ export default {
             required: false,
             default: null,
         },
+
+        totalRows: {
+            type: Number,
+            required: false,
+        },
     },
 
     data () {
@@ -233,6 +238,7 @@ export default {
             start: null,
             end: null,
             loading: false,
+            asyncRows: [],
         };
     },
 
@@ -279,50 +285,44 @@ export default {
         },
 
         flattenedRows () {
-            return this.flatten(this.paginatedRows);
+            return this.flatten(this.call ? this.asyncRows : this.paginatedRows);
         },
 
         totalVisibleRows () {
             return this.flattenedRows.length;
         },
 
-        totalRows () {
+        totalFilteredRows () {
             return this.filteredRows.length;
         },
 
-        // visibleRows () {
-        //     return this.call ? this.asyncCollection.flatten() : this.paginatedRows.flatten();
-        // },
-        //
-        // call () {
-        //     let totalRows = this.currentTotalRows;
-        //
-        //     if (!(this.async instanceof Function)) {
-        //         return false;
-        //     }
-        //
-        //     if (!this.useCache || totalRows === 0) {
-        //         return true;
-        //     }
-        //
-        //     if (this.rowCollection.fullyFilled(this.rowCollection.length)) {
-        //         return false;
-        //     }
-        //
-        //     if (this.currentFilter) {
-        //         return true;
-        //     }
-        //
-        //     if (this.rowCollection.filled(this.rowCollection.length)) {
-        //         return false;
-        //     }
-        //
-        //     if (this.sortColumns.length) {
-        //         return true;
-        //     }
-        //
-        //     return !this.rowCollection.filled(this.end, this.start);
-        // },
+        call () {
+            if (!(this.async instanceof Function)) {
+                return false;
+            }
+
+            if (this.rows.length === 0) {
+                return true;
+            }
+
+            if (this.rows.find(this.findChildrenToCall)) {
+                return false;
+            }
+
+            if (this.filter) {
+                return true;
+            }
+
+            if (this.rows.length === (this.totalRows || this.rows.length)) {
+                return false;
+            }
+
+            if (this.sortColumns.length) {
+                return true;
+            }
+
+            return this.rows.slice(this.start, this.end).length === (this.end - this.start);
+        },
 
         slots () {
             let regex = new RegExp('^(' + this.columnProperties.join('|') + ')_', 'i');
@@ -551,6 +551,10 @@ export default {
                         ...(row && row._showChildren ? this.flatten(row._meta.visibleChildren) : []),
                     ]);
                 }, []);
+        },
+
+        findChildrenToCall (row) {
+            return (row.hasOwnProperty('_hasChildren') && row._hasChildren) || row._children.find(this.findChildrenToCall);
         },
 
         // async currentFilterChange (currentFilter) {
