@@ -52,7 +52,7 @@ describe('TableTree', () => {
     });
 
     it('has no header if no title slot or filter columns exist', () => {
-        expect(table.vm.hasHeader).toBeFalsy();
+        expect(table.vm.displayHeader).toBeFalsy();
     });
 
     it('has a header if a title slot exist', () => {
@@ -66,7 +66,7 @@ describe('TableTree', () => {
             },
         });
 
-        expect(table.vm.hasHeader).toBeTruthy();
+        expect(table.vm.displayHeader).toBeTruthy();
     });
 
     it('has a header if one column is filterable', () => {
@@ -77,7 +77,7 @@ describe('TableTree', () => {
             },
         });
 
-        expect(table.vm.hasHeader).toBeTruthy();
+        expect(table.vm.displayHeader).toBeTruthy();
     });
 
 

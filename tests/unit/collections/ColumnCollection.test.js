@@ -44,7 +44,7 @@ describe('ColumnCollection', () => {
     it('returns the filterValue columns', () => {
         columnCollection.first.filterable = true;
 
-        expect(columnCollection.filterColumnNames).toEqual([
+        expect(columnCollection.filterColumnProperties).toEqual([
             'firstName',
         ]);
     });
@@ -102,13 +102,13 @@ describe('ColumnCollection', () => {
     });
 
     it('checks if their are no filter columns', () => {
-        expect(columnCollection.hasFilterColumns()).toBeFalsy();
+        expect(columnCollection.displayFilter()).toBeFalsy();
     });
 
     it('checks if their are filter columns', () => {
         columnCollection.first.filterable = true;
 
-        expect(columnCollection.hasFilterColumns()).toBeTruthy();
+        expect(columnCollection.displayFilter()).toBeTruthy();
     });
 
     it('can change the collapse icon', () => {

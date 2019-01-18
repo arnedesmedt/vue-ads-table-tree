@@ -1,6 +1,6 @@
 <script>
 import VueAdsChildrenButton from './ChildrenButton';
-import CSSProcessor from "../services/CSSProcessor";
+import CSSProcessor from '../services/CSSProcessor';
 
 export default {
     name: 'VueAdsCell',
@@ -58,7 +58,7 @@ export default {
 
         style () {
             return {
-                'padding-left': (1 + (this.column.collapseIcon ? 1 : 0) * (this.row.parent) * 1.5) + 'rem',
+                'padding-left': (1 + (this.column.collapseIcon ? 1 : 0) * (this.row._meta.parent) * 1.5) + 'rem',
             };
         },
     },
@@ -67,11 +67,11 @@ export default {
         value (createElement) {
             let elements = [];
 
-            if (this.column.collapseIcon && (this.row.hasChildren || this.row.children.length > 0)) {
+            if (this.column.collapseIcon && (this.row._meta.visibleChildren.length > 0 || this.row._hasChildren)) {
                 elements.push(createElement(VueAdsChildrenButton, {
                     props: {
-                        expanded: this.row.showChildren || false,
-                        loading: this.row.loading || false,
+                        expanded: this.row._showChildren || false,
+                        loading: this.row._meta.loading || false,
                     },
                     nativeOn: {
                         click: this.toggleChildren,

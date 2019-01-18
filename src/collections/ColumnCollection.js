@@ -63,7 +63,7 @@ export default class ColumnCollection extends AbstractCollection {
     }
 
     hasFilterColumns () {
-        return this.filterColumnNames.length > 0;
+        return this.filterColumnProperties.length > 0;
     }
 
     hasCollapseIcon () {

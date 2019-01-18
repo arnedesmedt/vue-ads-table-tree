@@ -11,6 +11,7 @@
                 :rows="rows"
                 :filter="filterValue"
                 @filter-change="filterChange"
+                :async-children="callChildren"
             >
                 <!--<template slot="title">-->
                 <!--<h2 class="font-bold uppercase">-->
@@ -88,7 +89,7 @@ export default {
 
     data () {
         let first = {
-            firstName: 'Josephine',
+            firstName: 'Joselephine',
             lastName: 'Astrid',
         };
         return {
@@ -138,15 +139,16 @@ export default {
                 {
                     firstName: 'Boudewijn',
                     lastName: 'Van Brabandt',
+                    _hasChildren: true,
                 },
                 {
                     firstName: 'Albert II',
                     lastName: 'Van Belgie',
-                    children: [
+                    _children: [
                         {
                             firstName: 'Filip',
                             lastName: 'Van Belgie',
-                            children: [
+                            _children: [
                                 {
                                     firstName: 'Elisabeth',
                                     lastName: 'Van Brabant',
@@ -162,7 +164,7 @@ export default {
                                 {
                                     firstName: 'Eleonore',
                                     lastName: 'Boudwijn',
-                                    hasChildren: true,
+                                    _hasChildren: true,
                                 },
                             ],
                         },
@@ -177,16 +179,16 @@ export default {
 
                     ],
                 },
-                {
-                    firstName: 'Alexander',
-                    lastName: 'Van Belgie',
-                    children: [
-                        {
-                            firstName: 'Alexander Junior',
-                            lastName: 'Van Belgie',
-                        },
-                    ],
-                },
+                // {
+                //     firstName: 'Alexander',
+                //     lastName: 'Van Belgie',
+                //     _children: [
+                //         {
+                //             firstName: 'Alexander Junior',
+                //             lastName: 'Van Belgie',
+                //         },
+                //     ],
+                // },
                 {
                     firstName: 'Marie-Christine',
                     lastName: 'Leopoldine',
@@ -244,6 +246,16 @@ export default {
             };
         },
 
+        async callChildren (parent, callback) {
+            await this.sleep(1000);
+            callback([
+                {
+                    firstName: 'test',
+                    lastName: 'called',
+                },
+            ], parent);
+        },
+
         filter (rows, filter) {
             if (!filter) {
                 return rows;
@@ -282,31 +294,29 @@ export default {
         },
 
         addRow () {
-            // this.rows.push({
-            //     firstName: 'Arend',
-            //     lastName: 'Van Belgie',
-            //     children: [
+            this.rows.push({
+                firstName: 'Arend',
+                lastName: 'Van Belgie',
+                _hasChildren: true,
+                _showChildren: true,
+            });
+
+            // this.rows[2]._children[0]._children[3].firstName = 'Arne';
+
+            // this.$refs.tableTree.storeChildren([{
+            //     firstName: 'Arne',
+            //     _children: [
             //         {
-            //             firstName: 'Arne',
-            //             lastName: 'De Smedt',
+            //             firstName: 'Hanne',
+            //             lastName: 'test',
+            //             _children: [
+            //                 {
+            //                     firstName: 'bla',
+            //                 },
+            //             ],
             //         },
             //     ],
-            // });
-
-            this.first.children.push({
-                firstName: 'Arne',
-                children: [
-                    {
-                        firstName: 'Hanne',
-                        lastName: 'test',
-                        children: [
-                            {
-                                firstName: 'bla',
-                            },
-                        ],
-                    },
-                ],
-            });
+            // }], this.first);
         },
 
         addColumn () {
