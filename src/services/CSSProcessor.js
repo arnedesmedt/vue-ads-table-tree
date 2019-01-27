@@ -91,20 +91,14 @@ export default class CSSProcessor {
 
     process (rowIndex = null, columnIndex = null, ...args) {
         return this.processedClasses
-            .map(classes => {
-                if (
-                    (rowIndex === null && columnIndex === null) ||
+            .filter(classes => {
+                return !((rowIndex === null && columnIndex === null) ||
                     (columnIndex === null && classes.columns.length > 0) ||
                     (rowIndex === null && classes.rows.length > 0) ||
                     (columnIndex !== null && !classes.columns.includes(columnIndex)) ||
-                    (rowIndex !== null && !classes.rows.includes(rowIndex))
-                ) {
-                    return null;
-                }
-
-                return CSSProcessor.processValue(classes.value, ...args);
+                    (rowIndex !== null && !classes.rows.includes(rowIndex)));
             })
-            .filter(classes => classes)
+            .map(classes => CSSProcessor.processValue(classes.value, ...args))
             .reduce((result, classes) => Object.assign(result, classes), {});
     }
 
@@ -126,15 +120,9 @@ export default class CSSProcessor {
         }
 
         return Object.keys(classes)
-            .filter(key => key === 'row')
-            .map(key => {
-                if (!this.toRange(key, this.totalColumns).includes(columnIndex)) {
-                    return null;
-                }
-
-                return CSSProcessor.processValue(classes[key], ...args);
-            })
-            .filter(classes => classes)
+            .filter(key => key !== 'row')
+            .filter(key => this.toRange(key, this.totalColumns).includes(columnIndex))
+            .map(key => CSSProcessor.processValue(classes[key], ...args))
             .reduce((result, classes) => Object.assign(result, classes), {});
     }
 }

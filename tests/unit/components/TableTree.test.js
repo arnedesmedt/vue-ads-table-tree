@@ -1,4 +1,4 @@
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 
 import TableTree from '../../../src/components/TableTree';
 
@@ -6,6 +6,9 @@ describe('TableTree', () => {
     let table;
     let rows;
     let columns;
+    let columnA;
+    let columnB;
+    let columnC;
 
     beforeEach(() => {
         rows = [
@@ -25,19 +28,26 @@ describe('TableTree', () => {
                 age: 34,
             },
         ];
+
+        columnA = {
+            property: 'firstName',
+            title: 'First Name',
+        };
+
+        columnB = {
+            property: 'lastName',
+            title: 'Last Name',
+        };
+
+        columnC = {
+            property: 'age',
+            title: 'Age',
+        };
+
         columns = [
-            {
-                property: 'firstName',
-                title: 'First Name',
-            },
-            {
-                property: 'lastName',
-                title: 'Last Name',
-            },
-            {
-                property: 'age',
-                title: 'Age',
-            },
+            columnA,
+            columnB,
+            columnC,
         ];
 
         table = shallowMount(TableTree, {
@@ -53,6 +63,7 @@ describe('TableTree', () => {
 
     it('has no header if no title slot or filter columns exist', () => {
         expect(table.vm.displayHeader).toBeFalsy();
+        expect(table.vm.displayFilter).toBeFalsy();
     });
 
     it('has a header if a title slot exist', () => {
@@ -70,7 +81,7 @@ describe('TableTree', () => {
     });
 
     it('has a header if one column is filterable', () => {
-        columns.
+        columns[0].filterable = true;
         table = shallowMount(TableTree, {
             propsData: {
                 columns,
@@ -78,35 +89,128 @@ describe('TableTree', () => {
         });
 
         expect(table.vm.displayHeader).toBeTruthy();
+        expect(table.vm.displayFilter).toBeTruthy();
     });
 
+    it('adds the table classes', () => {
+        table.setProps({
+            classes: {
+                table: {
+                    test: true,
+                },
+            },
+        });
 
+        expect(table.vm.tableClasses).toEqual({
+            test: true,
+        });
+    });
 
-    it('has no visible rows if the rows property is not set', () => {
+    it('adds the header row classes', () => {
+        table.setProps({
+            classes: {
+                '0/': {
+                    test: true,
+                },
+            },
+        });
+
+        expect(table.vm.headerRowClasses).toEqual({
+            test: true,
+        });
+    });
+
+    it('adds the info classes', () => {
+        table.setProps({
+            classes: {
+                info: {
+                    test: true,
+                },
+            },
+        });
+
+        expect(table.vm.infoClasses).toEqual({
+            test: true,
+        });
+    });
+
+    it('has no results if the rows property is empty', () => {
+        table.setProps({
+            rows: [],
+        });
+
+        expect(table.vm.hasNoResults).toBeTruthy();
+    });
+
+    it('has no rows if the rows property is not set', () => {
         table = shallowMount(TableTree, {
             propsData: {
                 columns,
             },
         });
 
-        expect(table.vm.visibleRows).toHaveLength(0);
+        expect(table.vm.flattenedRows).toHaveLength(0);
     });
 
-    it('shows all visible rows without children or pagination', () => {
-        expect(table.vm.visibleRows).toHaveLength(3);
-        expect(table.vm.visibleRows.map(row => row.properties.firstName)).toEqual([
+    it('shows all rows without children or pagination', () => {
+        expect(table.vm.flattenedRows).toHaveLength(3);
+        expect(table.vm.flattenedRows.map(row => row.firstName)).toEqual([
             'Arne',
             'Bruno',
             'Kris',
         ]);
     });
 
-    it('shows all visible rows without children or pagination', () => {
-        expect(table.vm.visibleRows).toHaveLength(3);
-        expect(table.vm.visibleRows.map(row => row.properties.firstName)).toEqual([
+    it('shows just the first 2 rows if the total rows per page is 2', () => {
+        table.setData({
+            start: 0,
+            end: 2,
+        });
+
+        expect(table.vm.flattenedRows).toHaveLength(2);
+        expect(table.vm.flattenedRows.map(row => row.firstName)).toEqual([
             'Arne',
             'Bruno',
+        ]);
+    });
+
+    it('sorts the first column by desc', () => {
+        columnA.direction = false;
+
+        table = shallowMount(TableTree, {
+            propsData: {
+                rows,
+                columns,
+            },
+        });
+
+        table.vm.start = 0;
+        table.vm.end = 10;
+
+        expect(table.vm.flattenedRows.map(row => row.firstName)).toEqual([
             'Kris',
+            'Bruno',
+            'Arne',
+        ]);
+    });
+
+    it('filters the based on the first column', () => {
+        columnA.filterable = true;
+
+        table = shallowMount(TableTree, {
+            propsData: {
+                rows,
+                columns,
+                filter: 'n',
+            },
+        });
+
+        table.vm.start = 0;
+        table.vm.end = 10;
+
+        expect(table.vm.flattenedRows.map(row => row.firstName)).toEqual([
+            'Arne',
+            'Bruno',
         ]);
     });
 });

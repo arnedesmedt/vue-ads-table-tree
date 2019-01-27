@@ -45,7 +45,6 @@ export default {
 
         slots: {
             type: Object,
-            required: false,
             default: () => { return {}; },
         },
 

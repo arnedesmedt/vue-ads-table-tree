@@ -27,7 +27,6 @@ export default {
     props: {
         title: {
             type: String,
-            required: false,
             default: '',
         },
 
@@ -38,7 +37,6 @@ export default {
 
         sortable: {
             type: Boolean,
-            required: false,
             default: false,
         },
 
@@ -47,7 +45,6 @@ export default {
                 Boolean,
                 null,
             ],
-            required: false,
             default: null,
         },
 
@@ -65,7 +62,7 @@ export default {
                         null,
                         true,
                         false,
-                    ].includes(this.direction),
+                    ].includes(this.direction) && this.sortable,
                 },
                 this.cssProcessor.process(null, this.columnIndex),
                 this.cssProcessor.process(0, this.columnIndex),

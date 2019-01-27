@@ -137,13 +137,11 @@ export default {
 
         rows: {
             type: Array,
-            required: false,
             default: () => [],
         },
 
         filter: {
             type: String,
-            required: false,
             default: '',
         },
 
@@ -154,7 +152,6 @@ export default {
 
         classes: {
             type: Object,
-            required: false,
             default: () => {
                 return {
                     table: {
@@ -197,19 +194,16 @@ export default {
 
         asyncChildren: {
             type: Function,
-            required: false,
             default: null,
         },
 
         async: {
             type: Function,
-            required: false,
             default: null,
         },
 
         totalRows: {
             type: Number,
-            required: false,
         },
     },
 

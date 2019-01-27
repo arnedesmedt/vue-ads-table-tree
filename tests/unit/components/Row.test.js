@@ -1,70 +1,96 @@
 import { shallowMount } from '@vue/test-utils';
 
-import RowComponent from '../../../src/components/Row';
-import Row from '../../../src/models/Row';
-import Column from '../../../src/models/Column';
-import ColumnCollection from '../../../src/collections/ColumnCollection';
-import ClassesProcessor from '../../../src/services/ClassProcessor';
+import Row from '../../../src/components/Row';
+import CSSProcessor from '../../../src/services/CSSProcessor';
 
 describe('Row', () => {
-    let component;
     let row;
-    let columns;
     let columnA;
     let columnB;
+    let cssProcessor;
 
 
     beforeEach(() => {
-        row = new Row({
-            firstName: 'Arne',
-            lastName: 'De Smedt',
-        });
-
-        columnA = new Column({
+        columnA = {
             property: 'firstName',
-        });
-        columnB = new Column({
+        };
+        columnB = {
             property: 'lastName',
-        });
+        };
 
-        columns = new ColumnCollection([
-            columnA,
-            columnB,
-        ]);
+        cssProcessor = new CSSProcessor(2, {});
+        cssProcessor.totalRows = 1;
 
-        component = shallowMount(RowComponent, {
+        row = shallowMount(Row, {
             propsData: {
-                row,
-                columns,
+                row: {
+                    firstName: 'Arne',
+                    lastName: 'De Smedt',
+                },
+                columns: [
+                    columnA,
+                    columnB,
+                ],
                 rowIndex: 0,
-                classes: new ClassesProcessor({}, 0),
+                cssProcessor,
             },
         });
     });
 
-    it('renders a row', () => {
-        expect(component.html()).toMatchSnapshot();
+    it('generates classes via the row index', () => {
+        cssProcessor = new CSSProcessor(2, {
+            '1/': {
+                test: true,
+            },
+        });
+        cssProcessor.totalRows = 1;
+
+        row.setProps({
+            cssProcessor,
+        });
+
+        expect(row.vm.rowClasses).toEqual({
+            test: true,
+        });
+    });
+
+    it('generates classes via the fixed row classes attribute', () => {
+        row.setProps({
+            row: {
+                firstName: 'Arne',
+                lastName: 'De Smedt',
+                classes: {
+                    row: {
+                        test: true,
+                    },
+                },
+            },
+        });
+
+        expect(row.vm.rowClasses).toEqual({
+            test: true,
+        });
     });
 
     it('selects the correct column slot', () => {
-        component.setProps({
+        row.setProps({
             slots: {
                 firstName: 'test',
                 lastName: 'test2',
             },
         });
 
-        expect(component.vm.columnSlot(columnA)).toBe('test');
+        expect(row.vm.columnSlot(columnA)).toBe('test');
     });
 
     it('selects the correct cell slot', () => {
-        component.setProps({
+        row.setProps({
             slots: {
                 firstName_Arne: 'testcell',
                 firstName: 'test',
             },
         });
 
-        expect(component.vm.columnSlot(columnA)).toBe('testcell');
+        expect(row.vm.columnSlot(columnA)).toBe('testcell');
     });
 });
