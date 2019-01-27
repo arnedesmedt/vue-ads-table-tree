@@ -1,17 +1,21 @@
 <template>
     <div
-        class="vue-ads-w-full vue-ads-p-3 vue-ads-font-sans"
+        class="vue-ads-w-full vue-ads-font-sans"
     >
+        <!-- HEADER -->
         <div
+            v-if="displayHeader"
             class="vue-ads-mt-3 vue-ads-mb-6 vue-ads-flex"
         >
+            <!-- TITLE -->
             <div
                 class="vue-ads-flex vue-ads-justify-center vue-ads-flex-col"
             >
                 <slot name="title"/>
             </div>
+            <!-- FILTER -->
             <div
-                v-if="columnCollection.hasFilterColumns()"
+                v-if="displayFilter"
                 class="vue-ads-flex-grow vue-ads-justify-end vue-ads-text-right"
             >
                 <slot
@@ -22,40 +26,49 @@
                         class="vue-ads-appearance-none vue-ads-border vue-ads-rounded vue-ads-py-2 vue-ads-px-3"
                         type="text"
                         placeholder="Filterable..."
-                        @input="debounceFilter($event)"
+                        :value="filter"
+                        @input="debounceFilter($event.target.value)"
                     >
                 </slot>
             </div>
         </div>
+        <!-- TABLE -->
         <table
             :class="tableClasses"
             style="border-collapse: collapse;"
         >
+            <!-- TABLE HEADER -->
             <thead>
                 <tr
                     :class="headerRowClasses"
                 >
                     <vue-ads-header-cell
-                        v-for="(column, key) in columnCollection.items"
+                        v-for="(column, key) in columns"
                         :key="key"
+                        :column-index="key"
                         :direction="column.direction"
-                        :sortable="column.sortable"
-                        :classes="classProcessor"
+                        :sortable="[null, true, false].includes(column.direction)"
+                        :css-processor="cssProcessor"
                         v-bind="column"
                         @sort="sort(column)"
                     />
                 </tr>
             </thead>
+            <!-- TABLE ROWS -->
             <tbody>
                 <tr
-                    v-if="visibleRows.length === 0 || loading"
+                    v-if="hasNoResults"
                 >
                     <td
                         :class="infoClasses"
-                        :colspan="columnCollection.length"
+                        :colspan="columns.length"
                     >
-                        <span v-if="loading">Loading...</span>
-                        <span v-else>No results found</span>
+                        <span v-if="loading">
+                            <slot name="loading">Loading...</slot>
+                        </span>
+                        <span v-else>
+                            <slot name="no-rows">No results found</slot>
+                        </span>
                     </td>
                 </tr>
                 <slot
@@ -63,47 +76,49 @@
                     name="rows"
                 >
                     <vue-ads-row
-                        v-for="(row, rowKey) in visibleRows"
+                        v-for="(row, rowKey) in flattenedRows"
                         :key="rowKey"
                         :row="row"
-                        :columns="columnCollection"
+                        :row-index="rowKey"
+                        :columns="columns"
                         :slots="slots"
-                        :classes="classProcessor"
+                        :css-processor="cssProcessor"
                         @toggleChildren="toggleChildren(row)"
                     />
                 </slot>
             </tbody>
         </table>
+        <!-- PAGINATION -->
         <slot
-            :total="currentTotalRows"
-            :page="currentPage"
+            :total="total"
+            :page="page"
             :loading="loading"
             :pageChange="pageChange"
+            :itemsPerPage="itemsPerPage"
+            :rangeChange="rangeChange"
             name="pagination"
         >
             <vue-ads-pagination
-                :total-items="currentTotalRows"
-                :page="currentPage"
+                :total-items="total"
+                :page="page"
                 :loading="loading"
-                :items-per-page="10"
+                :items-per-page="itemsPerPage"
                 @page-change="pageChange"
+                @range-change="rangeChange"
             />
         </slot>
     </div>
 </template>
 
 <script>
-import '../assets/css/tailwind.css';
-
+import Vue from 'vue';
 import debounce from '../services/debounce';
-import ClassProcessor from '../services/ClassProcessor';
+import CSSProcessor from '../services/CSSProcessor';
 
 import VueAdsHeaderCell from './HeaderCell';
 import VueAdsRow from './Row.vue';
 import VueAdsPagination from 'vue-ads-pagination';
 
-import RowCollection from '../collections/RowCollection';
-import ColumnCollection from '../collections/ColumnCollection';
 
 export default {
     name: 'VueAdsTableTree',
@@ -122,58 +137,21 @@ export default {
 
         rows: {
             type: Array,
-            required: false,
             default: () => [],
-        },
-
-        totalRows: {
-            type: Number,
-            required: false,
-            default: 0,
-            validator: (totalRows) => {
-                return totalRows >= 0;
-            },
         },
 
         filter: {
             type: String,
-            required: false,
             default: '',
         },
 
-        page: {
-            type: Number,
-            required: false,
-            default: 0,
-            validator: (page) => {
-                return page >= 0;
-            },
-        },
-
-        async: {
-            type: Function,
-            required: false,
-            default: null,
-        },
-
-        useCache: {
+        showFilter: {
             type: Boolean,
-            required: false,
             default: true,
-        },
-
-        maxSequetialCalls: {
-            type: Number,
-            required: false,
-            default: 5,
-            validator: (maxSequentialCalls) => {
-                return maxSequentialCalls > 1;
-            },
         },
 
         classes: {
             type: Object,
-            required: false,
             default: () => {
                 return {
                     table: {
@@ -184,6 +162,7 @@ export default {
                         'vue-ads-text-center': true,
                         'vue-ads-py-6': true,
                         'vue-ads-text-sm': true,
+                        'vue-ads-border-t': true,
                     },
                     'all/': {
                         'hover:vue-ads-bg-grey-lighter': true,
@@ -198,6 +177,11 @@ export default {
                         'vue-ads-bg-grey-lightest': false,
                         'hover:vue-ads-bg-grey-lighter': false,
                     },
+                    '0/all': {
+                        'vue-ads-px-4': true,
+                        'vue-ads-py-2': true,
+                        'vue-ads-text-left': true,
+                    },
                     '0_-1/': {
                         'vue-ads-border-b': true,
                     },
@@ -207,79 +191,115 @@ export default {
                 };
             },
         },
+
+        asyncChildren: {
+            type: Function,
+            default: null,
+        },
+
+        async: {
+            type: Function,
+            default: null,
+        },
+
+        totalRows: {
+            type: Number,
+        },
+    },
+
+    mounted () {
+        this.callRootRows();
     },
 
     data () {
         return {
-            columnCollection: new ColumnCollection(this.columns),
-            rowCollection: new RowCollection(this.rows),
-            classProcessor: new ClassProcessor(this.classes, this.columns.length),
-            currentFilter: null,
-            debounceFilter: debounce(e => this.filterChange(e.target.value), 500),
-            sortColumns: [],
-            currentPage: this.page,
+            debounceFilter: debounce(filter => this.$emit('filter-change', filter), 500),
+            cssProcessor: new CSSProcessor(this.columns.length, this.classes),
+            page: 0,
+            showChildren: false,
+            itemsPerPage: 20,
             start: null,
             end: null,
             loading: false,
-            sequentialCalls: 0,
-            asyncCollection: new RowCollection(),
-            asyncTotalRows: null,
+            asyncRows: [],
         };
     },
 
     computed: {
-        currentTotalRows () {
-            if (this.loading && this.currentFilter) {
-                return 0;
-            }
+        columnProperties () {
+            return this.columns.map(column => column.property);
+        },
 
-            return this.asyncTotalRows || this.filteredRows.length;
+        sortColumns () {
+            return this.columns
+                .filter(column => column.direction !== null)
+                .filter(column => column.order)
+                .sort((columnA, columnB) => columnA.order - columnB.order);
         },
 
         processed () {
-            return Boolean(this.currentFilter || this.sortColumns.length);
+            return this.filter || this.sortColumns.length > 0;
+        },
+
+        filterColumnProperties () {
+            return this.columns
+                .filter(column => {
+                    return column.filterable;
+                })
+                .map(column => column.property);
+        },
+
+        filterRegex () {
+            return new RegExp(this.filter, 'i');
         },
 
         filteredRows () {
-            return this.rowCollection
-                .filter(new RegExp(this.currentFilter, 'i'), this.columnCollection.filterColumnNames);
+            return this.rows
+                .filter(this.rowMatch);
         },
 
         sortedRows () {
-            let filteredRows = this.filteredRows;
+            if (this.sortColumns.length === 0) {
+                return this.filteredRows;
+            }
 
-            return filteredRows.sort(this.sortColumns);
+            return this.sortRows(this.filteredRows);
         },
 
         paginatedRows () {
-            return this.sortedRows
-                .paginate(this.start, this.end);
+            return this.sortedRows.slice(this.start, this.end);
         },
 
-        visibleRows () {
-            return this.call ? this.asyncCollection.flatten() : this.paginatedRows.flatten();
+        flattenedRows () {
+            return this.flatten(this.call ? this.asyncRows : this.paginatedRows);
+        },
+
+        totalVisibleRows () {
+            return this.flattenedRows.length;
+        },
+
+        total () {
+            return !this.filter || this.call ? (this.totalRows || this.rows.length) : this.filteredRows.length;
         },
 
         call () {
-            let totalRows = this.currentTotalRows;
-
             if (!(this.async instanceof Function)) {
                 return false;
             }
 
-            if (!this.useCache || totalRows === 0) {
+            if (this.rows.length === 0) {
                 return true;
             }
 
-            if (this.rowCollection.fullyFilled(this.rowCollection.length)) {
+            if (this.fullLoaded && this.rows.find(this.findChildrenToCall)) {
                 return false;
             }
 
-            if (this.currentFilter) {
+            if (this.filter) {
                 return true;
             }
 
-            if (this.rowCollection.filled(this.rowCollection.length)) {
+            if (this.fullLoaded) {
                 return false;
             }
 
@@ -287,19 +307,23 @@ export default {
                 return true;
             }
 
-            return !this.rowCollection.filled(this.end, this.start);
+            return (this.rows.slice(this.start, this.end).length < (this.end - this.start));
+        },
+
+        fullLoaded () {
+            return this.rows.length === (this.totalRows || this.rows.length);
         },
 
         slots () {
-            let properties = this.columnCollection.properties;
-            let regex = new RegExp('^(' + properties.join('|') + ')_', 'i');
+            let regex = new RegExp('^(' + this.columnProperties.join('|') + ')_', 'i');
             let slots = {};
 
-            for (let key in this.$scopedSlots) {
-                if (properties.includes(key) || regex.test(key)) {
-                    slots[key] = this.$scopedSlots[key];
-                }
-            }
+            Object.keys(this.$scopedSlots)
+                .forEach(slotKey => {
+                    if (this.columnProperties.includes(slotKey) || regex.test(slotKey)) {
+                        slots[slotKey] = this.$scopedSlots[slotKey];
+                    }
+                });
 
             return slots;
         },
@@ -309,106 +333,228 @@ export default {
         },
 
         headerRowClasses () {
-            return this.classProcessor.process(0);
+            return this.cssProcessor.process(0);
         },
 
         infoClasses () {
             return this.classes.info || {};
         },
+
+        hasNoResults () {
+            return !this.hasVisibleRows || this.loading;
+        },
+
+        hasVisibleRows () {
+            return this.totalVisibleRows > 0;
+        },
+
+        displayHeader () {
+            return this.displayFilter || this.$slots.title;
+        },
+
+        displayFilter () {
+            return this.showFilter && this.filterColumnProperties.length > 0;
+        },
     },
 
     watch: {
-        totalRows: {
-            handler: 'totalRowsChange',
+        rows: {
+            handler: 'rowsChanged',
+            immediate: true,
+        },
+
+        columns: {
+            handler: 'columnsChanged',
             immediate: true,
         },
 
         filter: {
             handler: 'filterChange',
-            immediate: true,
         },
 
-        currentFilter: {
-            handler: 'currentFilterChange',
+        classes: function (classes)  {
+            this.cssProcessor.classes = classes;
         },
 
-        page: {
-            handler: 'pageChange',
+        totalVisibleRows: function (totalVisibleRows) {
+            this.cssProcessor.totalRows = totalVisibleRows === 0 ? 2 : totalVisibleRows + 1;
         },
-
-        visibleRows (visibleRows) {
-            this.classProcessor.totalRows = visibleRows.length === 0 ? 2 : visibleRows.length + 1;
-        },
-    },
-
-    async created () {
-        if (!(this.async instanceof Function)) {
-            return;
-        }
-
-        await this.callChildRowsOfCollection(this.rowCollection);
-        this.sequentialCalls = 0;
     },
 
     methods: {
-        totalRowsChange (totalRows) {
-            if (totalRows > this.rowCollection.length) {
-                this.rowCollection.length = totalRows;
+        rowsChanged (rows, oldRows, parent = 0) {
+            rows
+                .forEach(row => {
+                    if (!row.hasOwnProperty('_children')) {
+                        Vue.set(row, '_children', []);
+                    }
+
+                    if (!row.hasOwnProperty('_showChildren')) {
+                        Vue.set(row, '_showChildren', false);
+                    }
+
+                    if (!row.hasOwnProperty('_meta')) {
+                        Vue.set(row, '_meta', {
+                            parent,
+                            loading: false,
+                            visibleChildren: row._children,
+                        });
+                    }
+
+                    this.callChildRows(row);
+                });
+
+            rows
+                .filter(row => row._children.length > 0)
+                .forEach(row => this.rowsChanged(row._children, null, parent + 1));
+
+            if (parent === 0) {
+                this.showChildren = true;
+                this.$nextTick(() => {
+                    this.showChildren = false;
+                });
             }
         },
 
-        filterChange (filter) {
-            if (filter === this.currentFilter) {
-                return;
+        columnsChanged (columns) {
+            let maxSortOrder = this.maxSortOrder();
+            columns.forEach(column => {
+                if (typeof column.property !== 'string') {
+                    Vue.set(column, 'property', '');
+                }
+
+                if (!column.hasOwnProperty('order') && !column.hasOwnProperty('direction')) {
+                    return;
+                }
+
+                if (!Number.isInteger(column.order) || column.order < 0) {
+                    column.order = ++maxSortOrder;
+                }
+
+                if (!column.hasOwnProperty('direction')) {
+                    Vue.set(column, 'direction', null);
+                }
+            });
+
+            if (!this.hasCollapseIcon(columns)) {
+                Vue.set(columns[0], 'collapseIcon', true);
             }
 
-            this.currentFilter = filter;
+            this.cssProcessor.totalColumns = columns.length;
         },
 
-        async currentFilterChange (currentFilter) {
-            this.pageChange(0);
+        hasCollapseIcon (columns) {
+            return columns.find(column => column.collapseIcon);
+        },
+
+        rowMatch (row) {
+            if (this.filter === '' || this.filterColumnProperties.length === 0) {
+                // filter is needed because of recursivity
+                row._meta.visibleChildren = row._children.filter(this.rowMatch);
+                return true;
+            }
+
+            let rowMatch = Object.keys(row)
+                .filter(rowKey => this.filterColumnProperties.includes(rowKey))
+                .filter(filterKey => this.filterRegex.test(row[filterKey]))
+                .length > 0;
+
+            row._meta.visibleChildren = row._children.filter(this.rowMatch);
+
+            if (row._meta.visibleChildren.length === 0) {
+                return rowMatch;
+            }
+
+            // only show the children if a row is added or removed or if the filter changed
+            if (this.showChildren) {
+                row._showChildren = true;
+            }
+
+            return true;
+        },
+
+        maxSortOrder () {
+            return this.columns.reduce((max, column) => {
+                return max < column.order ? column.order : max;
+            }, 0);
+        },
+
+        sortRows (rows) {
+            this.sortColumns
+                .forEach(column => {
+                    let direction = column.direction ? 1 : -1;
+                    rows.sort((rowA, rowB) => {
+                        let sortValueA = rowA[column.property];
+                        let sortValueB = rowB[column.property];
+
+                        if (typeof sortValueA === 'string' && typeof  sortValueB === 'string') {
+                            return direction * ('' + sortValueA.localeCompare(sortValueB));
+                        }
+
+                        if (sortValueA < sortValueB) {
+                            return -direction;
+                        }
+
+                        if (sortValueA > sortValueB) {
+                            return direction;
+                        }
+
+                        return 0;
+                    });
+                });
+
+            rows
+                .filter(row => row._meta.visibleChildren.length > 0)
+                .forEach(row => {
+                    row._meta.visibleChildren = this.sortRows(row._meta.visibleChildren);
+                });
+
+            return rows;
+        },
+
+        flatten (rows) {
+            return rows
+                .reduce((flattenedRows, row) => {
+                    return flattenedRows.concat([
+                        row,
+                        ...(row && row._showChildren ? this.flatten(row._meta.visibleChildren) : []),
+                    ]);
+                }, []);
+        },
+
+        findChildrenToCall (row) {
+            return (row.hasOwnProperty('_hasChildren') && row._hasChildren) || row._children.find(this.findChildrenToCall);
+        },
+
+        async filterChange (filter) {
+            this.page = 0;
             await this.callRootRows();
+
+            this.showChildren = true;
+            this.$nextTick(() => {
+                this.showChildren = false;
+            });
         },
 
         async sort (column) {
-            this.columnCollection.sort(column);
-            this.sortColumns = this.columnCollection.sortColumns();
+            column.direction = !column.direction;
+            column.order = this.maxSortOrder() + 1;
             await this.callRootRows();
         },
 
-        async pageChange (page, start = null, end = null) {
-            if (page === this.currentPage && this.start !== null && this.end !== null) {
-                return;
-            }
+        pageChange (page) {
+            this.page = page;
+        },
 
-            this.currentPage = page;
-
-            if (start !== null) {
-                this.start = start;
-            }
-
-            if (end !== null) {
-                this.end = end;
-            }
-
+        async rangeChange (start, end) {
+            this.start = start;
+            this.end = end;
             await this.callRootRows();
         },
 
         async toggleChildren (row) {
+            row._showChildren = !row._showChildren;
             await this.callChildRows(row);
-            row.toggleChildren();
-        },
-
-        async callChildRows (parent) {
-            if (parent.showChildren || !(this.async instanceof Function) || (this.useCache && parent.childrenLoaded())) {
-                return;
-            }
-
-            parent.toggleLoading();
-            let result = await this.callRows(parent);
-            this.sequentialCalls = 0;
-            parent[this.processed ? 'visibleChildren' : 'children'] = result.rows;
-            parent.toggleLoading();
         },
 
         async callRootRows () {
@@ -418,50 +564,41 @@ export default {
 
             this.loading = true;
 
-            let result = await this.callRows();
-            this.sequentialCalls = 0;
+            let rows = await this.async(this.filter, this.sortColumns, this.start, this.end);
+            this.rowsChanged(rows);
 
-            if (!this.processed && this.useCache) {
-                this.rowCollection.push(result.rows.items, this.start);
-                this.asyncCollection.clear();
-                this.asyncTotalRows = null;
+            if (!this.processed) {
+                rows.forEach((row, index) => {
+                    Vue.set(this.rows, this.start + index, row);
+                });
+                this.asyncRows = [];
             } else {
-                this.asyncCollection = result.rows;
-                this.asyncTotalRows = this.processed ? result.total : null;
+                this.asyncRows = rows;
             }
 
             this.loading = false;
         },
 
-        async callRows (parent = null) {
-            if (++this.sequentialCalls > this.maxSequetialCalls) {
-                return false;
+        async callChildRows (parent) {
+            if (
+                !parent._showChildren ||
+                !parent._hasChildren ||
+                !(this.asyncChildren instanceof Function) ||
+                parent._children.length > 0
+            ) {
+                return;
             }
 
-            let result = await this.async(this.currentFilter, this.sortColumns, this.start, this.end, parent);
-            result.rows = new RowCollection(result.rows);
-
-            await this.callChildRowsOfCollection(result.rows);
-
-            return result;
+            parent._meta.loading = true;
+            this.storeChildren(await this.asyncChildren(parent), parent);
+            Vue.delete(parent, '_hasChildren');
+            parent._meta.loading = false;
         },
 
-        async callChildRowsOfCollection (rows) {
-            let rowsToLoad = rows.items
-                .filter(row => row.loadChildren());
-
-            for (let i = 0; i < rowsToLoad.length; i++) {
-                let row = rowsToLoad[i];
-                row.toggleLoading();
-                let result = await this.callRows(row);
-                row.toggleLoading();
-
-                if (result) {
-                    row[this.processed ? 'visibleChildren' : 'children'] = result.rows;
-                } else {
-                    row.toggleChildren();
-                }
-            }
+        storeChildren (children, parent) {
+            this.rowsChanged(children, null, parent._meta.parent + 1);
+            parent._children = children;
+            parent._meta.visibleChildren = children;
         },
     },
 };

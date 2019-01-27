@@ -3,23 +3,22 @@
         :class="rowClasses"
     >
         <vue-ads-cell
-            v-for="(column, key) in columns.items"
+            v-for="(column, key) in columns"
             :column-slot="columnSlot(column)"
             :key="key"
-            :row-index="$vnode.key"
+            :row-index="rowIndex"
+            :column-index="key"
             :row="row"
             :column="column"
-            :classes="classes"
-            @toggleChildren="$emit('toggleChildren');"
+            :css-processor="cssProcessor"
+            @toggleChildren="$emit('toggleChildren')"
         />
     </tr>
 </template>
 
 <script>
-import Row from '../models/Row';
 import VueAdsCell from './Cell';
-
-import ClassProcessor from '../services/ClassProcessor';
+import CSSProcessor from '../services/CSSProcessor';
 
 export default {
     name: 'VueAdsRow',
@@ -30,23 +29,27 @@ export default {
 
     props: {
         row: {
-            type: Row,
+            type: Object,
+            required: true,
+        },
+
+        rowIndex: {
+            type: Number,
             required: true,
         },
 
         columns: {
-            type: Object,
+            type: Array,
             required: true,
         },
 
         slots: {
             type: Object,
-            required: false,
             default: () => { return {}; },
         },
 
-        classes: {
-            type: ClassProcessor,
+        cssProcessor: {
+            type: CSSProcessor,
             required: true,
         },
     },
@@ -54,8 +57,8 @@ export default {
     computed: {
         rowClasses () {
             return Object.assign(
-                this.classes.process(this.$vnode.key + 1, null, this.row),
-                this.row.classes ? ClassProcessor.processValue(this.row.classes.row, this.row) : {}
+                this.cssProcessor.process(this.rowIndex + 1, null, this.row),
+                this.row._classes ? CSSProcessor.processValue(this.row._classes.row, this.row) : {}
             );
         },
     },

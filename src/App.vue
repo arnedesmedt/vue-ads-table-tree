@@ -1,16 +1,17 @@
 <template>
     <div
         id="app"
-        class="m-6">
+        class="m-6"
+    >
         <div class="mb-6">
             <vue-ads-table-tree
                 :columns="columns"
                 :rows="rows"
                 :filter="filterValue"
-                :page="1"
-                :classes="classes"
-                :async="asyncCall"
-                :total-rows="50"
+                @filter-change="filterChange"
+                :async-children="callChildren"
+                :async="call"
+                :total-rows="100"
             >
                 <template slot="title">
                     <h2 class="font-bold uppercase">
@@ -33,60 +34,30 @@
                         placeholder="Filter..."
                     >
                 </template>
-                <template
-                    slot="pagination"
-                    slot-scope="props"
-                >
-                    <vue-ads-pagination
-                        :total-items="props.total"
-                        :page="page"
-                        :loading="props.loading"
-                        :items-per-page="5"
-                        @page-change="props.pageChange"
-                    >
-                        <template slot-scope="props">
-                            <div class="vue-ads-pr-2 vue-ads-leading-loose">
-                                Items {{ props.start }} tot {{ props.end }} van de {{ props.total }}
-                            </div>
-                        </template>
-                        <template
-                            slot="buttons"
-                            slot-scope="props"
-                        >
-                            <vue-ads-page-button
-                                v-for="(button, key) in props.buttons"
-                                :key="key"
-                                v-bind="button"
-                                :class="{'bg-yellow-dark': button.active}"
-                                @page-change="page = button.page"
-                            />
-                        </template>
-                    </vue-ads-pagination>
-                </template>
             </vue-ads-table-tree>
         </div>
     </div>
 </template>
 
 <script>
+import './assets/css/tailwind.css';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import VueAdsTableTree from './components/TableTree';
-import VueAdsPagination, { VueAdsPageButton } from '../node_modules/vue-ads-pagination/dist/vue-ads-pagination.common';
 
-// todo show pagination on loading
+// todo add possibility to add an _id to the row. If it's set. you can combine the column name with the id to template a specific cell
+// todo update the readme
+// todo add tests
 
 export default {
     name: 'App',
 
     components: {
         VueAdsTableTree,
-        VueAdsPagination,
-        VueAdsPageButton,
     },
 
     data () {
         return {
-            page: 1,
+            page: 0,
             filterValue: '',
             classes: {
                 table: {
@@ -122,33 +93,30 @@ export default {
                 {
                     property: 'firstName',
                     title: 'First Name',
-                    sortable: true,
+                    direction: null,
                     filterable: true,
                 },
                 {
                     property: 'lastName',
                     title: 'Last Name',
+                    direction: null,
                     filterable: true,
-                    sortable: true,
                 },
             ],
             rows: [
                 {
-                    firstName: 'Josephine',
-                    lastName: 'Astrid',
-                },
-                {
                     firstName: 'Boudewijn',
                     lastName: 'Van Brabandt',
+                    _hasChildren: true,
                 },
                 {
                     firstName: 'Albert II',
                     lastName: 'Van Belgie',
-                    children: [
+                    _children: [
                         {
                             firstName: 'Filip',
                             lastName: 'Van Belgie',
-                            children: [
+                            _children: [
                                 {
                                     firstName: 'Elisabeth',
                                     lastName: 'Van Brabant',
@@ -164,7 +132,7 @@ export default {
                                 {
                                     firstName: 'Eleonore',
                                     lastName: 'Boudwijn',
-                                    hasChildren: true,
+                                    _hasChildren: true,
                                 },
                             ],
                         },
@@ -182,6 +150,12 @@ export default {
                 {
                     firstName: 'Alexander',
                     lastName: 'Van Belgie',
+                    _children: [
+                        {
+                            firstName: 'Alexander Junior',
+                            lastName: 'Van Belgie',
+                        },
+                    ],
                 },
                 {
                     firstName: 'Marie-Christine',
@@ -220,61 +194,34 @@ export default {
     },
 
     methods: {
-        async asyncCall (filter, sortColumns, start, end, parent) {
+        async call (filter, sortColumns, start, end) {
             await this.sleep(1000);
 
-            let startRows = this.rows;
-            if (parent) {
-                startRows = this.rows.slice(3, 5);
-            }
-
-            let filteredRows = this.filter(startRows, filter);
-            let sortedRows = this.sort(filteredRows, sortColumns);
-
-            let diff = start - (start % 10);
-            let rows = parent ? sortedRows : sortedRows.slice(start % 10, end - diff);
-
-            return {
-                total: filter ? 100 : 25,
-                rows,
-            };
-        },
-
-        filter (rows, filter) {
-            if (!filter) {
-                return rows;
-            }
-
-            let regex = new RegExp(filter, 'i');
-
-            return rows.filter(row => {
-                return regex.test(row.firstName) || regex.test(row.lastName);
+            return Array.from(Array(end - start)).map(item => {
+                return {
+                    firstName: 'test',
+                    lastName: 'called',
+                };
             });
         },
 
-        sort (rows, sortColumns) {
-            if (!sortColumns.length) {
-                return rows;
-            }
+        async callChildren (parent) {
+            await this.sleep(1000);
 
-            let sortedRows = rows;
-
-            sortColumns
-                .filter(sortColumn => sortColumn.direction !== null)
-                .forEach(sortColumn => {
-                    sortedRows.sort((a, b) => {
-                        a = a[sortColumn.property];
-                        b = b[sortColumn.property];
-
-                        return (sortColumn.direction ? 1 : -1) * ('' + a.localeCompare(b));
-                    });
-                });
-
-            return sortedRows;
+            return [
+                {
+                    firstName: 'test',
+                    lastName: 'called',
+                },
+            ];
         },
 
         sleep (ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
+        },
+
+        filterChange (filter) {
+            this.filterValue = filter;
         },
     },
 };

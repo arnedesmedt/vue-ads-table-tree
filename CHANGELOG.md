@@ -1,9 +1,20 @@
 ## Changelog
 
+#### v1.4.0 - 27/01/2019
+
+- Add underscores as a prefix to the meta data of row objects.
+- Removed the possibility to don't store async items in the cache.
+- Don't create new objects from rows and columns but use them as they were created.
+
+
+#### v1.3.0 - 04/01/2019
+
+- make the properties of the rows reactive.
+
 #### v1.2.5 - 18/12/2018
 
 - Use system ui as the table tree font
-- Remove the table title by default becaus you will not use a title with the value 'title'.
+- Remove the table title by default because you will not use a title with the value 'title'.
 
 #### v1.2.4 - 07/12/2018
 

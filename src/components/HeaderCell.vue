@@ -1,7 +1,7 @@
 <template>
     <th
         :class="headerClasses"
-        class="vue-ads-px-4 vue-ads-py-2 vue-ads-text-left vue-ads-cursor-pointer"
+        class=""
         @click="$emit('sort')"
     >
         <div class="vue-ads-flex">
@@ -19,7 +19,7 @@
 
 <script>
 
-import ClassProcessor from '../services/ClassProcessor';
+import CSSProcessor from '../services/CSSProcessor';
 
 export default {
     name: 'VueAdsHeaderCell',
@@ -27,24 +27,29 @@ export default {
     props: {
         title: {
             type: String,
-            required: false,
             default: '',
+        },
+
+        columnIndex: {
+            type: Number,
+            required: true,
         },
 
         sortable: {
             type: Boolean,
-            required: false,
             default: false,
         },
 
         direction: {
-            type: Boolean,
-            required: false,
-            default: false,
+            type: [
+                Boolean,
+                null,
+            ],
+            default: null,
         },
 
-        classes: {
-            type: ClassProcessor,
+        cssProcessor: {
+            type: CSSProcessor,
             required: true,
         },
     },
@@ -52,8 +57,15 @@ export default {
     computed: {
         headerClasses () {
             return Object.assign(
-                this.classes.process(null, this.$vnode.key),
-                this.classes.process(0, this.$vnode.key),
+                {
+                    'vue-ads-cursor-pointer': [
+                        null,
+                        true,
+                        false,
+                    ].includes(this.direction) && this.sortable,
+                },
+                this.cssProcessor.process(null, this.columnIndex),
+                this.cssProcessor.process(0, this.columnIndex),
             );
         },
 

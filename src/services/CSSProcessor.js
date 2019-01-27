@@ -1,8 +1,9 @@
 
-export default class ClassProcessor {
-    constructor (classes, totalColumns) {
-        this.totalColumns = totalColumns;
-        this.classes = classes;
+export default class CSSProcessor {
+    constructor (totalColumns, classes) {
+        this._totalColumns = totalColumns;
+        this._classes = classes;
+        this.processClasses();
     }
 
     set classes (classes) {
@@ -11,12 +12,14 @@ export default class ClassProcessor {
     }
 
     get classes () {
-        return this._classes || [];
+        return this._classes || {};
     }
 
     set totalRows (totalRows) {
-        this._totalRows = totalRows;
-        this.processClasses();
+        if (this._totalRows !== totalRows) {
+            this._totalRows = totalRows;
+            this.processClasses();
+        }
     }
 
     get totalRows () {
@@ -24,8 +27,10 @@ export default class ClassProcessor {
     }
 
     set totalColumns (totalColumns) {
-        this._totalColumns = totalColumns;
-        this.processClasses();
+        if (this._totalColumns !== totalColumns) {
+            this._totalColumns = totalColumns;
+            this.processClasses();
+        }
     }
 
     get totalColumns () {
@@ -60,48 +65,40 @@ export default class ClassProcessor {
         case 'even':
             return Array.from(Array(total).keys()).filter(item => (item % 2) === 0);
         case 'odd':
-            return Array.from(Array(total).keys()).filter(item => (++item % 2) === 0);
+            return Array.from(Array(total).keys()).filter(item => (item % 2) === 1);
         }
 
-        return [].concat(
-            ...selector.split(',')
-                .map(selector => selector.trim())
-                .map(selector => {
-                    if (selector.includes('_')) {
-                        let range = selector.split('_')
-                            .map(index => Number.parseInt(index))
-                            .map(index => index < 0 ? total + index : index);
+        return [].concat(...selector.split(',')
+            .map(selector => selector.trim())
+            .map(selector => {
+                if (selector.includes('_')) {
+                    let range = selector.split('_')
+                        .map(index => Number.parseInt(index))
+                        .map(index => index < 0 ? total + index : index);
 
-                        if (range[0] < 0 || range[1] < 0 || range[0] > range[1]) {
-                            return null;
-                        }
-
-                        return Array.from(Array(range[1] - range[0]).keys())
-                            .map(number => number + range[0]);
+                    if (range[0] < 0 || range[1] < 0 || range[0] > range[1]) {
+                        return null;
                     }
 
-                    return Number.parseInt(selector);
-                })
-                .filter(selector => selector !== null)
-        );
+                    return Array.from(Array(range[1] - range[0]).keys())
+                        .map(number => number + range[0]);
+                }
+
+                return Number.parseInt(selector);
+            })
+            .filter(selector => selector !== null));
     }
 
     process (rowIndex = null, columnIndex = null, ...args) {
         return this.processedClasses
-            .map(classes => {
-                if (
-                    (rowIndex === null && columnIndex === null) ||
+            .filter(classes => {
+                return !((rowIndex === null && columnIndex === null) ||
                     (columnIndex === null && classes.columns.length > 0) ||
                     (rowIndex === null && classes.rows.length > 0) ||
                     (columnIndex !== null && !classes.columns.includes(columnIndex)) ||
-                    (rowIndex !== null && !classes.rows.includes(rowIndex))
-                ) {
-                    return null;
-                }
-
-                return ClassProcessor.processValue(classes.value, ...args);
+                    (rowIndex !== null && !classes.rows.includes(rowIndex)));
             })
-            .filter(classes => classes)
+            .map(classes => CSSProcessor.processValue(classes.value, ...args))
             .reduce((result, classes) => Object.assign(result, classes), {});
     }
 
@@ -123,14 +120,9 @@ export default class ClassProcessor {
         }
 
         return Object.keys(classes)
-            .map(key => {
-                if (!this.toRange(key, this.totalColumns).includes(columnIndex)) {
-                    return null;
-                }
-
-                return ClassProcessor.processValue(classes[key], ...args);
-            })
-            .filter(classes => classes)
+            .filter(key => key !== 'row')
+            .filter(key => this.toRange(key, this.totalColumns).includes(columnIndex))
+            .map(key => CSSProcessor.processValue(classes[key], ...args))
             .reduce((result, classes) => Object.assign(result, classes), {});
     }
 }
