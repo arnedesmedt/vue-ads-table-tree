@@ -1,10 +1,10 @@
-import ClassesProcessor from '../../../src/services/ClassProcessor';
+import CSSProcessor from '../../../src/services/CSSProcessor';
 
 describe('ClassProcessor', () => {
     let processor;
 
     beforeEach(() => {
-        processor = new ClassesProcessor({}, 0);
+        processor = new CSSProcessor(0, {});
         processor.totalRows = 5;
     });
 
@@ -71,11 +71,11 @@ describe('ClassProcessor', () => {
     });
 
     it('doesn\'t style any row if the total rows is not given', () => {
-        processor = new ClassesProcessor({
+        processor = new CSSProcessor(0, {
             'even/': {
                 test: true,
             },
-        }, 0);
+        });
 
         expect(processor.processedClasses[0].rows).toEqual([]);
         expect(processor.process(0)).toEqual({});
