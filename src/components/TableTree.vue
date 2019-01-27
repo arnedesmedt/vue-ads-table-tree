@@ -75,32 +75,22 @@
                     v-else
                     name="rows"
                 >
-                    <template v-for="(row, rowKey) in flattenedRows">
-                        <vue-ads-row
-                            v-if="row"
-                            :key="rowKey"
-                            :row="row"
-                            :row-index="rowKey"
-                            :columns="columns"
-                            :slots="slots"
-                            :css-processor="cssProcessor"
-                            @toggleChildren="toggleChildren(row)"
-                        />
-                        <tr v-else>
-                            <td
-                                :class="emptyChildrenClasses"
-                                :colspan="columns.length"
-                            >
-                                <slot title="no-child-rows">No child rows found due to filter</slot>
-                            </td>
-                        </tr>
-                    </template>
+                    <vue-ads-row
+                        v-for="(row, rowKey) in flattenedRows"
+                        :key="rowKey"
+                        :row="row"
+                        :row-index="rowKey"
+                        :columns="columns"
+                        :slots="slots"
+                        :css-processor="cssProcessor"
+                        @toggleChildren="toggleChildren(row)"
+                    />
                 </slot>
             </tbody>
         </table>
         <!-- PAGINATION -->
         <slot
-            :total="totalFilteredRows"
+            :total="total"
             :page="page"
             :loading="loading"
             :pageChange="pageChange"
@@ -109,7 +99,7 @@
             name="pagination"
         >
             <vue-ads-pagination
-                :total-items="totalFilteredRows"
+                :total-items="total"
                 :page="page"
                 :loading="loading"
                 :items-per-page="itemsPerPage"
@@ -175,12 +165,7 @@ export default {
                         'vue-ads-text-center': true,
                         'vue-ads-py-6': true,
                         'vue-ads-text-sm': true,
-                    },
-                    emptyChildren: {
-                        'vue-ads-text-center': true,
-                        'vue-ads-py-2': true,
-                        'vue-ads-italic': true,
-                        'vue-ads-text-sm': true,
+                        'vue-ads-border-t': true,
                     },
                     'all/': {
                         'hover:vue-ads-bg-grey-lighter': true,
@@ -228,6 +213,10 @@ export default {
         },
     },
 
+    mounted () {
+        this.callRootRows();
+    },
+
     data () {
         return {
             debounceFilter: debounce(filter => this.$emit('filter-change', filter), 500),
@@ -254,6 +243,10 @@ export default {
                 .sort((columnA, columnB) => columnA.order - columnB.order);
         },
 
+        processed () {
+            return this.filter || this.sortColumns.length > 0;
+        },
+
         filterColumnProperties () {
             return this.columns
                 .filter(column => {
@@ -267,7 +260,6 @@ export default {
         },
 
         filteredRows () {
-            console.log('filter');
             return this.rows
                 .filter(this.rowMatch);
         },
@@ -292,8 +284,8 @@ export default {
             return this.flattenedRows.length;
         },
 
-        totalFilteredRows () {
-            return this.filteredRows.length;
+        total () {
+            return !this.filter || this.call ? (this.totalRows || this.rows.length) : this.filteredRows.length;
         },
 
         call () {
@@ -305,7 +297,7 @@ export default {
                 return true;
             }
 
-            if (this.rows.find(this.findChildrenToCall)) {
+            if (this.fullLoaded && this.rows.find(this.findChildrenToCall)) {
                 return false;
             }
 
@@ -313,7 +305,7 @@ export default {
                 return true;
             }
 
-            if (this.rows.length === (this.totalRows || this.rows.length)) {
+            if (this.fullLoaded) {
                 return false;
             }
 
@@ -321,7 +313,11 @@ export default {
                 return true;
             }
 
-            return this.rows.slice(this.start, this.end).length === (this.end - this.start);
+            return (this.rows.slice(this.start, this.end).length < (this.end - this.start));
+        },
+
+        fullLoaded () {
+            return this.rows.length === (this.totalRows || this.rows.length);
         },
 
         slots () {
@@ -350,16 +346,12 @@ export default {
             return this.classes.info || {};
         },
 
-        emptyChildrenClasses () {
-            return this.classes.emptyChildren || {};
-        },
-
         hasNoResults () {
             return !this.hasVisibleRows || this.loading;
         },
 
         hasVisibleRows () {
-            return this.paginatedRows.length > 0;
+            return this.totalVisibleRows > 0;
         },
 
         displayHeader () {
@@ -393,16 +385,6 @@ export default {
         totalVisibleRows: function (totalVisibleRows) {
             this.cssProcessor.totalRows = totalVisibleRows === 0 ? 2 : totalVisibleRows + 1;
         },
-
-        // totalRows: {
-        //     handler: 'totalRowsChange',
-        //     immediate: true,
-        // },
-
-        //
-        // visibleRows (visibleRows) {
-        //     this.classProcessor.totalRows = visibleRows.length === 0 ? 2 : visibleRows.length + 1;
-        // },
     },
 
     methods: {
@@ -471,7 +453,7 @@ export default {
             return columns.find(column => column.collapseIcon);
         },
 
-        rowMatch (row, index) {
+        rowMatch (row) {
             if (this.filter === '' || this.filterColumnProperties.length === 0) {
                 // filter is needed because of recursivity
                 row._meta.visibleChildren = row._children.filter(this.rowMatch);
@@ -485,8 +467,7 @@ export default {
 
             row._meta.visibleChildren = row._children.filter(this.rowMatch);
 
-            if (row._meta.visibleChildren.length === 0 && !row._meta.loading) {
-                row._meta.visibleChildren = [null];
+            if (row._meta.visibleChildren.length === 0) {
                 return rowMatch;
             }
 
@@ -537,12 +518,6 @@ export default {
             return rows;
         },
 
-        // totalRowsChange (totalRows) {
-        //     if (totalRows > this.rowCollection.length) {
-        //         this.rowCollection.length = totalRows;
-        //     }
-        // },
-
         flatten (rows) {
             return rows
                 .reduce((flattenedRows, row) => {
@@ -557,11 +532,9 @@ export default {
             return (row.hasOwnProperty('_hasChildren') && row._hasChildren) || row._children.find(this.findChildrenToCall);
         },
 
-        // async currentFilterChange (currentFilter) {
-        //     this.pageChange(0);
-        //     await this.callRootRows();
-        filterChange (filter) {
+        async filterChange (filter) {
             this.page = 0;
+            await this.callRootRows();
 
             this.showChildren = true;
             this.$nextTick(() => {
@@ -572,17 +545,17 @@ export default {
         async sort (column) {
             column.direction = !column.direction;
             column.order = this.maxSortOrder() + 1;
-            // await this.callRootRows();
+            await this.callRootRows();
         },
 
-        async pageChange (page) {
+        pageChange (page) {
             this.page = page;
-            // await this.callRootRows();
         },
 
-        rangeChange (start, end) {
+        async rangeChange (start, end) {
             this.start = start;
             this.end = end;
+            await this.callRootRows();
         },
 
         async toggleChildren (row) {
@@ -590,27 +563,27 @@ export default {
             await this.callChildRows(row);
         },
 
-        // async callRootRows () {
-        //     if (!this.call) {
-        //         return;
-        //     }
-        //
-        //     this.loading = true;
-        //
-        //     let result = await this.callRows();
-        //     this.sequentialCalls = 0;
-        //
-        //     if (!this.processed && this.useCache) {
-        //         this.rowCollection.push(result.rows.items, this.start);
-        //         this.asyncCollection.clear();
-        //         this.asyncTotalRows = null;
-        //     } else {
-        //         this.asyncCollection = result.rows;
-        //         this.asyncTotalRows = this.processed ? result.total : null;
-        //     }
-        //
-        //     this.loading = false;
-        // },
+        async callRootRows () {
+            if (!this.call) {
+                return;
+            }
+
+            this.loading = true;
+
+            let rows = await this.async(this.filter, this.sortColumns, this.start, this.end);
+            this.rowsChanged(rows);
+
+            if (!this.processed) {
+                rows.forEach((row, index) => {
+                    Vue.set(this.rows, this.start + index, row);
+                });
+                this.asyncRows = [];
+            } else {
+                this.asyncRows = rows;
+            }
+
+            this.loading = false;
+        },
 
         async callChildRows (parent) {
             if (
@@ -623,7 +596,7 @@ export default {
             }
 
             parent._meta.loading = true;
-            await this.asyncChildren(parent, this.storeChildren);
+            this.storeChildren(await this.asyncChildren(parent), parent);
             Vue.delete(parent, '_hasChildren');
             parent._meta.loading = false;
         },

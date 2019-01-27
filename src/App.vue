@@ -3,8 +3,6 @@
         id="app"
         class="m-6"
     >
-        <div class="w-6 h-6 bg-green" @click="addRow"></div>
-        <div class="w-6 h-6 bg-blue" @click="addColumn"></div>
         <div class="mb-6">
             <vue-ads-table-tree
                 :columns="columns"
@@ -12,58 +10,30 @@
                 :filter="filterValue"
                 @filter-change="filterChange"
                 :async-children="callChildren"
+                :async="call"
+                :total-rows="100"
             >
-                <!--<template slot="title">-->
-                <!--<h2 class="font-bold uppercase">-->
-                <!--Belgium royal family-->
-                <!--</h2>-->
-                <!--</template>-->
-                <!--<template-->
-                <!--slot="firstName"-->
-                <!--slot-scope="props">-->
-                <!--<a-->
-                <!--:href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`"-->
-                <!--target="_blank">{{ props.row.firstName }}</a>-->
-                <!--</template>-->
-                <!--<template slot="filter">-->
-                <!--<h3 class="inline pr-2">Filter:</h3>-->
-                <!--<input-->
-                <!--v-model="filterValue"-->
-                <!--class="appearance-none border py-2 px-3"-->
-                <!--type="text"-->
-                <!--placeholder="Filter..."-->
-                <!--&gt;-->
-                <!--</template>-->
-                <!--<template-->
-                <!--slot="pagination"-->
-                <!--slot-scope="props"-->
-                <!--&gt;-->
-                <!--<vue-ads-pagination-->
-                <!--:total-items="props.total"-->
-                <!--:page="page"-->
-                <!--:loading="props.loading"-->
-                <!--:items-per-page="5"-->
-                <!--@page-change="props.pageChange"-->
-                <!--&gt;-->
-                <!--<template slot-scope="props">-->
-                <!--<div class="vue-ads-pr-2 vue-ads-leading-loose">-->
-                <!--Items {{ props.start }} tot {{ props.end }} van de {{ props.total }}-->
-                <!--</div>-->
-                <!--</template>-->
-                <!--<template-->
-                <!--slot="buttons"-->
-                <!--slot-scope="props"-->
-                <!--&gt;-->
-                <!--<vue-ads-page-button-->
-                <!--v-for="(button, key) in props.buttons"-->
-                <!--:key="key"-->
-                <!--v-bind="button"-->
-                <!--:class="{'bg-yellow-dark': button.active}"-->
-                <!--@page-change="page = button.page"-->
-                <!--/>-->
-                <!--</template>-->
-                <!--</vue-ads-pagination>-->
-                <!--</template>-->
+                <template slot="title">
+                    <h2 class="font-bold uppercase">
+                        Belgium royal family
+                    </h2>
+                </template>
+                <template
+                    slot="firstName"
+                    slot-scope="props">
+                    <a
+                        :href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`"
+                        target="_blank">{{ props.row.firstName }}</a>
+                </template>
+                <template slot="filter">
+                    <h3 class="inline pr-2">Filter:</h3>
+                    <input
+                        v-model="filterValue"
+                        class="appearance-none border py-2 px-3"
+                        type="text"
+                        placeholder="Filter..."
+                    >
+                </template>
             </vue-ads-table-tree>
         </div>
     </div>
@@ -73,27 +43,20 @@
 import './assets/css/tailwind.css';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 import VueAdsTableTree from './components/TableTree';
-import VueAdsPagination, { VueAdsPageButton } from '../node_modules/vue-ads-pagination/dist/vue-ads-pagination.common';
 
-// todo show pagination on loading
-// todo find more unique way to show slots for one specific cell => now the cell value is used, but what if a cell contains booleans?
+// todo add possibility to add an _id to the row. If it's set. you can combine the column name with the id to template a specific cell
+// todo update the readme
+// todo add tests
 
 export default {
     name: 'App',
 
     components: {
         VueAdsTableTree,
-        VueAdsPagination,
-        VueAdsPageButton,
     },
 
     data () {
-        let first = {
-            firstName: 'Joselephine',
-            lastName: 'Astrid',
-        };
         return {
-            first,
             page: 0,
             filterValue: '',
             classes: {
@@ -133,9 +96,14 @@ export default {
                     direction: null,
                     filterable: true,
                 },
+                {
+                    property: 'lastName',
+                    title: 'Last Name',
+                    direction: null,
+                    filterable: true,
+                },
             ],
             rows: [
-                first,
                 {
                     firstName: 'Boudewijn',
                     lastName: 'Van Brabandt',
@@ -179,16 +147,16 @@ export default {
 
                     ],
                 },
-                // {
-                //     firstName: 'Alexander',
-                //     lastName: 'Van Belgie',
-                //     _children: [
-                //         {
-                //             firstName: 'Alexander Junior',
-                //             lastName: 'Van Belgie',
-                //         },
-                //     ],
-                // },
+                {
+                    firstName: 'Alexander',
+                    lastName: 'Van Belgie',
+                    _children: [
+                        {
+                            firstName: 'Alexander Junior',
+                            lastName: 'Van Belgie',
+                        },
+                    ],
+                },
                 {
                     firstName: 'Marie-Christine',
                     lastName: 'Leopoldine',
@@ -226,106 +194,30 @@ export default {
     },
 
     methods: {
-        async asyncCall (filter, sortColumns, start, end, parent) {
+        async call (filter, sortColumns, start, end) {
             await this.sleep(1000);
 
-            let startRows = this.rows;
-            if (parent) {
-                startRows = this.rows.slice(3, 5);
-            }
-
-            let filteredRows = this.filter(startRows, filter);
-            let sortedRows = this.sort(filteredRows, sortColumns);
-
-            let diff = start - (start % 10);
-            let rows = parent ? sortedRows : sortedRows.slice(start % 10, end - diff);
-
-            return {
-                total: filter ? 100 : 25,
-                rows,
-            };
+            return Array.from(Array(end - start)).map(item => {
+                return {
+                    firstName: 'test',
+                    lastName: 'called',
+                };
+            });
         },
 
-        async callChildren (parent, callback) {
+        async callChildren (parent) {
             await this.sleep(1000);
-            callback([
+
+            return [
                 {
                     firstName: 'test',
                     lastName: 'called',
                 },
-            ], parent);
-        },
-
-        filter (rows, filter) {
-            if (!filter) {
-                return rows;
-            }
-
-            let regex = new RegExp(filter, 'i');
-
-            return rows.filter(row => {
-                return regex.test(row.firstName) || regex.test(row.lastName);
-            });
-        },
-
-        sort (rows, sortColumns) {
-            if (!sortColumns.length) {
-                return rows;
-            }
-
-            let sortedRows = rows;
-
-            sortColumns
-                .filter(sortColumn => sortColumn.direction !== null)
-                .forEach(sortColumn => {
-                    sortedRows.sort((a, b) => {
-                        a = a[sortColumn.property];
-                        b = b[sortColumn.property];
-
-                        return (sortColumn.direction ? 1 : -1) * ('' + a.localeCompare(b));
-                    });
-                });
-
-            return sortedRows;
+            ];
         },
 
         sleep (ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
-        },
-
-        addRow () {
-            this.rows.push({
-                firstName: 'Arend',
-                lastName: 'Van Belgie',
-                _hasChildren: true,
-                _showChildren: true,
-            });
-
-            // this.rows[2]._children[0]._children[3].firstName = 'Arne';
-
-            // this.$refs.tableTree.storeChildren([{
-            //     firstName: 'Arne',
-            //     _children: [
-            //         {
-            //             firstName: 'Hanne',
-            //             lastName: 'test',
-            //             _children: [
-            //                 {
-            //                     firstName: 'bla',
-            //                 },
-            //             ],
-            //         },
-            //     ],
-            // }], this.first);
-        },
-
-        addColumn () {
-            this.columns.push({
-                property: 'lastName',
-                title: 'Last Name',
-                direction: null,
-                filterable: true,
-            });
         },
 
         filterChange (filter) {
