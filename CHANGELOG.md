@@ -1,5 +1,12 @@
 ## Changelog
 
+#### v1.4.0 - 27/01/2019
+
+- Add underscores as a prefix to the meta data of row objects.
+- Removed the possibility to don't store async items in the cache.
+- Don't create new objects from rows and columns but use them as they were created.
+
+
 #### v1.3.0 - 04/01/2019
 
 - make the properties of the rows reactive.

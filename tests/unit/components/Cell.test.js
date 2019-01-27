@@ -125,7 +125,7 @@ describe('Cell', () => {
     it('returns the cell classes with fixed row classes', () => {
         cell.setProps({
             row: {
-                classes: {
+                _classes: {
                     0: {
                         test: true,
                     },
@@ -148,7 +148,7 @@ describe('Cell', () => {
     it('only returns the default cell classes if the column doesn\'t match the fixed row classes', () => {
         cell.setProps({
             row: {
-                classes: {
+                _classes: {
                     1: {
                         test: true,
                     },

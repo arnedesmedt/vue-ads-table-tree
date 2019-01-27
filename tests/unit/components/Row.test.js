@@ -59,7 +59,7 @@ describe('Row', () => {
             row: {
                 firstName: 'Arne',
                 lastName: 'De Smedt',
-                classes: {
+                _classes: {
                     row: {
                         test: true,
                     },

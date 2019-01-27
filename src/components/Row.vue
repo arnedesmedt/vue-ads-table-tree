@@ -58,7 +58,7 @@ export default {
         rowClasses () {
             return Object.assign(
                 this.cssProcessor.process(this.rowIndex + 1, null, this.row),
-                this.row.classes ? CSSProcessor.processValue(this.row.classes.row, this.row) : {}
+                this.row._classes ? CSSProcessor.processValue(this.row._classes.row, this.row) : {}
             );
         },
     },

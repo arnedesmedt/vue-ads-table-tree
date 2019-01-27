@@ -432,7 +432,7 @@ export default {
                 }
 
                 if (!column.hasOwnProperty('direction')) {
-                    Vue.set(column, 'direction', true);
+                    Vue.set(column, 'direction', null);
                 }
             });
 

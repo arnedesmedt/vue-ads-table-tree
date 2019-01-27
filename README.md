@@ -14,6 +14,9 @@ A lot of templates are used, so you can change some parts of it.
 The design of the table is fully customizable. All rows, columns, cells can be changed.
 You can even apply a design for one specific row. That stays fixed after sorting the table.
 
+The columns and rows are also reactive. The only restriction is that you can't add child rows 
+after you've added them initial or via the async child loader
+
 ## Demo
 
 I've written a demo in [JSFiddle](https://jsfiddle.net/arnedesmedt/7my8L42q)
@@ -42,7 +45,7 @@ This is a very simple example.
             :columns="columns"
             :rows="rows"
         >
-            <template>
+            <template slot="title">
                 <h2>
                     My own title
                 </h2>
@@ -73,14 +76,14 @@ export default {
                 {
                     property: 'firstName',
                     title: 'First Name',
-                    sortable: true,
+                    direction: null,
                     filterable: true,
                 },
                 {
                     property: 'lastName',
                     title: 'Last Name',
                     filterable: true,
-                    sortable: true,
+                    direction: null,
                     collapseIcon: true,
                 },
             ],
@@ -102,32 +105,29 @@ export default {
 
 ### Properties
 
-- `columns`: *(type: array, required)* An array containing all the column objects. Each column object can contain the following properties:
+- `columns`: *(type: array, required)* An array containing all the column objects. Each column object can contain the following properties: (If no order or direction property is set, the column is not sortable)
     - `property`: *(type: string, required)* The corresponding value will be shown in the column of the given row property. 
     - `title`: *(type: string)* The title that will be shown in the header. 
     - `filterable`: *(type: boolean)* Filter on this column? 
-    - `sortable`: *(type: boolean)* Is this column sortable? 
-    - `order`: *(type: number)* Column order to sort the rows. 
     - `direction`: *(type: boolean or null)* The initial sort direction. If null, the column is not sorted. If true, the sorting is ascending. If false, the sorting is descending.
+    - `order`: *(type: number)* Column order to sort the rows. 
     - 'collapseIcon': *(type: boolean)* Indicates if this column will contain the collapse icon.
-- `rows`: *(type: array, default: [])* An array containing all the row objects. Each row object has his own key value pairs and extra meta data:
-    - `children`: *(type: array)* An array with child row objects.
-    - `hasChildren`: *(type: boolean, default: false)* Indicates if this row has children. This property will automatically be set to true if the children attribute is set.
-    - `showChildren`: *(type: boolean)* Indicates if the children has to be shown on create. If this is true, and hasChildren is true, but no children attribute is found, an async call will be initiated to get the children.
-    - `classes`: *(type: Object)* fixed styling for the current row. The key is a column indication and the value is vue based class object (see classes property below).  
+- `rows`: *(type: array, default: [])* An array containing all the row objects. Each row object has his own key value pairs and extra meta data. Meta data is prefixed with an underscore:
+    - `_children`: *(type: array)* An array with child row objects.
+    - `_hasChildren`: *(type: boolean, default: false)* Indicates if this row has children. This property will automatically be set to true if the children attribute is set.
+    - `_showChildren`: *(type: boolean)* Indicates if the children has to be shown on create. If this is true, and hasChildren is true, but no children attribute is found, an async call will be initiated to get the children.
+    - `_classes`: *(type: Object)* fixed styling for the current row. The key is the fixed word 'row' to add a class to the tr tag or a column indication without any slashes (see classes property below) and the value is vue based class object.  
 - `totalRows`: *(type: number, default: rows.length)* The total number of rows. If this is greater than the current rows length, async calls will be executed if the unknown rows are requested.
 - `filter`: *(type: string)* A value to change the filter.
-- `page`: *(type: number, default: 0)* A zero-based number to change the page.
+- `showFilter`: *(type: boolean, default: true)* Show the filter input field.
 - `async`: *(type: function)* The function that is called when making an async request. It takes the following parameters:
     - `filter`: *(type: string)* The filter value.
     - `sortColumns`: *(type: array)* A list of all columns that are sortable. The last sorted column is the last column in this list. A column has the following interesting properties for sorting:
         - `direction`: *(type: boolean or null)* See columns => direction
     - `start`: *(type: number)* Contains the current zero based start index.
     - `end`: *(type: number)* Contains the current zero based end index.
-    - `parent`: *(type: Row)* If the child rows are called. This value is a Row object that contains all the info from the parent row.
-- `useCache`: *(type: boolean)* Async called rows will be stored in the cache if no sorting or filtering is done and this value is true.
-- `maxSequentialCalls`: *(type: number, default: 5)* If children of requested rows needs to be loaded but are not set in the row date another async call needs to be executed.
-   So a lot of calls can be executed sequentially. If this is endless, the browser will block, so we need a max sequential calls value.
+- `asyncChildren`: *(type: function)* The function that is called when making a request to load the children. It takes the parent row as parameter:
+    - `parent`: *(type: Object)* If the child rows are called. This value is an Object that contains all the info from the parent row.
 - `classes`: *(type: Object)* An object that regulates the design of the table. The latter items can override the earlier ones:
     - The key is a selector for rows, columns, and cells. You have two type of selectors: fixed selectors and row/column selectors:
         - fixed selectors: use the preserver words `table` or `info` to style the whole table or to style the info row (shown while loading or no rows are found)
