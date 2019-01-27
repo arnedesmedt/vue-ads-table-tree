@@ -213,4 +213,21 @@ describe('TableTree', () => {
             'Bruno',
         ]);
     });
+
+    it('shows only the visible columns', () => {
+        columnB.visible = false;
+
+        table = shallowMount(TableTree, {
+            propsData: {
+                rows,
+                columns,
+                filter: 'n',
+            },
+        });
+
+        expect(table.vm.visibleColumns.map(column => column.property)).toEqual([
+            'firstName',
+            'age',
+        ]);
+    });
 });

@@ -9,9 +9,6 @@
                 :rows="rows"
                 :filter="filterValue"
                 @filter-change="filterChange"
-                :async-children="callChildren"
-                :async="call"
-                :total-rows="100"
             >
                 <template slot="title">
                     <h2 class="font-bold uppercase">
@@ -20,19 +17,14 @@
                 </template>
                 <template
                     slot="firstName"
-                    slot-scope="props">
+                    slot-scope="props"
+                >
                     <a
                         :href="`https://www.google.com/search?q=${props.row.firstName}+${props.row.lastName}`"
-                        target="_blank">{{ props.row.firstName }}</a>
-                </template>
-                <template slot="filter">
-                    <h3 class="inline pr-2">Filter:</h3>
-                    <input
-                        v-model="filterValue"
-                        class="appearance-none border py-2 px-3"
-                        type="text"
-                        placeholder="Filter..."
+                        target="_blank"
                     >
+                        {{ props.row.firstName }}
+                    </a>
                 </template>
             </vue-ads-table-tree>
         </div>
@@ -42,6 +34,7 @@
 <script>
 import './assets/css/tailwind.css';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
+
 import VueAdsTableTree from './components/TableTree';
 
 // todo add possibility to add an _id to the row. If it's set. you can combine the column name with the id to template a specific cell
@@ -56,7 +49,10 @@ export default {
     },
 
     data () {
+        let visible = true;
+
         return {
+            visible,
             page: 0,
             filterValue: '',
             classes: {
@@ -95,6 +91,7 @@ export default {
                     title: 'First Name',
                     direction: null,
                     filterable: true,
+                    visible: visible,
                 },
                 {
                     property: 'lastName',

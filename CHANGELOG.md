@@ -1,5 +1,9 @@
 ## Changelog
 
+#### v1.5.0 - 27/01/2019
+
+- Make it possible to show/hide columns.
+
 #### v1.4.0 - 27/01/2019
 
 - Add underscores as a prefix to the meta data of row objects.

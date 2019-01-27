@@ -9,26 +9,20 @@
         >
             <!-- TITLE -->
             <div
-                class="vue-ads-flex vue-ads-justify-center vue-ads-flex-col"
+                class="vue-ads-flex-grow vue-ads-flex vue-ads-justify-center vue-ads-flex-col"
             >
                 <slot name="title"/>
             </div>
             <!-- FILTER -->
             <div
                 v-if="displayFilter"
-                class="vue-ads-flex-grow vue-ads-justify-end vue-ads-text-right"
+                class="vue-ads-justify-end vue-ads-text-right"
             >
                 <slot
                     name="filter"
                 >
-                    <h3 class="vue-ads-inline vue-ads-pr-2">Filterable:</h3>
-                    <input
-                        class="vue-ads-appearance-none vue-ads-border vue-ads-rounded vue-ads-py-2 vue-ads-px-3"
-                        type="text"
-                        placeholder="Filterable..."
-                        :value="filter"
-                        @input="debounceFilter($event.target.value)"
-                    >
+                    <vue-ads-text placeholder="Filterable..." :value="filter" @input="debounceFilter($event)">
+                    </vue-ads-text>
                 </slot>
             </div>
         </div>
@@ -43,7 +37,7 @@
                     :class="headerRowClasses"
                 >
                     <vue-ads-header-cell
-                        v-for="(column, key) in columns"
+                        v-for="(column, key) in visibleColumns"
                         :key="key"
                         :column-index="key"
                         :direction="column.direction"
@@ -61,7 +55,7 @@
                 >
                     <td
                         :class="infoClasses"
-                        :colspan="columns.length"
+                        :colspan="visibleColumns.length"
                     >
                         <span v-if="loading">
                             <slot name="loading">Loading...</slot>
@@ -80,7 +74,7 @@
                         :key="rowKey"
                         :row="row"
                         :row-index="rowKey"
-                        :columns="columns"
+                        :columns="visibleColumns"
                         :slots="slots"
                         :css-processor="cssProcessor"
                         @toggleChildren="toggleChildren(row)"
@@ -117,7 +111,13 @@ import CSSProcessor from '../services/CSSProcessor';
 
 import VueAdsHeaderCell from './HeaderCell';
 import VueAdsRow from './Row.vue';
+
 import VueAdsPagination from 'vue-ads-pagination';
+import {
+    VueAdsFormGroup,
+    VueAdsSelect,
+    VueAdsText,
+} from 'vue-ads-form-builder';
 
 
 export default {
@@ -127,6 +127,9 @@ export default {
         VueAdsHeaderCell,
         VueAdsRow,
         VueAdsPagination,
+        VueAdsFormGroup,
+        VueAdsSelect,
+        VueAdsText,
     },
 
     props: {
@@ -226,23 +229,27 @@ export default {
     },
 
     computed: {
-        columnProperties () {
-            return this.columns.map(column => column.property);
+        visibleColumns () {
+            return this.columns.filter(column => column.visible);
         },
 
-        sortColumns () {
-            return this.columns
-                .filter(column => column.direction !== null)
-                .filter(column => column.order)
-                .sort((columnA, columnB) => columnA.order - columnB.order);
+        columnProperties () {
+            return this.visibleColumns.map(column => column.property);
         },
 
         processed () {
             return this.filter || this.sortColumns.length > 0;
         },
 
+        sortColumns () {
+            return this.visibleColumns
+                .filter(column => column.direction !== null)
+                .filter(column => column.order)
+                .sort((columnA, columnB) => columnA.order - columnB.order);
+        },
+
         filterColumnProperties () {
-            return this.columns
+            return this.visibleColumns
                 .filter(column => {
                     return column.filterable;
                 })
@@ -423,6 +430,10 @@ export default {
                     Vue.set(column, 'property', '');
                 }
 
+                if (!column.hasOwnProperty('visible')) {
+                    Vue.set(column, 'visible', true);
+                }
+
                 if (!column.hasOwnProperty('order') && !column.hasOwnProperty('direction')) {
                     return;
                 }
@@ -440,7 +451,7 @@ export default {
                 Vue.set(columns[0], 'collapseIcon', true);
             }
 
-            this.cssProcessor.totalColumns = columns.length;
+            this.cssProcessor.totalColumns = this.visibleColumns.length;
         },
 
         hasCollapseIcon (columns) {
@@ -474,7 +485,7 @@ export default {
         },
 
         maxSortOrder () {
-            return this.columns.reduce((max, column) => {
+            return this.visibleColumns.reduce((max, column) => {
                 return max < column.order ? column.order : max;
             }, 0);
         },

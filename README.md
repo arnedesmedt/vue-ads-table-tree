@@ -78,6 +78,7 @@ export default {
                     title: 'First Name',
                     direction: null,
                     filterable: true,
+                    visible: false,
                 },
                 {
                     property: 'lastName',
@@ -108,7 +109,8 @@ export default {
 - `columns`: *(type: array, required)* An array containing all the column objects. Each column object can contain the following properties: (If no order or direction property is set, the column is not sortable)
     - `property`: *(type: string, required)* The corresponding value will be shown in the column of the given row property. 
     - `title`: *(type: string)* The title that will be shown in the header. 
-    - `filterable`: *(type: boolean)* Filter on this column? 
+    - `filterable`: *(type: boolean, default: false)* Filter on this column? 
+    - `visible`: *(type: boolean, default: true)* Make the column visible 
     - `direction`: *(type: boolean or null)* The initial sort direction. If null, the column is not sorted. If true, the sorting is ascending. If false, the sorting is descending.
     - `order`: *(type: number)* Column order to sort the rows. 
     - 'collapseIcon': *(type: boolean)* Indicates if this column will contain the collapse icon.
