@@ -30,11 +30,9 @@ describe('HeaderCell', () => {
             direction: null,
         });
 
-        expect(headerCell.vm.sortIconClasses).toEqual({
-            'fa-sort': true,
-            'fa-sort-up': false,
-            'fa-sort-down': false,
-        });
+        expect(headerCell.vm.sortIconClasses['fa-sort']).toBeTruthy();
+        expect(headerCell.vm.sortIconClasses['fa-sort-up']).toBeFalsy();
+        expect(headerCell.vm.sortIconClasses['fa-sort-down']).toBeFalsy();
     });
 
     it('shows the desc sort icon if the column is desc sorted', () => {
@@ -43,11 +41,9 @@ describe('HeaderCell', () => {
             direction: false,
         });
 
-        expect(headerCell.vm.sortIconClasses).toEqual({
-            'fa-sort': false,
-            'fa-sort-up': false,
-            'fa-sort-down': true,
-        });
+        expect(headerCell.vm.sortIconClasses['fa-sort']).toBeFalsy();
+        expect(headerCell.vm.sortIconClasses['fa-sort-up']).toBeFalsy();
+        expect(headerCell.vm.sortIconClasses['fa-sort-down']).toBeTruthy();
     });
 
     it('shows the asc sort icon if the column is asc sorted', () => {
@@ -56,11 +52,9 @@ describe('HeaderCell', () => {
             direction: true,
         });
 
-        expect(headerCell.vm.sortIconClasses).toEqual({
-            'fa-sort': false,
-            'fa-sort-up': true,
-            'fa-sort-down': false,
-        });
+        expect(headerCell.vm.sortIconClasses['fa-sort']).toBeFalsy();
+        expect(headerCell.vm.sortIconClasses['fa-sort-up']).toBeTruthy();
+        expect(headerCell.vm.sortIconClasses['fa-sort-down']).toBeFalsy();
     });
 
     it('adds a cursor pointer if the column is sortable', () => {
@@ -135,5 +129,41 @@ describe('HeaderCell', () => {
             'vue-ads-cursor-pointer': false,
             test: true,
         });
+    });
+
+    it('emits a sort event if the header cell is clicked', () => {
+        headerCell.trigger('click');
+
+        expect(headerCell.emitted().sort).toBeTruthy();
+    });
+
+    it('uses the toggle children icon slot if direction is null', () => {
+        headerCell.setProps({
+            sortable: true,
+            direction: null,
+            sortIconSlot: props => `Test ${props.direction === null ? 'null' : (props.direction ? 'true' : 'false')}`,
+        });
+
+        expect(headerCell.text()).toContain('Test null');
+    });
+
+    it('uses the toggle children icon slot if direction is true', () => {
+        headerCell.setProps({
+            sortable: true,
+            direction: true,
+            sortIconSlot: props => `Test ${props.direction === null ? 'null' : (props.direction ? 'true' : 'false')}`,
+        });
+
+        expect(headerCell.text()).toContain('Test true');
+    });
+
+    it('uses the toggle children icon slot if direction is false', () => {
+        headerCell.setProps({
+            sortable: true,
+            direction: false,
+            sortIconSlot: props => `Test ${props.direction === null ? 'null' : (props.direction ? 'true' : 'false')}`,
+        });
+
+        expect(headerCell.text()).toContain('Test false');
     });
 });

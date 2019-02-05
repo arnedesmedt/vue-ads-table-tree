@@ -1,5 +1,8 @@
 import './assets/css/tailwind.css';
 
-import TableTree from './components/TableTree';
+import VueAdsTableContainer from './components/TableContainer';
+import VueAdsTable from './components/Table';
+import VueAdsAsyncTable from './components/AsyncTable';
 
-export default TableTree;
+export default VueAdsTableContainer;
+export { VueAdsTable, VueAdsAsyncTable };

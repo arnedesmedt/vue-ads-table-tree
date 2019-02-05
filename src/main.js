@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import App from './App';
+import BasicTableApp from './BasicTableApp';
 
 Vue.config.productionTip = false;
 
 new Vue({
-    render: h => h(App),
+    render: h => h(BasicTableApp),
 }).$mount('#app');

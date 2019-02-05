@@ -73,6 +73,13 @@ export default class CSSProcessor {
             .map(selector => {
                 if (selector.includes('_')) {
                     let range = selector.split('_')
+                        .map((index, key) => {
+                            if (index !== '') {
+                                return index;
+                            }
+
+                            return key === 0 ? 0 : total;
+                        })
                         .map(index => Number.parseInt(index))
                         .map(index => index < 0 ? total + index : index);
 

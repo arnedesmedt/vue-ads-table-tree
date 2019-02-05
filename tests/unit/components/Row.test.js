@@ -24,6 +24,7 @@ describe('Row', () => {
         row = shallowMount(Row, {
             propsData: {
                 row: {
+                    _id: 'arne',
                     firstName: 'Arne',
                     lastName: 'De Smedt',
                 },
@@ -86,7 +87,7 @@ describe('Row', () => {
     it('selects the correct cell slot', () => {
         row.setProps({
             slots: {
-                firstName_Arne: 'testcell',
+                firstName_arne: 'testcell',
                 firstName: 'test',
             },
         });

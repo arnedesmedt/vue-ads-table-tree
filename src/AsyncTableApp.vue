@@ -8,19 +8,11 @@
             :filter="filter"
             :page="page"
             :call-rows="callRows"
+            :call-temp-rows="callTempRows"
             :call-children="callChildren"
-            @filter-change="filterChanged"
             @page-change="pageChanged"
+            @filter-change="filterChanged"
         >
-            <!-- Will be applied on the name column for the rows with an _id of tiger -->
-            <template slot="name_tiger" slot-scope="props">test cell - {{ props.row.name }}</template>
-            <!-- Will be applied on the city column -->
-            <template slot="city" slot-scope="props">test column - {{ props.row.name }}</template>
-            <!-- Will be applied on the row with _id tiger -->
-            <template slot="_tiger" slot-scope="props">test row - {{ props.row.name }}</template>
-            <template slot="no-rows">Geen resultaten</template>
-            <template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>
-            <template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>
         </vue-ads-table-tree>
     </div>
 </template>
@@ -29,10 +21,10 @@
 import './assets/css/tailwind.css';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 
-import VueAdsTableTree from './components/BasicTableContainer';
+import VueAdsTableTree from './components/TableContainer';
 
 export default {
-    name: 'BasicTableApp',
+    name: 'AsyncTableApp',
 
     components: {
         VueAdsTableTree,
@@ -48,6 +40,7 @@ export default {
                 id: '5421',
                 since: '2011/04/25',
                 budget: '$320,800',
+                _hasChildren: true,
             },
             {
                 name: 'Garrett Winters',
@@ -162,6 +155,8 @@ export default {
             },
         ];
 
+        rows.length = 20;
+
         return {
             rows,
             columns,
@@ -171,10 +166,6 @@ export default {
     },
 
     methods: {
-        sleep (ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        },
-
         filterChanged (filter) {
             this.filter = filter;
         },
@@ -183,13 +174,15 @@ export default {
             this.page = page;
         },
 
+        sleep (ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        },
+
         async callRows (indexesToLoad) {
-            this.loading = true;
             await this.sleep(1000);
-            this.loading = false;
             return indexesToLoad.map(index => {
                 return {
-                    name: 'Jonas Alexander',
+                    name: 'Call Rows',
                     function: 'Developer',
                     city: 'San Francisco',
                     id: '8196',
@@ -203,7 +196,7 @@ export default {
             await this.sleep(1000);
             return [
                 {
-                    name: 'Jonas Alexander',
+                    name: 'Call child',
                     function: 'Developer',
                     city: 'San Francisco',
                     id: '8196',
@@ -211,6 +204,95 @@ export default {
                     budget: '$86,500',
                 },
             ];
+        },
+
+        async callTempRows (filter, columns, start, end) {
+            await this.sleep(1000);
+            return {
+                rows: [
+                    {
+                        name: 'Temp call',
+                        function: 'Developer',
+                        city: 'San Francisco',
+                        id: '8196',
+                        since: '2010/07/14',
+                        budget: '$86,500',
+                    },
+                    {
+                        name: 'Temp call',
+                        function: 'Developer',
+                        city: 'San Francisco',
+                        id: '8196',
+                        since: '2010/07/14',
+                        budget: '$86,500',
+                    },
+                    {
+                        name: 'Temp call',
+                        function: 'Developer',
+                        city: 'San Francisco',
+                        id: '8196',
+                        since: '2010/07/14',
+                        budget: '$86,500',
+                    },
+                    {
+                        name: 'Temp call',
+                        function: 'Developer',
+                        city: 'San Francisco',
+                        id: '8196',
+                        since: '2010/07/14',
+                        budget: '$86,500',
+                    },
+                    {
+                        name: 'Temp call',
+                        function: 'Developer',
+                        city: 'San Francisco',
+                        id: '8196',
+                        since: '2010/07/14',
+                        budget: '$86,500',
+                    },
+                    {
+                        name: 'Temp call',
+                        function: 'Developer',
+                        city: 'San Francisco',
+                        id: '8196',
+                        since: '2010/07/14',
+                        budget: '$86,500',
+                    },
+                    {
+                        name: 'Temp call',
+                        function: 'Developer',
+                        city: 'San Francisco',
+                        id: '8196',
+                        since: '2010/07/14',
+                        budget: '$86,500',
+                    },
+                    {
+                        name: 'Temp call',
+                        function: 'Developer',
+                        city: 'San Francisco',
+                        id: '8196',
+                        since: '2010/07/14',
+                        budget: '$86,500',
+                    },
+                    {
+                        name: 'Temp call',
+                        function: 'Developer',
+                        city: 'San Francisco',
+                        id: '8196',
+                        since: '2010/07/14',
+                        budget: '$86,500',
+                    },
+                    {
+                        name: 'Temp call',
+                        function: 'Developer',
+                        city: 'San Francisco',
+                        id: '8196',
+                        since: '2010/07/14',
+                        budget: '$86,500',
+                    },
+                ],
+                total: 20,
+            };
         },
     },
 };

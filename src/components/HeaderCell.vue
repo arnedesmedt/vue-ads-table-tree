@@ -1,22 +1,3 @@
-<template>
-    <th
-        :class="headerClasses"
-        class=""
-        @click="$emit('sort')"
-    >
-        <div class="vue-ads-flex">
-            <span class="vue-ads-flex-grow ">
-                {{ title }}
-            </span>
-            <i
-                v-if="sortable"
-                :class="sortIconClasses"
-                class="vue-ads-ml-2 fa "
-            />
-        </div>
-    </th>
-</template>
-
 <script>
 
 import CSSProcessor from '../services/CSSProcessor';
@@ -52,6 +33,11 @@ export default {
             type: CSSProcessor,
             required: true,
         },
+
+        sortIconSlot: {
+            type: Function,
+            default: null,
+        },
     },
 
     computed: {
@@ -75,11 +61,63 @@ export default {
             }
 
             return {
+                fa: true,
+                'vue-ads-ml-2': true,
                 'fa-sort': this.direction === null,
                 'fa-sort-down': this.direction === false,
                 'fa-sort-up': this.direction === true,
             };
         },
+    },
+
+    render (createElement) {
+        let headerContent = [
+            createElement(
+                'span',
+                {
+                    class: {
+                        'vue-ads-flex-grow': true,
+                    },
+                },
+                [
+                    this.title,
+                ],
+            ),
+        ];
+
+        if (this.sortable) {
+            headerContent.push(this.sortIconSlot ?
+                this.sortIconSlot({
+                    direction: this.direction,
+                }) :
+                createElement(
+                    'i',
+                    {
+                        class: this.sortIconClasses,
+                    },
+                ));
+        }
+
+        return createElement(
+            'th',
+            {
+                class: this.headerClasses,
+                on: {
+                    click: (event) => this.$emit('sort'),
+                },
+            },
+            [
+                createElement(
+                    'div',
+                    {
+                        class: {
+                            'vue-ads-flex': true,
+                        },
+                    },
+                    headerContent,
+                ),
+            ]
+        );
     },
 };
 </script>

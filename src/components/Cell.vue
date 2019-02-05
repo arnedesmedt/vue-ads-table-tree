@@ -37,7 +37,11 @@ export default {
 
         columnSlot: {
             type: Function,
-            required: false,
+            default: null,
+        },
+
+        toggleChildrenIconSlot: {
+            type: Function,
             default: null,
         },
     },
@@ -72,6 +76,7 @@ export default {
                     props: {
                         expanded: this.row._showChildren || false,
                         loading: this.row._meta.loading || false,
+                        iconSlot: this.toggleChildrenIconSlot,
                     },
                     nativeOn: {
                         click: this.toggleChildren,
@@ -82,6 +87,7 @@ export default {
             if (this.columnSlot) {
                 elements.push(this.columnSlot({
                     row: this.row,
+                    column: this.column,
                 }));
             } else if (this.column.property && this.row.hasOwnProperty(this.column.property)) {
                 elements.push(this.row[this.column.property]);

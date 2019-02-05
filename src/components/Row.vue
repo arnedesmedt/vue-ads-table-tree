@@ -5,6 +5,7 @@
         <vue-ads-cell
             v-for="(column, key) in columns"
             :column-slot="columnSlot(column)"
+            :toggle-children-icon-slot="toggleChildrenIconSlot"
             :key="key"
             :row-index="rowIndex"
             :column-index="key"
@@ -52,6 +53,11 @@ export default {
             type: CSSProcessor,
             required: true,
         },
+
+        toggleChildrenIconSlot: {
+            type: Function,
+            default: null,
+        },
     },
 
     computed: {
@@ -65,8 +71,9 @@ export default {
 
     methods: {
         columnSlot (column) {
-            return this.slots[column.property + '_' + this.row[column.property]] ||
+            return this.slots[column.property + '_' + (this.row['_id'] || '')] ||
                 this.slots[column.property] ||
+                this.slots['_' + (this.row['_id'] || '')] ||
                 null;
         },
     },
