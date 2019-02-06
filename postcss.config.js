@@ -12,6 +12,7 @@ module.exports = {
                 /^body$/,
                 /^html$/,
                 /^fa-sort-(.*)$/,
+                /^vue-ads-w-(\d+)\/5$/,
             ],
         },
         'postcss-import': {},

@@ -4,7 +4,12 @@
               :filter="filter"
               :filter-changed="filterChanged"
         >
-            <vue-ads-text :value="filter" @input="filterChanged"/>
+            <div class="vue-ads-flex vue-ads-p-3">
+                <div class="vue-ads-w-4/5"></div>
+                <div class="vue-ads-w-1/5">
+                    <vue-ads-text :value="filter" placeholder="Filter..." @input="filterChanged"/>
+                </div>
+            </div>
         </slot>
         <component
             ref="table"
