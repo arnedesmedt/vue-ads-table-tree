@@ -60,10 +60,26 @@ export default {
             );
         },
 
+        titleClasses () {
+            return {
+                'vue-ads-cursor-pointer': this.hasCollapseIcon,
+            };
+        },
+
         style () {
             return {
                 'padding-left': (1 + (this.column.collapseIcon ? 1 : 0) * (this.row._meta.parent) * 1.5) + 'rem',
             };
+        },
+
+        hasCollapseIcon () {
+            return this.column.collapseIcon && (this.row._meta.visibleChildren.length > 0 || this.row._hasChildren);
+        },
+
+        clickEvents () {
+            return this.hasCollapseIcon ? {
+                click: this.toggleChildren,
+            } : {};
         },
     },
 
@@ -71,17 +87,15 @@ export default {
         value (createElement) {
             let elements = [];
 
-            if (this.column.collapseIcon && (this.row._meta.visibleChildren.length > 0 || this.row._hasChildren)) {
+            if (this.hasCollapseIcon) {
                 elements.push(createElement(VueAdsChildrenButton, {
                     props: {
                         expanded: this.row._showChildren || false,
                         loading: this.row._meta.loading || false,
                         iconSlot: this.toggleChildrenIconSlot,
                     },
-                    nativeOn: {
-                        click: this.toggleChildren,
-                    },
-                }),);
+                    nativeOn: this.clickEvents,
+                }));
             }
 
             if (this.columnSlot) {
@@ -98,17 +112,22 @@ export default {
             ];
         },
 
-        toggleChildren () {
+        toggleChildren (event) {
+            event.stopPropagation();
             this.$emit('toggleChildren');
         },
     },
 
     render (createElement) {
+
         return createElement('td', {
             class: this.cellClasses,
             style: this.style,
         }, [
-            createElement('span', {}, this.value(createElement)),
+            createElement('span', {
+                class: this.titleClasses,
+                on: this.clickEvents,
+            }, this.value(createElement)),
         ]);
     },
 };

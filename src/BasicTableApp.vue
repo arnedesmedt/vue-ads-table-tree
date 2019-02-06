@@ -10,15 +10,15 @@
             @filter-change="filterChanged"
             @page-change="pageChanged"
         >
-            <!-- Will be applied on the name column for the rows with an _id of tiger -->
-            <template slot="name_tiger" slot-scope="props">test cell - {{ props.row[props.column.property] }}</template>
-            <!-- Will be applied on the city column -->
-            <template slot="city" slot-scope="props">test column - {{ props.row.city }}</template>
-            <!-- Will be applied on the row with _id tiger -->
-            <template slot="_tiger" slot-scope="props">test row - {{ props.row[props.column.property] }}</template>
-            <template slot="no-rows">Geen resultaten</template>
-            <template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>
-            <template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>
+            <!--&lt;!&ndash; Will be applied on the name column for the rows with an _id of tiger &ndash;&gt;-->
+            <!--<template slot="name_tiger" slot-scope="props">test cell - {{ props.row[props.column.property] }}</template>-->
+            <!--&lt;!&ndash; Will be applied on the city column &ndash;&gt;-->
+            <!--<template slot="city" slot-scope="props">test column - {{ props.row.city }}</template>-->
+            <!--&lt;!&ndash; Will be applied on the row with _id tiger &ndash;&gt;-->
+            <!--<template slot="_tiger" slot-scope="props">test row - {{ props.row[props.column.property] }}</template>-->
+            <!--<template slot="no-rows">Geen resultaten</template>-->
+            <!--<template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>-->
+            <!--<template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>-->
         </vue-ads-table-tree>
     </div>
 </template>

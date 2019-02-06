@@ -14,12 +14,15 @@ describe('Cell', () => {
             firstName: 'arne',
             _meta: {
                 parent: 0,
+                visibleChildren: [
+                    'test',
+                ],
             },
         };
 
         column = {
             property: 'firstName',
-
+            collapseIcon: true,
         };
 
         cssProcessor = new CSSProcessor(2, {});
@@ -133,6 +136,9 @@ describe('Cell', () => {
                 firstName: 'arne',
                 _meta: {
                     parent: 0,
+                    visibleChildren: [
+                        'test',
+                    ],
                 },
             },
         });
@@ -156,6 +162,9 @@ describe('Cell', () => {
                 firstName: 'arne',
                 _meta: {
                     parent: 0,
+                    visibleChildren: [
+                        'test',
+                    ],
                 },
             },
         });
@@ -191,6 +200,9 @@ describe('Cell', () => {
                 firstName: 'arne',
                 _meta: {
                     parent: 1,
+                    visibleChildren: [
+                        'test',
+                    ],
                 },
             },
             column: {
@@ -236,6 +248,9 @@ describe('Cell', () => {
                 lastName: 'de smedt',
                 _meta: {
                     parent: 0,
+                    visibleChildren: [
+                        'test',
+                    ],
                 },
             },
         });
@@ -243,8 +258,8 @@ describe('Cell', () => {
         expect(cell.text()).toBe('');
     });
 
-    it('emits toggle children, when calling toggle children', () => {
-        cell.vm.toggleChildren();
+    it('emits toggle children, when clicking the toggle children button', () => {
+        cell.find('span').trigger('click');
 
         expect(cell.emitted().toggleChildren).toBeTruthy();
     });
