@@ -1,5 +1,12 @@
 ## Changelog
 
+#### v2.0.0 - 04/02/2019
+
+- Split the table tree in 3 components:
+    - the basic table component
+    - the async table component
+    - the full component (with a filter box and a pagination component)
+
 #### v1.5.0 - 27/01/2019
 
 - Make it possible to show/hide columns.
