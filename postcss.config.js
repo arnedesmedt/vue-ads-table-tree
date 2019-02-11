@@ -5,6 +5,7 @@ module.exports = {
         '@fullhuman/postcss-purgecss': {
             content: [
                 './src/components/*.vue',
+                './src/services/*.js',
                 './node_modules/vue-ads-pagination/dist/vue-ads-pagination.common.js',
                 './node_modules/vue-ads-form-builder/dist/vue-ads-form-builder.common.js',
             ],
