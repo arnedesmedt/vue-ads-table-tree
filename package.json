@@ -29,27 +29,27 @@
         "postversion": "git push && git push --tags"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.6.3",
-        "vue": "^2.5.22",
+        "@fortawesome/fontawesome-free": "^5.7.1",
+        "vue": "^2.6.5",
         "vue-ads-form-builder": "^0.1.13",
         "vue-ads-pagination": "^2.1.4"
     },
     "devDependencies": {
         "@fullhuman/postcss-purgecss": "^1.1.0",
-        "@vue/cli-plugin-babel": "^3.3.0",
-        "@vue/cli-plugin-eslint": "^3.3.0",
-        "@vue/cli-plugin-unit-jest": "^3.3.0",
-        "@vue/cli-service": "^3.3.0",
+        "@vue/cli-plugin-babel": "^3.4.0",
+        "@vue/cli-plugin-eslint": "^3.4.0",
+        "@vue/cli-plugin-unit-jest": "^3.4.0",
+        "@vue/cli-service": "^3.4.0",
         "@vue/eslint-config-standard": "^4.0.0",
-        "@vue/test-utils": "^1.0.0-beta.28",
+        "@vue/test-utils": "^1.0.0-beta.29",
         "babel-core": "7.0.0-bridge.0",
-        "babel-jest": "^23.6.0",
+        "babel-jest": "^24.1.0",
         "eslint-config-ads": "^1.0.7",
         "postcss-import": "^12.0.1",
         "postcss-url": "^8.0.0",
         "prettier-package-json": "^2.0.1",
-        "tailwindcss": "^0.7.3",
-        "vue-template-compiler": "^2.5.22"
+        "tailwindcss": "^0.7.4",
+        "vue-template-compiler": "^2.6.5"
     },
     "keywords": [
         "component",
