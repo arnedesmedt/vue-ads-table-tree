@@ -32,7 +32,8 @@
         "@fortawesome/fontawesome-free": "^5.7.1",
         "vue": "^2.6.5",
         "vue-ads-form-builder": "^0.1.13",
-        "vue-ads-pagination": "^2.1.4"
+        "vue-ads-pagination": "^2.1.4",
+        "vue-json-excel": "^0.2.98"
     },
     "devDependencies": {
         "@fullhuman/postcss-purgecss": "^1.1.0",

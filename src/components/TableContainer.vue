@@ -10,6 +10,13 @@
                     <vue-ads-text :value="filter" placeholder="Filter..." @input="filterChanged"/>
                 </div>
             </div>
+            <vue-json-excel
+                :data="excelData"
+                :fields="excelFields"
+                :before-generate="collectExcelData"
+            >
+                export
+            </vue-json-excel>
         </slot>
         <component
             ref="table"
@@ -24,6 +31,8 @@
             :call-temp-rows="callTempRowsFunction"
             :slots="$scopedSlots"
             @total-filtered-rows-change="totalFilteredRowsChanged"
+            @excel="excel"
+            :excel="triggerExcel"
         />
         <slot name="bottom"
               :total="total"
@@ -49,6 +58,7 @@ import {
     VueAdsText,
 } from 'vue-ads-form-builder';
 import VueAdsPagination from 'vue-ads-pagination';
+import VueJsonExcel from 'vue-json-excel';
 import debounce from '../services/debounce';
 
 import VueAdsTable from './Table';
@@ -65,6 +75,7 @@ export default {
         VueAdsText,
         VueAdsSelect,
         VueAdsPagination,
+        VueJsonExcel,
     },
 
     props: {
@@ -122,6 +133,9 @@ export default {
                 this.filterChange,
                 this.debounceFilterTime
             ),
+            triggerExcel: false,
+            excelData: [],
+            excelFields: {},
         };
     },
 
@@ -133,7 +147,6 @@ export default {
     },
 
     computed: {
-
         callRowsFunction () {
             return this.callRows || (() => []);
         },
@@ -179,6 +192,16 @@ export default {
 
         totalFilteredRowsChanged (total) {
             this.total = total;
+        },
+
+        collectExcelData () {
+            this.triggerExcel = true;
+        },
+
+        excel (excel) {
+            this.excelFields = excel.fields;
+            this.excelData = excel.data;
+            this.triggerExcel = false;
         },
     },
 };

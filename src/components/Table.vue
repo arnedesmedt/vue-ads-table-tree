@@ -99,6 +99,11 @@ export default {
             type: Boolean,
             default: false,
         },
+
+        excel: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     data () {
@@ -219,6 +224,11 @@ export default {
             handler: 'filterChanged',
             immediate: true,
         },
+
+        excel: {
+            handler: 'excelChanged',
+            immediate: true,
+        },
     },
 
     methods: {
@@ -269,6 +279,10 @@ export default {
 
             if (!column.hasOwnProperty('visible')) {
                 Vue.set(column, 'visible', true);
+            }
+
+            if (!column.hasOwnProperty('excel')) {
+                Vue.set(column, 'excel', true);
             }
 
             if (!column.hasOwnProperty('order') && !column.hasOwnProperty('direction')) {
@@ -365,6 +379,44 @@ export default {
         toggleChildren (row) {
             row._showChildren = !row._showChildren;
             this.$emit('toggle-children', row);
+        },
+
+        excelChanged () {
+            if (!this.excel) {
+                return;
+            }
+
+            this.$emit(
+                'excel',
+                {
+                    fields: Object.assign({
+                        '#': '_order',
+                    }, this.excelFields()),
+                    data: this.excelData(this.sortedRows),
+                }
+            );
+        },
+
+        excelFields () {
+            return this.columns
+                .filter(column => column.excel)
+                .reduce((result, column) => {
+                    result[column.title] = column.property;
+
+                    return result;
+                }, {});
+        },
+
+        excelData (rows, parent = '') {
+            return rows
+                .reduce((excelRows, row, index) => {
+                    let order = parent + (index + 1).toString() + '-';
+                    row._order = order + (parent === '' ? '0' : '');
+                    return excelRows.concat([
+                        row,
+                        ...(row && row._showChildren ? this.excelData(row._meta.visibleChildren, order) : []),
+                    ]);
+                }, []);
         },
     },
 };

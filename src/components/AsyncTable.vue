@@ -8,11 +8,13 @@
         :end="end"
         :classes="classes"
         :loading="loading"
+        :excel="excel"
         :slots="currentSlots"
         :temp="unresolved"
         @total-filtered-rows-change="totalFilteredRowsChanged"
         @toggle-children="toggleChildren"
         @sort="sort"
+        @excel="excel"
     />
 </template>
 
@@ -56,6 +58,11 @@ export default {
         callChildren: {
             type: Function,
             default: () => [],
+        },
+
+        excel: {
+            type: Boolean,
+            default: false,
         },
     },
 
@@ -187,6 +194,10 @@ export default {
 
             Vue.set(this.rows, this.indexesToLoad[key], rows[key]);
             this.loading = false;
+        },
+
+        excel (excel) {
+            this.$emit('excel', excel);
         },
     },
 };
