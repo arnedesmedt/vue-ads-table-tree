@@ -6,9 +6,9 @@
             :columns="columns"
             :rows="rows"
             :filter="filter"
-            :start="start"
-            :end="end"
+            :page="page"
             @filter-change="filterChanged"
+            @page-change="pageChanged"
             :call-rows="callRows"
             :call-children="callChildren"
             :call-temp-rows="callTempRows"
@@ -30,10 +30,10 @@
 import './assets/css/tailwind.css';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 
-import VueAdsTable from './components/Table';
+import VueAdsTable from './components/TableContainer';
 
 export default {
-    name: 'AsyncTableApp',
+    name: 'TableContainerApp',
 
     components: {
         VueAdsTable,
@@ -214,8 +214,7 @@ export default {
             rows,
             columns,
             filter: '',
-            start: 0,
-            end: 10,
+            page: 0,
         };
     },
 
@@ -226,6 +225,10 @@ export default {
 
         filterChanged (filter) {
             this.filter = filter;
+        },
+
+        pageChanged (page) {
+            this.page = page;
         },
 
         async callRows (indexesToLoad) {

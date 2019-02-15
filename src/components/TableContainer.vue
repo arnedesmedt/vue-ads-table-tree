@@ -18,9 +18,8 @@
                 export
             </vue-json-excel>
         </slot>
-        <component
+        <vue-ads-table
             ref="table"
-            :is="component"
             :columns="columns"
             :rows="rows"
             :filter="debouncedFilter"
@@ -62,7 +61,6 @@ import VueJsonExcel from 'vue-json-excel';
 import debounce from '../services/debounce';
 
 import VueAdsTable from './Table';
-import VueAdsAsyncTable from './AsyncTable';
 
 import defaultClasses from '../services/defaultClasses';
 
@@ -71,7 +69,6 @@ export default {
 
     components: {
         VueAdsTable,
-        VueAdsAsyncTable,
         VueAdsText,
         VueAdsSelect,
         VueAdsPagination,
@@ -157,10 +154,6 @@ export default {
 
         callChildrenFunction () {
             return this.callChildren || (() => []);
-        },
-
-        component () {
-            return this.callRows ? VueAdsAsyncTable : VueAdsTable;
         },
     },
 

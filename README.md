@@ -18,8 +18,9 @@ The columns and rows are also reactive. The only restriction is that you can't a
 after you've added them initial or via the async child loader.
 
 You can use 3 components: 
-- The basic component (VueAdsTable): It has no async features or external components like a filter box or pagination component.
-- The async component (VueAdsAsyncTable): It has no external components like a filter box or pagination component.
+- The table component (VueAdsTable): It has no external components, like a filter of paginator,
+but you can write your own container around it that suits your own needs.
+All functionality of the full component is available in the table component.
 - The full component (VueAdsTableTree).
 
 ## Demo
@@ -38,7 +39,7 @@ You can install the package via npm or yarn.
 
 ```yarn add vue-ads-table-tree```
 
-## Common objects for the 3 components
+## General objects for the components
 
 ### <a name="columns"></a>Columns
 Columns are listed in a column array as plain objects and can have the following arguments:
@@ -92,14 +93,41 @@ The latter will add the classes on the `<tr>` tags of row 1 and 2.
 - `'/1_3,5': {'test-column': true}` => will add the test-column class for column 1,2,5 on all rows.
 - `'even/1': {'cell': true}` => will add the cell class for column 1 on all even rows.
 
-## Basic table component
+## Table component
 
-If you won't need any async loading of table data, you can use the basic table. It won't provide you a paginator,
+If you just need a normal table that you can customize fully by yourself, you can use the table component. It won't provide you a paginator,
 filter textbox, ... It's just a Vue component and all interaction happens via the properties or event handlers.
 
-If you want to use the basic table in a predefined container with a paginator, filter textbox see the [table container section](#tableContainer)
+If you want to use the table in a predefined container with a paginator, filter textbox see the [table container section](#tableContainer)
 
-### Properties
+### Async features
+
+It is also possible to use this component without all data is already loaded. Therefore you will have to use the 
+`call-` properties that will hold a callback function to load some additional data asynchronously.
+
+#### Load your root rows asynchronously
+
+In previous versions of the table tree, you needed to pass the total rows as a property. Now, you don't need
+that anymore. Just change the length of the rows array. For example you already have 3 root rows in your JSON array,
+but you want to load another 3 root rows asynchronously, well then set the length of your rows property to 6: `this.rows.length = 6`.
+Don't forget to add the `call-rows` property to your component. See [properties](#table_properties)
+
+#### Load your child rows asynchronously
+
+If you want to load your child rows later, just add the `_hasChildren` attribute to your row with `true` as value.
+It will add a toggle children icon and when you click it, the children will be loaded. 
+Don't forget to add the `call-children` property to your component. See [properties](#table_properties)
+
+#### Sort or filter on a not fully loaded table
+
+If you're sorting/filtering while not all root/child rows are loaded. There is a small problem. We don't know if your sort
+or filter result will be the right one, because not all the data is loaded.
+Therefore the component will call the `call-temp-rows` function you need to pass via the property. See [properties](#table_properties)
+
+Be aware that the result of the function call is send to the table without any additional filtering, sorting or pagination.
+The rows will only expand if needed. You can see it as you pass temporarily rows to the table 
+
+### <a name="table_properties"></a>Properties
 
 - `columns`: *(type: array, required)* see [columns](#columns)
 - `rows`: *(type: array, default: `[]`)* see [rows](#rows)
@@ -111,9 +139,27 @@ Then you will be able to properly display all the filtered rows.
 - `end`: *(type: number, default: `undefined`)* The end index to show only a slice of the rows.
 - `slots`: *(type: Object, default: {})* A list of slots that are passed from parent components.
 If this object doesn't contain any attributes, the default component slots will be used.
-- `loading`: *(type: boolean, default: false)* Indicates if the rows are loading.
-- `temp`: *(type: boolean, default: false)* Indicates if the current rows are temporarily. 
-If so, the rows will not be filtered, sorted or paginated.
+- `call-rows`: *(type: Function, default: `() => []`)* This function will be called if additional root rows needs to  be loaded.
+It will give you only one parameter:
+    - `indexes`: *(type: array)* A list of indexes in the rows array you need to load. 
+    If you're sure all the items needs to be loaded, just take the first and last one and use them as a paramter.
+    But in some cases, some rows will already been loaded. That's the reason why a list is taken instead of
+    the first and last one.
+- `call-children`: *(type: Function, default: `() => []`)* This function will be called if child rows needs to  be loaded.
+All child rows has to be loaded at once. There is no possibility to load a part of it later.It will give you only one parameter:
+    - `parent`: *(type: Object)* The parent row that needs children.
+- `call-temp-rows`: *(type: Function, default: `() => []`)* The function will be called if the table is sorted and not all 
+root rows are loaded or the table is filtered and not all root rows or child rows are loaded. The following parameters are passed to the function:
+    - `filter`: *(type: string)* The current filter.
+    - `sortColumns`: *(type: array)* The list of currently sorted columns ordered by sorting order.
+    - `start`: *(type: Number)* The current start index, used for pagination.
+    - `end`: *(type: Number)* The current end index, used for pagination.
+    
+    You need to return an simple javascript object with the following attributes:
+    - `rows`: *(type: array)* A list of founded rows for the current parameters.
+    - `total`: *(type: Number)* The total number of rows found with filtering and sorting, but without pagination.
+    If this attribute is not set, the length of the rows attribute is taken.
+
 
 Start and end using the Array.slice method to show only a part of the rows. If you don't add them as properties, 
 their value will ben undefined and all the rows will be visible.
@@ -123,11 +169,6 @@ their value will ben undefined and all the rows will be visible.
 - `total-filtered-rows-change`: This event will be triggered if due to filtering the total amount of rows changes. 
 It contains one parameter:
     - `total`: *(type: Number)* The total number of filtered rows.
-- `sort`: This event will be triggered if a column is sorted. It also contains one parameter:
-    - `sortColummns`: *(type: array)* A list of all the columns who are sorting order by sorting order.
-- `toggle-children`: This event is triggered if the children of a row expand or collapse. It contains one parameter:
-    - `row`: *(type: Object)* This is the parent row object.
-
 
 ### <a name="basic_table_slots"></a>Slots
 
@@ -175,6 +216,10 @@ The scope contains two parameters:
             :filter="filter"
             :start="start"
             :end="end"
+            @filter-change="filterChanged"
+            :call-rows="callRowsFunction"
+            :call-children="callChildrenFunction"
+            :call-temp-rows="callTempRowsFunction"
         >
             <!-- Will be applied on the name column for the rows with an _id of tiger -->
             <template slot="name_tiger" slot-scope="props">test cell - {{ props.row.name }}</template>
@@ -199,225 +244,6 @@ export default {
         VueAdsTable,
     },
 
-    data () {
-        let rows = [
-            {
-                _id: 'tiger',
-                name: 'Tiger Nixon',
-                function: 'System Architect',
-                city: 'Edinburgh',
-                id: '5421',
-                since: '2011/04/25',
-                budget: '$320,800',
-                _children: [
-                    {
-                        name: 'Garrett Winters',
-                        function: 'Accountant',
-                        city: 'Tokyo',
-                        id: '8422',
-                        since: '2011/07/25',
-                        budget: '$170,750',
-                    },
-                ],
-            },
-            {
-                name: 'Lael Greer',
-                function: 'Systems Administrator',
-                city: 'London',
-                id: '6733',
-                since: '2009/02/27',
-                budget: '$103,500',
-                _showChildren: true,
-                _children: [
-                    {
-                        name: 'Garrett Winters',
-                        function: 'Accountant',
-                        city: 'Tokyo',
-                        id: '8422',
-                        since: '2011/07/25',
-                        budget: '$170,750',
-                    },
-                ],
-            },
-        ];
-        
-        let columns = [
-            {
-                property: 'id',
-                title: 'ID#',
-                direction: null,
-                filterable: true,
-            },
-            {
-                property: 'name',
-                title: 'Name',
-                direction: null,
-                filterable: true,
-            },
-            {
-                 property: 'function',
-                title: 'Function',
-                direction: null,
-                filterable: true,
-            },
-            {
-                property: 'city',
-                title: 'City',
-                direction: null,
-                filterable: true,
-            },
-            {
-                property: 'since',
-                title: 'Since',
-                direction: null,
-                filterable: true,
-            },
-            {
-                property: 'budget',
-                title: 'Budget',
-                direction: null,
-                filterable: true,
-            },
-        ];
-        
-        let classes = {
-            '0/all': {
-                'vue-ads-py-3': true,
-                'vue-ads-px-2': true,
-            },
-            'even/': {
-                'vue-ads-bg-blue-lighter': true,
-            },
-            'odd/': {
-                'vue-ads-bg-blue-lightest': true,
-            },
-            '0/': {
-                'vue-ads-bg-blue-lighter': false,
-                'vue-ads-bg-blue-dark': true,
-                'vue-ads-text-white': true,
-                'vue-ads-font-bold': true,
-            },
-            '1_/': {
-                'hover:vue-ads-bg-red-lighter': true,
-            },
-        };
-
-        return {
-            rows,
-            columns,
-            classes,
-            filter: '',
-            start: 0,
-            end: 2,
-        };
-    },
-};
-</script>
-```
-
-## Async table component
-
-The async table is used to load data asynchronously. If you don't want to load all the root rows in one time, 
-but per page. Or you want to load your child rows only when the user clicks the 'toggle-children'-button. 
-Then you can use the async table.
-
-You will get all the features of the basic table but there are some extra additions:
-
-### Load your root rows asynchronously
-
-In previous versions of the table tree, you needed to pass the total rows as a property. Now, you don't need
-that anymore. Just change the length of the rows array. For example you already have 3 root rows in your JSON array,
-but you want to load another 3 root rows asynchronously, well then set the length of your rows property to 6: `this.rows.length = 6`.
-Don't forget to add the `call-rows` property to your component. See [Async properties](#async_properties)
-
-### Load your child rows asynchronously
-
-If you want to load your child rows later, just add the `_hasChildren` attribute to your row with `true` as value.
-It will add a toggle children icon and when you click it, the children will be loaded. 
-Don't forget to add the `call-children` property to your component. See [Async properties](#async_properties)
-
-### Sort or filter on a not fully loaded table
-
-If you're sorting/filtering while not all root/child rows are loaded. There is a small problem. We don't know if your sort
-or filter result will be the right one, because not all the data is loaded.
-Therefore the component will call the `call-temp-rows` function you need to pass via the property. See [Async properties](#async_properties)
-
-Be aware that the result of the function call is send to the table without any additional filtering, sorting or pagination.
-The rows will only expand if needed. You can see it as you pass temporarily rows to the table 
-
-### <a name="async_properties"></a>Aync properties
-
-You can use the `columns`, `rows`, `filter`, `classes`, `start`, `end` and `slots` properties from the base table. 
-But their are some additional properties:
-
-- `call-rows`: *(type: Function, default: `() => []`)* This function will be called if additional root rows needs to  be loaded.
-It will give you only one parameter:
-    - `indexes`: *(type: array)* A list of indexes in the rows array you need to load. 
-    If you're sure all the items needs to be loaded, just take the first and last one and use them as a paramter.
-    But in some cases, some rows will already been loaded. That's the reason why a list is taken instead of
-    the first and last one.
-- `call-children`: *(type: Function, default: `() => []`)* This function will be called if child rows needs to  be loaded.
-All child rows has to be loaded at once. There is no possibility to load a part of it later.It will give you only one parameter:
-    - `parent`: *(type: Object)* The parent row that needs children.
-- `call-temp-rows`: *(type: Function, default: `() => []`)* The function will be called if the table is sorted and not all 
-root rows are loaded or the table is filtered and not all root rows or child rows are loaded. The following parameters are passed to the function:
-    - `filter`: *(type: string)* The current filter.
-    - `sortColumns`: *(type: array)* The list of currently sorted columns ordered by sorting order.
-    - `start`: *(type: Number)* The current start index, used for pagination.
-    - `end`: *(type: Number)* The current end index, used for pagination.
-    
-    You need to return an simple javascript object with the following attributes:
-    - `rows`: *(type: array)* A list of founded rows for the current parameters.
-    - `total`: *(type: Number)* The total number of rows found with filtering and sorting, but without pagination.
-    If this attribute is not set, the length of the rows attribute is taken.
-
-### Events
-
-The async table has only one event:
-
-- `total-filtered-rows-change`: see [the basic table events](#basic_table_events)
-
-### Slots
-
-All the slots of the [basic table](#basic_table_slots) can be used.
-
-### Example
-```vue
-<template>
-    <div>
-        <vue-ads-async-table
-            :columns="columns"
-            :rows="rows"
-            :filter="filter"
-            :start="start"
-            :end="end"
-            :call-rows="callRowsFunction"
-            :call-children="callChildrenFunction"
-            :call-temp-rows="callTempRowsFunction"
-        >
-            <!-- Will be applied on the name column for the rows with an _id of tiger -->
-            <template slot="name_tiger" slot-scope="props">test cell - {{ props.row.name }}</template>
-            <!-- Will be applied on the city column -->
-            <template slot="city" slot-scope="props">test column - {{ props.row.city }}</template>
-            <!-- Will be applied on the row with _id tiger -->
-            <template slot="_tiger" slot-scope="props">test row - {{ props.row[props.column.property] }}</template>
-            <template slot="no-rows">Geen resultaten</template>
-            <template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>
-            <template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>
-        </vue-ads-async-table>
-    </div>
-</template>
-
-<script>
-import { VueAdsAsyncTable } from 'vue-ads-table-tree';
-
-export default {
-    name: 'AsyncTableApp',
-
-    components: {
-        VueAdsAsyncTable,
-    },
-    
     data () {
         let rows = [
             {
@@ -491,10 +317,33 @@ export default {
                 filterable: true,
             },
         ];
+        
+        let classes = {
+            '0/all': {
+                'vue-ads-py-3': true,
+                'vue-ads-px-2': true,
+            },
+            'even/': {
+                'vue-ads-bg-blue-lighter': true,
+            },
+            'odd/': {
+                'vue-ads-bg-blue-lightest': true,
+            },
+            '0/': {
+                'vue-ads-bg-blue-lighter': false,
+                'vue-ads-bg-blue-dark': true,
+                'vue-ads-text-white': true,
+                'vue-ads-font-bold': true,
+            },
+            '1_/': {
+                'hover:vue-ads-bg-red-lighter': true,
+            },
+        };
 
         return {
             rows,
             columns,
+            classes,
             filter: '',
             start: 0,
             end: 2,
@@ -502,6 +351,10 @@ export default {
     },
     
     methods: {
+        filterChanged (filter) {
+            this.filter = filter;
+        },
+        
         sleep (ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         },
@@ -557,11 +410,10 @@ export default {
                 ],
                 total: 4,
             };
-        },  
+        },    
     },
 };
 </script>
-
 ```
 
 ## <a name="tableContainer"></a>Full component

@@ -1,5 +1,10 @@
 ## Changelog
 
+#### v2.1.0 - 15/02/2019
+
+- Combined the basic table component and the async table component back to one component
+- Added an excel export
+
 #### v2.0.0 - 04/02/2019
 
 - Split the table tree in 3 components:

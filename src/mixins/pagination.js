@@ -14,4 +14,14 @@ export default {
             },
         },
     },
+
+    computed: {
+        paginatedRows () {
+            if (this.unresolved) {
+                return this.sortedRows;
+            }
+
+            return this.sortedRows.slice(this.start, this.end);
+        },
+    },
 };

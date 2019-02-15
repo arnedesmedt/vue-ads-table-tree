@@ -2,13 +2,13 @@
     <div
         id="app"
     >
-        <vue-ads-table-tree
+        <vue-ads-table
             :columns="columns"
             :rows="rows"
             :filter="filter"
-            :page="page"
+            :start="start"
+            :end="end"
             @filter-change="filterChanged"
-            @page-change="pageChanged"
         >
             <!--&lt;!&ndash; Will be applied on the name column for the rows with an _id of tiger &ndash;&gt;-->
             <!--<template slot="name_tiger" slot-scope="props">test cell - {{ props.row[props.column.property] }}</template>-->
@@ -19,7 +19,7 @@
             <!--<template slot="no-rows">Geen resultaten</template>-->
             <!--<template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>-->
             <!--<template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>-->
-        </vue-ads-table-tree>
+        </vue-ads-table>
     </div>
 </template>
 
@@ -27,13 +27,13 @@
 import './assets/css/tailwind.css';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 
-import VueAdsTableTree from './components/TableContainer';
+import VueAdsTable from './components/Table';
 
 export default {
     name: 'BasicTableApp',
 
     components: {
-        VueAdsTableTree,
+        VueAdsTable,
     },
 
     data () {
@@ -584,17 +584,14 @@ export default {
             rows,
             columns,
             filter: '',
-            page: 0,
+            start: 0,
+            end: 10,
         };
     },
 
     methods: {
         filterChanged (filter) {
             this.filter = filter;
-        },
-
-        pageChanged (page) {
-            this.page = page;
         },
     },
 };

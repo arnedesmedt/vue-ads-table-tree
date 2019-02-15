@@ -8,7 +8,24 @@ export default {
         },
     },
 
+    watch: {
+        rows: {
+            handler: 'rowsChanged',
+            immediate: true,
+        },
+    },
+
+    computed: {
+        loadedRows () {
+            return this.rows.filter(row => row);
+        },
+    },
+
     methods: {
+        rowsChanged (rows, oldRows, parent) {
+            this.initRows(rows, parent);
+        },
+
         initRows (rows, parent) {
             rows
                 .forEach(row => this.initRow(row, parent));

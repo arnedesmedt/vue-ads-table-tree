@@ -12,7 +12,7 @@
             :row="row"
             :column="column"
             :css-processor="cssProcessor"
-            @toggleChildren="$emit('toggleChildren')"
+            @toggle-children="$emit('toggle-children')"
         />
     </tr>
 </template>

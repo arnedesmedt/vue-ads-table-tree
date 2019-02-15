@@ -114,7 +114,7 @@ export default {
 
         toggleChildren (event) {
             event.stopPropagation();
-            this.$emit('toggleChildren');
+            this.$emit('toggle-children');
         },
     },
 
