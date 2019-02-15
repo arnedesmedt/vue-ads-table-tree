@@ -139,6 +139,10 @@ Then you will be able to properly display all the filtered rows.
 - `end`: *(type: number, default: `undefined`)* The end index to show only a slice of the rows.
 - `slots`: *(type: Object, default: {})* A list of slots that are passed from parent components.
 If this object doesn't contain any attributes, the default component slots will be used.
+- `export-name`: *(type: string, default: `''`)* The name of the export file to download. This is by default an empty string.
+If you change the name an export will be triggered. After the export happened, you can change the name back to an empty string.
+- `full-export`: *(type: boolean, default: true)* If this is true, all the known data of the table will be downloaded.
+If this is false, only the filtered and sorted data will be downloaded.
 - `call-rows`: *(type: Function, default: `() => []`)* This function will be called if additional root rows needs to  be loaded.
 It will give you only one parameter:
     - `indexes`: *(type: array)* A list of indexes in the rows array you need to load. 
@@ -169,6 +173,12 @@ their value will ben undefined and all the rows will be visible.
 - `total-filtered-rows-change`: This event will be triggered if due to filtering the total amount of rows changes. 
 It contains one parameter:
     - `total`: *(type: Number)* The total number of filtered rows.
+- `export`: This event will be triggered if an export is initiated. It contains the following parameter that you can use with the [vue-json-excel package](https://www.npmjs.com/package/vue-json-excel)
+    - `fields`: *(type: Object)* The fields of the export file.
+    - `data`: *(type: array)* The rows of the export file.
+    - `title`: *(type: string)* The name of the export file.
+    
+    
 
 ### <a name="basic_table_slots"></a>Slots
 
@@ -423,11 +433,12 @@ If your `call-rows` property is not empty, an async table component will be used
 
 ### <a name="container_properties"></a>Properties
 
-You can use the `columns`, `rows`, `filter`, `classes`, `call-rows`, `call-temp-rows` and `call-children` properties from the base and async table. 
-But their are 2 additional properties:
+You can use the `columns`, `rows`, `filter`, `classes`, `full-export`, `call-rows`, `call-temp-rows` and `call-children` properties from the base and async table. 
+But their are some additional properties:
 
 - `debounced-filter-time`: *(type: Number, default: 500)* The time in milliseconds to wait before the input value of the filter box is used.
 - `page`: *(type: Number, default: 0)* The initial page of the paginator.
+- `export-name`: *(type: string, default: `''`)* The name of the export file to download. The trigger to export the table will be a click on the export button.
 
 ### Events
 

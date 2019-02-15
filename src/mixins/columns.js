@@ -66,8 +66,8 @@ export default {
                 Vue.set(column, 'visible', true);
             }
 
-            if (!column.hasOwnProperty('excel')) {
-                Vue.set(column, 'excel', true);
+            if (!column.hasOwnProperty('export')) {
+                Vue.set(column, 'export', true);
             }
 
             if (!column.hasOwnProperty('order') && !column.hasOwnProperty('direction')) {

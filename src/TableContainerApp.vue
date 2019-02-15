@@ -12,6 +12,7 @@
             :call-rows="callRows"
             :call-children="callChildren"
             :call-temp-rows="callTempRows"
+            export-name="test"
         >
             <!--&lt;!&ndash; Will be applied on the name column for the rows with an _id of tiger &ndash;&gt;-->
             <!--<template slot="name_tiger" slot-scope="props">test cell - {{ props.row[props.column.property] }}</template>-->
@@ -167,6 +168,38 @@ export default {
                 id: '1667',
                 since: '2008/12/13',
                 budget: '$103,600',
+            },
+            {
+                name: 'Unity Butler',
+                function: 'Marketing Designer',
+                city: 'San Francisco',
+                id: '5384',
+                since: '2009/12/09',
+                budget: '$85,675',
+            },
+            {
+                name: 'Howard Hatfield',
+                function: 'Office Manager',
+                city: 'San Francisco',
+                id: '7031',
+                since: '2008/12/16',
+                budget: '$164,500',
+            },
+            {
+                name: 'Hope Fuentes',
+                function: 'Secretary',
+                city: 'San Francisco',
+                id: '6318',
+                since: '2010/02/12',
+                budget: '$109,850',
+            },
+            {
+                name: 'Vivian Harrell',
+                function: 'Financial Controller',
+                city: 'San Francisco',
+                id: '9422',
+                since: '2009/02/14',
+                budget: '$452,500',
             },
         ];
         let columns = [

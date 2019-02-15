@@ -5,18 +5,28 @@
               :filter-changed="filterChanged"
         >
             <div class="vue-ads-flex vue-ads-p-3">
-                <div class="vue-ads-w-4/5"></div>
-                <div class="vue-ads-w-1/5">
-                    <vue-ads-text :value="filter" placeholder="Filter..." @input="filterChanged"/>
+                <div class="vue-ads-w-3/4"></div>
+                <div class="vue-ads-w-1/4 vue-ads-flex">
+                    <vue-ads-form
+                        :class="filterClasses"
+                    >
+                        <vue-ads-form-group>
+                            <vue-ads-text :value="filter" placeholder="Filter..." @input="filterChanged"/>
+                        </vue-ads-form-group>
+                    </vue-ads-form>
+                    <vue-json-excel
+                        v-if="exportName"
+                        :data="exportData"
+                        :fields="exportFields"
+                        :name="`${exportTitle}.xls`"
+                        :before-generate="collectExportData"
+                        class="vue-ads-bg-green vue-ads-text-white vue-ads-p-2 vue-ads-cursor-pointer vue-ads-rounded-sm vue-ads-bg-teal-dark"
+                    >
+                        <i class="fa fa-file-download"></i>
+                    </vue-json-excel>
                 </div>
             </div>
-            <vue-json-excel
-                :data="excelData"
-                :fields="excelFields"
-                :before-generate="collectExcelData"
-            >
-                export
-            </vue-json-excel>
+
         </slot>
         <vue-ads-table
             ref="table"
@@ -30,8 +40,9 @@
             :call-temp-rows="callTempRowsFunction"
             :slots="$scopedSlots"
             @total-filtered-rows-change="totalFilteredRowsChanged"
-            @excel="excel"
-            :excel="triggerExcel"
+            @export="exportTable"
+            :export-name="exportTrigger"
+            :full-export="fullExport"
         />
         <slot name="bottom"
               :total="total"
@@ -53,7 +64,8 @@
 
 <script>
 import {
-    VueAdsSelect,
+    VueAdsForm,
+    VueAdsFormGroup,
     VueAdsText,
 } from 'vue-ads-form-builder';
 import VueAdsPagination from 'vue-ads-pagination';
@@ -70,7 +82,8 @@ export default {
     components: {
         VueAdsTable,
         VueAdsText,
-        VueAdsSelect,
+        VueAdsForm,
+        VueAdsFormGroup,
         VueAdsPagination,
         VueJsonExcel,
     },
@@ -117,6 +130,16 @@ export default {
             type: Number,
             default: 0,
         },
+
+        exportName: {
+            type: String,
+            default: '',
+        },
+
+        fullExport: {
+            type: Boolean,
+            default: true,
+        },
     },
 
     data () {
@@ -130,9 +153,10 @@ export default {
                 this.filterChange,
                 this.debounceFilterTime
             ),
-            triggerExcel: false,
-            excelData: [],
-            excelFields: {},
+            exportTrigger: '',
+            exportData: [],
+            exportFields: {},
+            exportTitle: '',
         };
     },
 
@@ -144,6 +168,13 @@ export default {
     },
 
     computed: {
+        filterClasses () {
+            return {
+                'vue-ads-flex-grow': true,
+                'vue-ads-mr-2 ': this.exportName.length > 0,
+            };
+        },
+
         callRowsFunction () {
             return this.callRows || (() => []);
         },
@@ -187,14 +218,15 @@ export default {
             this.total = total;
         },
 
-        collectExcelData () {
-            this.triggerExcel = true;
+        collectExportData () {
+            this.exportTrigger = this.exportName;
         },
 
-        excel (excel) {
-            this.excelFields = excel.fields;
-            this.excelData = excel.data;
-            this.triggerExcel = false;
+        exportTable (exportData) {
+            this.exportFields = exportData.fields;
+            this.exportData = exportData.data;
+            this.exportTitle = exportData.title;
+            this.exportTrigger = '';
         },
     },
 };

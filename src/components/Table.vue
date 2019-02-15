@@ -68,7 +68,7 @@ import styling from '../mixins/styling';
 import async from '../mixins/async';
 import sort from '../mixins/sort';
 import flatten from '../mixins/flatten';
-import excel from '../mixins/excel';
+import exportData from '../mixins/exportData';
 
 import VueAdsHeaderCell from './HeaderCell';
 import VueAdsRow from './Row.vue';
@@ -91,7 +91,7 @@ export default {
         flatten,
         styling,
         async,
-        excel,
+        exportData,
     ],
 
     computed: {
