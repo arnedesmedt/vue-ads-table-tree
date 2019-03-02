@@ -1,11 +1,11 @@
 export default {
     computed: {
         sortedRows () {
-            if (this.sortColumns.length === 0 || this.unresolved) {
+            if (this.unresolved) {
                 return this.filteredRows;
             }
 
-            return this.rowsSorted(this.filteredRows);
+            return this.sortRows(this.filteredRows);
         },
     },
 
@@ -16,13 +16,22 @@ export default {
             }, 0);
         },
 
-        rowsSorted (rows) {
+        sortRows (rows) {
+            rows.sort((rowA, rowB) => {
+                return rowA._meta.index - rowB._meta.index;
+            });
+
             this.sortColumns
                 .forEach(column => {
                     let direction = column.direction ? 1 : -1;
                     rows.sort((rowA, rowB) => {
                         let sortValueA = rowA[column.property];
                         let sortValueB = rowB[column.property];
+
+                        if (column.grouped && column.groupBy instanceof Function) {
+                            sortValueA = column.groupBy(sortValueA);
+                            sortValueB = column.groupBy(sortValueB);
+                        }
 
                         if (typeof sortValueA === 'string' && typeof  sortValueB === 'string') {
                             return direction * ('' + sortValueA.localeCompare(sortValueB));
@@ -43,14 +52,15 @@ export default {
             rows
                 .filter(row => row._meta.visibleChildren.length > 0)
                 .forEach(row => {
-                    row._meta.visibleChildren = this.rowsSorted(row._meta.visibleChildren);
+                    row._meta.visibleChildren = this.sortRows(row._meta.visibleChildren);
                 });
 
             return rows;
         },
 
         async sort (column) {
-            column.direction = !column.direction;
+            let wasFalse = column.direction === false;
+            column.direction = wasFalse && !column.grouped ? null : !column.direction;
             column.order = this.maxSortOrder() + 1;
 
             if (this.unresolved) {

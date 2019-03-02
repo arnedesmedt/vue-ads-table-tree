@@ -28,7 +28,7 @@ export default {
 
         initRows (rows, parent) {
             rows
-                .forEach(row => this.initRow(row, parent));
+                .forEach((row, index) => this.initRow(row, parent, index));
             rows
                 .filter(row => row._children.length > 0)
                 .forEach(row => this.rowsChanged(row._children, null, row));
@@ -36,7 +36,7 @@ export default {
             return rows;
         },
 
-        initRow (row, parent) {
+        initRow (row, parent, index, groupColumn = null) {
             if (!row.hasOwnProperty('_children')) {
                 Vue.set(row, '_children', []);
             }
@@ -47,9 +47,12 @@ export default {
 
             if (!row.hasOwnProperty('_meta')) {
                 Vue.set(row, '_meta', {
+                    groupParent: 0,
                     parent: parent ? parent._meta.parent + 1 : 0,
                     loading: false,
                     visibleChildren: row._children,
+                    index,
+                    groupColumn,
                 });
             }
         },

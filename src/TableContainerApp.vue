@@ -45,11 +45,11 @@ export default {
             {
                 _id: 'tiger',
                 name: 'Tiger Nixon',
-                function: 'System Architect',
+                function: 'Office Manager',
                 city: 'Edinburgh',
                 id: '5421',
                 since: '2011/04/25',
-                budget: '$320,800',
+                budget: 320800,
                 _children: [
                     {
                         name: 'Garrett Winters',
@@ -57,7 +57,7 @@ export default {
                         city: 'Tokyo',
                         id: '8422',
                         since: '2011/07/25',
-                        budget: '$170,750',
+                        budget: 170750,
                     },
                     {
                         name: 'Airi Satou',
@@ -65,7 +65,7 @@ export default {
                         city: 'Tokyo',
                         id: '5407',
                         since: '2008/11/28',
-                        budget: '$162,700',
+                        budget: 162700,
                         _showChildren: true,
                         _children: [
                             {
@@ -74,7 +74,7 @@ export default {
                                 city: 'New York',
                                 id: '1721',
                                 since: '2009/04/10',
-                                budget: '$237,500',
+                                budget: 237500,
                             },
                             {
                                 name: 'Bradley Greer',
@@ -82,7 +82,7 @@ export default {
                                 city: 'London',
                                 id: '2558',
                                 since: '2012/10/13',
-                                budget: '$132,000',
+                                budget: 132000,
                             },
                         ],
                     },
@@ -92,7 +92,7 @@ export default {
                         city: 'San Francisco',
                         id: '1562',
                         since: '2009/01/12',
-                        budget: '$86,000',
+                        budget: 86000,
                     },
                 ],
             },
@@ -102,8 +102,8 @@ export default {
                 city: 'Tokyo',
                 id: '8422',
                 since: '2011/07/25',
-                budget: '$170,750',
-                _hasChildren: true,
+                budget: 170750,
+                _hasChildren: false,
             },
             {
                 name: 'Ashton Cox',
@@ -111,15 +111,15 @@ export default {
                 city: 'San Francisco',
                 id: '1562',
                 since: '2009/01/12',
-                budget: '$86,000',
+                budget: 86000,
             },
             {
                 name: 'Cedric Kelly',
-                function: 'Senior Javascript Developer',
+                function: 'Office Manager',
                 city: 'Edinburgh',
                 id: '6224',
                 since: '2012/03/29',
-                budget: '$433,060',
+                budget: 433060,
             },
             {
                 name: 'Airi Satou',
@@ -127,7 +127,7 @@ export default {
                 city: 'Tokyo',
                 id: '5407',
                 since: '2008/11/28',
-                budget: '$162,700',
+                budget: 162700,
             },
             {
                 name: 'Brielle Williamson',
@@ -135,15 +135,15 @@ export default {
                 city: 'New York',
                 id: '4804',
                 since: '2012/12/02',
-                budget: '$372,000',
+                budget: 372000,
             },
             {
                 name: 'Herrod Chandler',
-                function: 'Sales Assistant',
+                function: 'Office Manager',
                 city: 'San Francisco',
                 id: '9608',
                 since: '2012/08/06',
-                budget: '$137,500',
+                budget: 137500,
             },
             {
                 name: 'Rhona Davidson',
@@ -151,31 +151,31 @@ export default {
                 city: 'Tokyo',
                 id: '6200',
                 since: '2010/10/14',
-                budget: '$327,900',
+                budget: 327900,
             },
             {
                 name: 'Colleen Hurst',
-                function: 'Javascript Developer',
+                function: 'Integration Specialist',
                 city: 'San Francisco',
                 id: '2360',
                 since: '2009/09/15',
-                budget: '$205,500',
+                budget: 205500,
             },
             {
                 name: 'Sonya Frost',
-                function: 'Software Engineer',
+                function: 'Office Manager',
                 city: 'Edinburgh',
                 id: '1667',
                 since: '2008/12/13',
-                budget: '$103,600',
+                budget: 103600,
             },
             {
                 name: 'Unity Butler',
-                function: 'Marketing Designer',
+                function: 'Accountant',
                 city: 'San Francisco',
                 id: '5384',
                 since: '2009/12/09',
-                budget: '$85,675',
+                budget: 85675,
             },
             {
                 name: 'Howard Hatfield',
@@ -183,23 +183,23 @@ export default {
                 city: 'San Francisco',
                 id: '7031',
                 since: '2008/12/16',
-                budget: '$164,500',
+                budget: 164500,
             },
             {
                 name: 'Hope Fuentes',
-                function: 'Secretary',
+                function: 'Integration Specialist',
                 city: 'San Francisco',
                 id: '6318',
                 since: '2010/02/12',
-                budget: '$109,850',
+                budget: 109850,
             },
             {
                 name: 'Vivian Harrell',
-                function: 'Financial Controller',
+                function: 'Accountant',
                 city: 'San Francisco',
                 id: '9422',
                 since: '2009/02/14',
-                budget: '$452,500',
+                budget: 452500,
             },
         ];
         let columns = [
@@ -220,6 +220,9 @@ export default {
                 title: 'Function',
                 direction: null,
                 filterable: true,
+                groupable: true,
+                groupCollapsable: true,
+                hideOnGroup: true,
             },
             {
                 property: 'city',
@@ -238,10 +241,22 @@ export default {
                 title: 'Budget',
                 direction: null,
                 filterable: true,
+                groupable: true,
+                groupBy: (budget) => {
+                    if (budget < 100000) {
+                        return '< 100 000';
+                    } else if (budget < 200000) {
+                        return '< 200 000';
+                    } else if (budget < 300000) {
+                        return '< 300 000';
+                    } else if (budget < 400000) {
+                        return '< 400 000';
+                    } else {
+                        return '> 400 000';
+                    }
+                },
             },
         ];
-
-        rows.length = 20;
 
         return {
             rows,
@@ -274,7 +289,7 @@ export default {
                     city: 'San Francisco',
                     id: '9608',
                     since: '2012/08/06',
-                    budget: '$137,500',
+                    budget: 137500,
                 };
             });
         },
@@ -288,7 +303,7 @@ export default {
                     city: 'San Francisco',
                     id: '8196',
                     since: '2010/07/14',
-                    budget: '$86,500',
+                    budget: 86500,
                 },
             ];
         },

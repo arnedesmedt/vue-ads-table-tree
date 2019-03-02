@@ -3,7 +3,7 @@ import Vue from 'vue';
 export default {
     computed: {
         flattenedRows () {
-            return this.flatten(this.paginatedRows);
+            return this.flatten(this.groupedRows);
         },
     },
 

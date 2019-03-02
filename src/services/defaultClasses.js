@@ -9,8 +9,18 @@ export default {
         'vue-ads-text-sm': true,
         'vue-ads-border-t': true,
     },
+    group: {
+        'vue-ads-font-bold': true,
+        'vue-ads-border-b': true,
+        'vue-ads-italic': true,
+    },
     'all/': {
         'hover:vue-ads-bg-grey-lighter': true,
+    },
+    'all/all': {
+        'vue-ads-px-4': true,
+        'vue-ads-py-2': true,
+        'vue-ads-text-sm': true,
     },
     'even/': {
         'vue-ads-bg-grey-lightest': true,

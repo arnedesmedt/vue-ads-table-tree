@@ -10,15 +10,14 @@
                 :class="headerRowClasses"
             >
                 <vue-ads-header-cell
-                    v-for="(column, key) in visibleColumns"
+                    v-for="(column, key) in nonGroupedColumns"
                     :key="key"
+                    :column="column"
                     :column-index="key"
-                    :direction="column.direction"
-                    :sortable="[null, true, false].includes(column.direction)"
                     :css-processor="cssProcessor"
                     :sort-icon-slot="sortIconSlot"
-                    v-bind="column"
-                    @sort="sort(column)"
+                    @sort="sort"
+                    @group="group"
                 />
             </tr>
         </thead>
@@ -29,7 +28,7 @@
             >
                 <td
                     :class="infoClasses"
-                    :colspan="visibleColumns.length"
+                    :colspan="nonGroupedColumns.length"
                 >
                     <span v-if="loading">
                         <slot name="loading">Loading...</slot>
@@ -41,17 +40,31 @@
             </tr>
             <template
                 v-else
+                v-for="(row, rowKey) in flattenedRows"
             >
                 <vue-ads-row
-                    v-for="(row, rowKey) in flattenedRows"
+                    v-if="!row._meta.groupColumn"
                     :key="rowKey"
                     :row="row"
                     :row-index="rowKey"
-                    :columns="visibleColumns"
+                    :columns="nonGroupedColumns"
                     :slots="rowSlots"
                     :toggle-children-icon-slot="toggleChildrenIconSlot"
                     :css-processor="cssProcessor"
                     @toggle-children="toggleChildren(row)"
+                />
+                <vue-ads-group-row
+                    v-else
+                    :key="rowKey"
+                    :row-index="rowKey"
+                    :row="row"
+                    :slots="rowSlots"
+                    :css-processor="cssProcessor"
+                    :toggle-children-icon-slot="toggleChildrenIconSlot"
+                    :colspan="columns.length"
+                    @toggle-children="toggleChildren(row)"
+                    @disable-group="group"
+                    @sort="sort"
                 />
             </template>
         </tbody>
@@ -67,11 +80,18 @@ import pagination from '../mixins/pagination';
 import styling from '../mixins/styling';
 import async from '../mixins/async';
 import sort from '../mixins/sort';
+import groupBy from '../mixins/groupBy';
 import flatten from '../mixins/flatten';
 import exportData from '../mixins/exportData';
 
 import VueAdsHeaderCell from './HeaderCell';
 import VueAdsRow from './Row.vue';
+import VueAdsGroupRow from './GroupRow.vue';
+
+// Todo check if it's possible to increase the key only for non group rows
+// => so even and odd non group rows have the same background
+// Todo enable sort icon if column disapears or maybe also if it doesnt dissapear.
+// Todo create slots for all new icons
 
 export default {
     name: 'VueAdsTable',
@@ -79,6 +99,7 @@ export default {
     components: {
         VueAdsHeaderCell,
         VueAdsRow,
+        VueAdsGroupRow,
     },
 
     mixins: [
@@ -87,6 +108,7 @@ export default {
         slots,
         filter,
         sort,
+        groupBy,
         pagination,
         flatten,
         styling,

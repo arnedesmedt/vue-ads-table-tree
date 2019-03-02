@@ -2,30 +2,31 @@
     <tr
         :class="rowClasses"
     >
-        <vue-ads-cell
-            v-for="(column, key) in columns"
-            :column-slot="columnSlot(column)"
+        <vue-ads-group-cell
+            :colspan="colspan"
+            :column-slot="columnSlot(row._meta.groupColumn)"
             :toggle-children-icon-slot="toggleChildrenIconSlot"
-            :key="key"
             :row-index="rowIndex"
-            :column-index="key"
+            :column-index="0"
             :row="row"
-            :column="column"
+            :column="row._meta.groupColumn"
             :css-processor="cssProcessor"
             @toggle-children="$emit('toggle-children')"
+            @disable-group="$emit('disable-group', $event)"
+            @sort="$emit('sort', $event)"
         />
     </tr>
 </template>
 
 <script>
-import VueAdsCell from './Cell';
+import VueAdsGroupCell from './GroupCell';
 import CSSProcessor from '../services/CSSProcessor';
 
 export default {
-    name: 'VueAdsRow',
+    name: 'VueAdsGroupRow',
 
     components: {
-        VueAdsCell,
+        VueAdsGroupCell,
     },
 
     props: {
@@ -39,8 +40,8 @@ export default {
             required: true,
         },
 
-        columns: {
-            type: Array,
+        colspan: {
+            type: Number,
             required: true,
         },
 

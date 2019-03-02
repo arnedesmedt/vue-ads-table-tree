@@ -1,9 +1,14 @@
 <script>
 
 import CSSProcessor from '../services/CSSProcessor';
+import sortCell from '../mixins/cell/sortCell';
 
 export default {
     name: 'VueAdsHeaderCell',
+
+    mixins: [
+        sortCell,
+    ],
 
     props: {
         title: {
@@ -11,32 +16,24 @@ export default {
             default: '',
         },
 
+        column: {
+            type: Object,
+            default: () => {
+                return {
+                    title: '',
+                    direction: null,
+                };
+            },
+        },
+
         columnIndex: {
             type: Number,
             required: true,
         },
 
-        sortable: {
-            type: Boolean,
-            default: false,
-        },
-
-        direction: {
-            type: [
-                Boolean,
-                null,
-            ],
-            default: null,
-        },
-
         cssProcessor: {
             type: CSSProcessor,
             required: true,
-        },
-
-        sortIconSlot: {
-            type: Function,
-            default: null,
         },
     },
 
@@ -48,24 +45,22 @@ export default {
                         null,
                         true,
                         false,
-                    ].includes(this.direction) && this.sortable,
+                    ].includes(this.column.direction) && this.sortable,
                 },
                 this.cssProcessor.process(null, this.columnIndex),
                 this.cssProcessor.process(0, this.columnIndex),
             );
         },
 
-        sortIconClasses () {
-            if (!this.sortable) {
+        groupIconClasses () {
+            if (!this.column.groupable) {
                 return {};
             }
 
             return {
                 fa: true,
                 'vue-ads-ml-2': true,
-                'fa-sort': this.direction === null,
-                'fa-sort-down': this.direction === false,
-                'fa-sort-up': this.direction === true,
+                'fa-stream': !this.column.grouped,
             };
         },
     },
@@ -80,31 +75,34 @@ export default {
                     },
                 },
                 [
-                    this.title,
+                    this.title || this.column.title,
                 ],
             ),
         ];
 
         if (this.sortable) {
-            headerContent.push(this.sortIconSlot ?
-                this.sortIconSlot({
-                    direction: this.direction,
-                }) :
-                createElement(
-                    'i',
-                    {
-                        class: this.sortIconClasses,
+            headerContent.push(this.sortIcon(createElement));
+        }
+
+        if (this.column.groupable && !this.column.grouped) {
+            headerContent.push(createElement(
+                'i',
+                {
+                    class: this.groupIconClasses,
+                    on: {
+                        click: (event) => {
+                            event.stopPropagation();
+                            this.$emit('group', this.column);
+                        },
                     },
-                ));
+                }
+            ));
         }
 
         return createElement(
             'th',
             {
                 class: this.headerClasses,
-                on: {
-                    click: (event) => this.$emit('sort'),
-                },
             },
             [
                 createElement(

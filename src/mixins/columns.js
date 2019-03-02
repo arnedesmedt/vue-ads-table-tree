@@ -27,7 +27,23 @@ export default {
         sortColumns () {
             return this.visibleColumns
                 .filter(column => column.hasOwnProperty('direction') && column.direction !== null)
-                .sort((columnA, columnB) => columnA.order - columnB.order);
+                .sort((columnA, columnB) => {
+                    if (columnA.grouped !== columnB.grouped) {
+                        return (!columnB.grouped | 0) - (!columnA.grouped | 0);
+                    }
+
+                    return columnA.grouped ? (columnB.order - columnA.order) : (columnA.order - columnB.order);
+                });
+        },
+
+        nonGroupedColumns () {
+            return this.visibleColumns.filter(column => !column.grouped || !column.hideOnGroup || column.collapseIcon);
+        },
+
+        groupColumns () {
+            return this.visibleColumns
+                .filter(column => column.groupable && column.grouped)
+                .sort((columnA, columnB) => columnB.order - columnA.order);
         },
 
         filterColumnProperties () {
@@ -42,6 +58,7 @@ export default {
     methods: {
         columnsChanged (columns) {
             let maxSortOrder = this.maxSortOrder();
+
             columns.forEach(column => {
                 this.initColumn(column, maxSortOrder);
                 if (column.order === maxSortOrder) {
@@ -54,7 +71,7 @@ export default {
             }
 
             // todo check to remove this to the styling mixin
-            this.cssProcessor.totalColumns = this.visibleColumns.length;
+            this.cssProcessor.totalColumns = this.nonGroupedColumns.length;
         },
 
         initColumn (column, order) {
@@ -70,16 +87,39 @@ export default {
                 Vue.set(column, 'export', true);
             }
 
-            if (!column.hasOwnProperty('order') && !column.hasOwnProperty('direction')) {
-                return;
+            if (column.hasOwnProperty('order') || column.hasOwnProperty('direction')) {
+                if (!Number.isInteger(column.order) || column.order < 0) {
+                    column.order = order;
+                }
+
+                if (!column.hasOwnProperty('direction')) {
+                    Vue.set(column, 'direction', null);
+                }
             }
 
-            if (!Number.isInteger(column.order) || column.order < 0) {
-                column.order = order;
+            if (!column.hasOwnProperty('groupable')) {
+                Vue.set(
+                    column,
+                    'groupable',
+                    (
+                        column.hasOwnProperty('grouped') ||
+                        column.hasOwnProperty('groupBy') ||
+                        column.hasOwnProperty('groupCollapsable') ||
+                        column.hasOwnProperty('hideOnGroup')
+                    )
+                );
             }
 
-            if (!column.hasOwnProperty('direction')) {
-                Vue.set(column, 'direction', null);
+            if (column.groupable && !column.hasOwnProperty('grouped')) {
+                Vue.set(column, 'grouped', false);
+            }
+
+            if (column.groupable && !column.hasOwnProperty('groupCollapsable')) {
+                Vue.set(column, 'groupCollapsable', true);
+            }
+
+            if (column.groupable && !column.hasOwnProperty('hideOnGroup')) {
+                Vue.set(column, 'hideOnGroup', !(column.groupBy instanceof Function));
             }
         },
     },
