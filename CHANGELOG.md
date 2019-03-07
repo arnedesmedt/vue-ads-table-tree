@@ -1,5 +1,11 @@
 ## Changelog
 
+#### v2.3.0 - 07/03/2019
+
+- Reset the sort. The next click after sorting the rows ascending and descending will reset the sorting to
+the initial sort.
+- Group rows by a specific column value or use a closure that processes the column value first.
+
 #### v2.1.0 - 15/02/2019
 
 - Combined the basic table component and the async table component back to one component

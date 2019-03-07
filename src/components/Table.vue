@@ -92,6 +92,12 @@ import VueAdsGroupRow from './GroupRow.vue';
 // => so even and odd non group rows have the same background
 // Todo enable sort icon if column disapears or maybe also if it doesnt dissapear.
 // Todo create slots for all new icons
+// Todo create slots for header cells
+// Todo check if you can add child rows reactive after some child rows are already initiated.
+// Todo move sorting and grouping functionality to the wrapper => The result is a wrapper that have the components
+// and a table with all the implemented features
+// Todo toch sorten on unresolved data => to be sure the grouping will be well done.
+// Todo check if toggle children icon slot works on the group toggle children icon.
 
 export default {
     name: 'VueAdsTable',

@@ -1,27 +1,30 @@
 # vue-ads-table-tree
 
-Vue ads table tree is a vue js table component, with a tree functionality.
+Vue ads table tree is a vue js table component, with a tree functionality. 
+Here is a list of all the features of this table:
 
-The default features of a table component like filtering, sorting and paginating are implemented.
-On top of that, you can add a tree structure: Rows can have child rows, that can be hidden or expanded.
- 
-Another cool feature, is the choice to load your rows in advance or via an async call to the backend.
-You can even load a small part of your data, for example the first page, and then load all the other pages
-with async calls to the backend.
-
-A lot of templates are used, so you can change some parts of it.
-
-The design of the table is fully customizable. All rows, columns, cells can be changed.
-You can even apply a design for one specific row. That stays fixed after sorting the table.
-
-The columns and rows are also reactive. The only restriction is that you can't add child rows 
+- Filter rows based on the row values from specific columns or all columns.
+- Sort rows on one or multiple columns. The sortable columns are configurable.
+- Paginate the rows.
+- Group rows on one or multiple columns. You can group by value or by a custom range 
+(therefore you have to use a custom callback)
+- Create a tree structure: Parent rows can have child rows, which in turn can have their own children, ...
+Child rows can be collapsed and expanded.
+- Not all rows has to be loaded on initialization. You can do async calls to load a range of parent rows or
+all the children of one parent row.
+- Export all your table data, or the current state, to excel.
+- A lot of templates are used, so you can use custom components in rows, columns and or cells.
+ All icons can also be customized. 
+- The layout of the table can fully customized. All rows, columns, cells could have their own layout.
+You can even apply a layout for one specific row that will stay fixed after sorting.
+- The columns and rows are reactive. The only restriction is that you can't add child rows 
 after you've added them initial or via the async child loader.
 
-You can use 3 components: 
-- The table component (VueAdsTable): It has no external components, like a filter of paginator,
-but you can write your own container around it that suits your own needs.
+You can use 2 components: 
+- The full component (VueAdsTableTree). It provides the table with all side input components.
+- The table component (VueAdsTable): It has no external input components, like a filter or paginator,
+but you can write your own container around it that suits your own needs. 
 All functionality of the full component is available in the table component.
-- The full component (VueAdsTableTree).
 
 ## Demo
 
@@ -54,6 +57,13 @@ Columns are listed in a column array as plain objects and can have the following
   sorted based on their `_order` value.
 - `order`: *(type: number)* Column order to sort the rows. 
 - `collapseIcon`: *(type: boolean, default: `false`)* Indicates if this column will contain the collapse icon.
+- `groupable`: *(type: boolean, default: `false`)* Indicates if this column can be used to group rows.
+- `grouped`: *(type: boolean, default: `false`)* Group the rows by this column.
+- `groupCollapsable`: *(type: boolean, default: `true`)* Can the subrows of the groups be expanded and collapsed.
+- `hideOnGroup`: *(type: boolean, default: `true` if no `groupedBy` property is set)* Hide the column if the rows are grouped by this column.
+- `groupBy`: *(type: Function)* This function convert the cell value to another value. The row will be grouped by the returned value.
+It has one parameter:
+    - `value`: *(type: mixed)* The default cell value.
 
 ### <a name="rows"></a>Rows
 Rows are listed in a row array as plain objects. Each object contains the row data and meta data. Meta data is prefixed with a `_`:
@@ -71,8 +81,10 @@ Rows are listed in a row array as plain objects. Each object contains the row da
 All styling is done via a plain object. It contains a selector for a row/column/cell as key and a vue based object that contains classes.
 The latter ones can override the earlier ones:
 - The key is a selector. You have two type of selectors: fixed selectors and row/column/cell selectors:
-    - fixed selectors: use the preserver words `table` or `info` to style the whole table or to style the info row 
-    (shown while loading or no rows are found).
+    - fixed selectors:
+        - `table`: Style the whole table.
+        - `info`: Style the info row (shown while loading or no rows are found).
+        - `group`: Style the group row.
     - row/column/cell selectors: These selectors are divided by a slash. So you can have a row selector and a column selector. 
     The header row has index 0. The first data row has index 1. Some examples:
         - 'all': select all rows/columns.
@@ -98,7 +110,7 @@ The latter will add the classes on the `<tr>` tags of row 1 and 2.
 If you just need a normal table that you can customize fully by yourself, you can use the table component. It won't provide you a paginator,
 filter textbox, ... It's just a Vue component and all interaction happens via the properties or event handlers.
 
-If you want to use the table in a predefined container with a paginator, filter textbox see the [table container section](#tableContainer)
+If you want to use the table in a predefined container with a paginator, filter textbox see the [full component section](#fullComponent)
 
 ### Async features
 
@@ -177,8 +189,6 @@ It contains one parameter:
     - `fields`: *(type: Object)* The fields of the export file.
     - `data`: *(type: array)* The rows of the export file.
     - `title`: *(type: string)* The name of the export file.
-    
-    
 
 ### <a name="basic_table_slots"></a>Slots
 
@@ -307,6 +317,7 @@ export default {
                 title: 'Function',
                 direction: null,
                 filterable: true,
+                groupable: true,
             },
             {
                 property: 'city',
@@ -329,6 +340,11 @@ export default {
         ];
         
         let classes = {
+            group: {
+                'vue-ads-font-bold': true,
+                'vue-ads-border-b': true,
+                'vue-ads-italic': true,
+            },
             '0/all': {
                 'vue-ads-py-3': true,
                 'vue-ads-px-2': true,
@@ -426,7 +442,7 @@ export default {
 </script>
 ```
 
-## <a name="tableContainer"></a>Full component
+## <a name="fullComponent"></a>Full component
 
 The table container is the complete component it adds a filter box and and a paginator to the table.
 If your `call-rows` property is not empty, an async table component will be used. If the property is empty and basic table component will be used.
