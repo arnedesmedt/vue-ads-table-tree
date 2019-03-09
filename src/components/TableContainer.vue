@@ -41,8 +41,6 @@
             :slots="$scopedSlots"
             @total-filtered-rows-change="totalFilteredRowsChanged"
             @export="exportTable"
-            :export-name="exportTrigger"
-            :full-export="fullExport"
         />
         <slot name="bottom"
               :total="total"
@@ -157,7 +155,6 @@ export default {
                 this.filterChange,
                 this.debounceFilterTime
             ),
-            exportTrigger: '',
             exportData: [],
             exportFields: {},
             exportTitle: '',
@@ -172,10 +169,14 @@ export default {
     },
 
     computed: {
+        hasExport () {
+            return this.exportName.length > 0;
+        },
+
         filterClasses () {
             return {
                 'vue-ads-flex-grow': true,
-                'vue-ads-mr-2 ': this.exportName.length > 0,
+                'vue-ads-mr-2 ': this.hasExport,
             };
         },
 
@@ -209,6 +210,16 @@ export default {
             this.$emit('page-change', 0);
         },
 
+        collectExportData () {
+            this.$refs.table.exportTable(this.exportName, this.fullExport);
+        },
+
+        exportTable (exportData) {
+            this.exportFields = exportData.fields;
+            this.exportData = exportData.data;
+            this.exportTitle = exportData.title;
+        },
+
         pageChanged (page) {
             this.$emit('page-change', page);
         },
@@ -220,17 +231,6 @@ export default {
 
         totalFilteredRowsChanged (total) {
             this.total = total;
-        },
-
-        collectExportData () {
-            this.exportTrigger = this.exportName;
-        },
-
-        exportTable (exportData) {
-            this.exportFields = exportData.fields;
-            this.exportData = exportData.data;
-            this.exportTitle = exportData.title;
-            this.exportTrigger = '';
         },
     },
 };

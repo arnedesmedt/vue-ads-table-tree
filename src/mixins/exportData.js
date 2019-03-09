@@ -1,36 +1,13 @@
 export default {
-    props: {
-        exportName: {
-            type: String,
-            default: '',
-        },
-
-        fullExport: {
-            type: Boolean,
-            default: true,
-        },
-    },
-
-    watch: {
-        exportName: {
-            handler: 'exportNameChanged',
-            immediate: true,
-        },
-    },
-
     computed: {
         exportColumns () {
             return this.columns.filter(column => column.export);
         },
-
-        exportRows () {
-            return this.fullExport ? this.loadedRows : this.sortedRows;
-        },
     },
 
     methods: {
-        exportNameChanged () {
-            if (!this.exportName || this.exportName.length === 0) {
+        exportTable (name, full) {
+            if (!name) {
                 return;
             }
 
@@ -40,8 +17,8 @@ export default {
                     fields: Object.assign({
                         '#': '_order',
                     }, this.exportFields()),
-                    data: this.exportData(this.exportRows),
-                    title: this.exportName,
+                    data: this.exportData(full ? this.loadedRows : this.sortedRows, full),
+                    title: name,
                 }
             );
         },
@@ -55,16 +32,16 @@ export default {
                 }, {});
         },
 
-        exportData (rows, parent = '') {
+        exportData (rows, full, parent = '') {
             return rows
                 .reduce((exportRows, row, index) => {
                     let order = parent + (index + 1).toString();
                     row._order = order + (parent === '' ? '-0' : '');
                     return exportRows.concat([
                         row,
-                        ...(this.fullExport ?
-                            (row && row._children ? this.exportData(row._children, order + '-') : []) :
-                            (row && row._showChildren ? this.exportData(row._meta.visibleChildren, order + '-') : [])
+                        ...(full ?
+                            (row && row._children ? this.exportData(row._children, full, order + '-') : []) :
+                            (row && row._showChildren ? this.exportData(row._meta.visibleChildren, full, order + '-') : [])
                         ),
                     ]);
                 }, []);
