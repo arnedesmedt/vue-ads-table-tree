@@ -454,6 +454,7 @@ But their are some additional properties:
 
 - `debounced-filter-time`: *(type: Number, default: 500)* The time in milliseconds to wait before the input value of the filter box is used.
 - `page`: *(type: Number, default: 0)* The initial page of the paginator.
+- `items-per-page`: *(type: Number, default: 10)* The number of items per page.
 - `export-name`: *(type: string, default: `''`)* The name of the export file to download. The trigger to export the table will be a click on the export button.
 
 ### Events

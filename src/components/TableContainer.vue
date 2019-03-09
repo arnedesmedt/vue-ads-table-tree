@@ -131,6 +131,11 @@ export default {
             default: 0,
         },
 
+        itemsPerPage: {
+            type: Number,
+            default: 10,
+        },
+
         exportName: {
             type: String,
             default: '',
@@ -144,7 +149,6 @@ export default {
 
     data () {
         return {
-            itemsPerPage: 10,
             total: this.rows.length,
             start: null,
             end: null,
