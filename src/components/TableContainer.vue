@@ -9,9 +9,10 @@
                 <div class="vue-ads-w-1/4 vue-ads-flex">
                     <vue-ads-form
                         :class="filterClasses"
+                        :style="{'min-width': 0}"
                     >
                         <vue-ads-form-group>
-                            <vue-ads-text :value="filter" placeholder="Filter..." @input="filterChanged"/>
+                            <vue-ads-text :value="filter" placeholder="Filter..." @input="filterChanged" :style="{'min-width': 0}"/>
                         </vue-ads-form-group>
                     </vue-ads-form>
                     <vue-json-excel
