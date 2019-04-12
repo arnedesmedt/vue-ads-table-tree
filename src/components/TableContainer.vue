@@ -4,7 +4,7 @@
               :filter="filter"
               :filter-changed="filterChanged"
         >
-            <div class="vue-ads-flex vue-ads-p-3">
+            <div class="vue-ads-flex vue-ads-py-3">
                 <div class="vue-ads-w-3/4"></div>
                 <div class="vue-ads-w-1/4 vue-ads-flex">
                     <vue-ads-form
