@@ -14,7 +14,8 @@ Child rows can be collapsed and expanded.
 all the children of one parent row.
 - Export all your table data, or the current state, to excel.
 - A lot of templates are used, so you can use custom components in rows, columns and or cells.
- All icons can also be customized. 
+ All icons can also be customized. Be aware that the icon library [FontAwesome](https://fontawesome.com/) is not imported by the library.
+ You will have to import it by yourself.
 - The layout of the table can fully customized. All rows, columns, cells could have their own layout.
 You can even apply a layout for one specific row that will stay fixed after sorting.
 - The columns and rows are reactive. The only restriction is that you can't add child rows 
