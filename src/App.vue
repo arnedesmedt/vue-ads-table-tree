@@ -18,7 +18,7 @@
             <template slot="city" slot-scope="props">test column - {{ props.row.name }}</template>
             <!-- Will be applied on the row with _id tiger -->
             <template slot="_tiger" slot-scope="props">test row - {{ props.row.name }}</template>
-            <template slot="no-rows">Geen resultaten</template>
+            <template slot="no-rows">No results</template>
             <template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>
             <template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>
         </vue-ads-table-tree>
