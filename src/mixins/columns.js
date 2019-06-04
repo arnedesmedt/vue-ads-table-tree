@@ -66,8 +66,10 @@ export default {
                 }
             });
 
-            if (!columns.find(column => column.collapseIcon)) {
-                Vue.set(columns[0], 'collapseIcon', true);
+            if (columns.length > 0) {
+                if (!columns.find(column => column.collapseIcon)) {
+                    Vue.set(columns[0], 'collapseIcon', true);
+                }
             }
 
             // todo check to remove this to the styling mixin
