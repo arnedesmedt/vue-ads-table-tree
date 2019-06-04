@@ -144,7 +144,7 @@ The rows will only expand if needed. You can see it as you pass temporarily rows
 
 - `columns`: *(type: array, required)* see [columns](#columns)
 - `rows`: *(type: array, default: `[]`)* see [rows](#rows)
-- `classes`: *(type: object, default: see [file](../src/services/defaultClasses.js))* see [styling](#styling)
+- `classes`: *(type: object, default: see [file](https://github.com/arnedesmedt/vue-ads-table-tree/blob/develop/src/services/defaultClasses.js))* see [styling](#styling)
 - `filter`: *(type: string, default: `''`)* Filter all row values on by this regex. Beware that if you change the filter,
 the total number of rows will decrease. So it's wisely to set the start index on 0 after you change the filter value.
 Then you will be able to properly display all the filtered rows.
