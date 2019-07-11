@@ -199,7 +199,7 @@ If you want to use your own template for all cells in a row, for all cells in a 
 you can use your own scoped slot with the following names (the first will overrule the latter):
 - `<column_property>_<row_id>`: Replace a specific cell for the column `<column_property>` (assigned by the `property` attribute in the column object) 
 and row `<row_id>` (assigned by the `_id` attibute in the row object).
-- `<column_proerty>`: Replace all column cells for the column `<column_property>` (assigned by the `property` attribute in the column object).
+- `<column_property>`: Replace all column cells for the column `<column_property>` (assigned by the `property` attribute in the column object).
 - `_<row_id>`: Replace all row cells for the row `<row_id>` (assigned by the `_id` attibute in the row object).
 
 All three contains a slot-scope which contains the following parameters:
