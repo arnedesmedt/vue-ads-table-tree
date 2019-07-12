@@ -12,7 +12,7 @@
     "bugs": {
         "url": "https://github.com/arnedesmedt/vue-ads-table-tree/issues"
     },
-    "version": "2.3.5",
+    "version": "2.3.6",
     "main": "./dist/vue-ads-table-tree.common.js",
     "files": [
         "/dist"
