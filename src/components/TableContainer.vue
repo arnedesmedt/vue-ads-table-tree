@@ -21,7 +21,7 @@
                         :fields="exportFields"
                         :name="`${exportTitle}.xls`"
                         :before-generate="collectExportData"
-                        class="vue-ads-bg-green vue-ads-text-white vue-ads-p-2 vue-ads-cursor-pointer vue-ads-rounded-sm vue-ads-bg-teal-dark"
+                        class="vue-ads-text-white vue-ads-p-2 vue-ads-cursor-pointer vue-ads-rounded-sm vue-ads-bg-teal-500"
                     >
                         <i class="fa fa-file-download"></i>
                     </vue-json-excel>
