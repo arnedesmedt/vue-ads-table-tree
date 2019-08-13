@@ -36,6 +36,7 @@
             :filter="debouncedFilter"
             :start="start"
             :end="end"
+            :classes="classes"
             :call-rows="callRowsFunction"
             :call-children="callChildrenFunction"
             :call-temp-rows="callTempRowsFunction"
