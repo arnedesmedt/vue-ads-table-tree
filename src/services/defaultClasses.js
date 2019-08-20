@@ -15,7 +15,7 @@ export default {
         'vue-ads-italic': true,
     },
     'all/': {
-        'hover:vue-ads-bg-grey-lighter': true,
+        'hover:vue-ads-bg-gray-200': true,
     },
     'all/all': {
         'vue-ads-px-4': true,
@@ -23,14 +23,14 @@ export default {
         'vue-ads-text-sm': true,
     },
     'even/': {
-        'vue-ads-bg-grey-lightest': true,
+        'vue-ads-bg-gray-100': true,
     },
     'odd/': {
         'vue-ads-bg-white': true,
     },
     '0/': {
-        'vue-ads-bg-grey-lightest': false,
-        'hover:vue-ads-bg-grey-lighter': false,
+        'vue-ads-bg-gray-100': false,
+        'hover:vue-ads-bg-gray-200': false,
     },
     '0/all': {
         'vue-ads-px-4': true,
