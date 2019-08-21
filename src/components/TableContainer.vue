@@ -164,6 +164,8 @@ export default {
     },
 
     watch: {
+        rows: 'rowsChanged',
+
         filter: {
             handler: 'filterChanged',
             immediate: true,
@@ -196,6 +198,10 @@ export default {
     },
 
     methods: {
+        rowsChanged () {
+            this.total = this.rows.length;
+        },
+
         filterChanged (filter) {
             if (this.callRows) {
                 this.debounce(filter);

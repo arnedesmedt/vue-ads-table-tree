@@ -316,6 +316,45 @@ export default {
                 total: 0,
             };
         },
+
+        async addRows () {
+            await this.sleep(1000);
+
+            let employees = [
+                {
+                    name: 'Alexander Ivanov',
+                    function: 'Developer',
+                    city: 'Saint Petersburg',
+                    id: '1990',
+                    since: '2011/08/21',
+                    budget: 180000,
+                },
+                {
+                    name: 'Nikolay Petrov',
+                    function: 'QA',
+                    city: 'Tula',
+                    id: '1995',
+                    since: '2015/07/15',
+                    budget: 120000,
+                },
+                {
+                    name: 'Sergey Stolyarov',
+                    function: 'Architect',
+                    city: 'Moscow',
+                    id: '1985',
+                    since: '2012/03/07',
+                    budget: 320000,
+                },
+            ];
+
+            this.rows.push(...employees);
+            
+        },
+    },
+    mounted () {
+        // Add rows after component is created to illustrate
+        // how the change is recognized and reflected in the table.
+        this.addRows();
     },
 };
 </script>

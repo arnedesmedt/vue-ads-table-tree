@@ -179,7 +179,7 @@ root rows are loaded or the table is filtered and not all root rows or child row
 
 
 Start and end using the Array.slice method to show only a part of the rows. If you don't add them as properties, 
-their value will ben undefined and all the rows will be visible.
+their value will be undefined and all the rows will be visible.
 
 ### <a name="basic_table_events"></a>Events
 
