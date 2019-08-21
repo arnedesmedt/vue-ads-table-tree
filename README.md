@@ -238,9 +238,9 @@ The scope contains two parameters:
             :start="start"
             :end="end"
             @filter-change="filterChanged"
-            :call-rows="callRowsFunction"
-            :call-children="callChildrenFunction"
-            :call-temp-rows="callTempRowsFunction"
+            :call-rows="callRows"
+            :call-children="callChildren"
+            :call-temp-rows="callTempRows"
         >
             <!-- Will be applied on the name column for the rows with an _id of tiger -->
             <template slot="name_tiger" slot-scope="props">test cell - {{ props.row.name }}</template>
@@ -256,7 +256,7 @@ The scope contains two parameters:
 </template>
 
 <script>
-import { VueAdsTable } from 'vue-ads-table-tree';
+import VueAdsTable from 'vue-ads-table-tree';
 
 export default {
     name: 'BasicTableApp',
