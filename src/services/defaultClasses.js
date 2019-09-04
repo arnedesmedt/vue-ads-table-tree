@@ -14,6 +14,9 @@ export default {
         'vue-ads-border-b': true,
         'vue-ads-italic': true,
     },
+    selection: {
+        'bg-indigo-200': true,
+    },
     'all/': {
         'hover:vue-ads-bg-gray-200': true,
     },

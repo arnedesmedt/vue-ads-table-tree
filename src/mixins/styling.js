@@ -23,7 +23,11 @@ export default {
 
     computed: {
         tableClasses () {
-            return this.classes.table || {};
+            let classes = this.classes.table || {};
+            if (this.selection) {
+                classes['no-text-selection'] = true;
+            }
+            return classes;
         },
 
         headerRowClasses () {

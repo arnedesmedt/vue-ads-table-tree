@@ -47,11 +47,13 @@
                     :key="rowKey"
                     :row="row"
                     :row-index="rowKey"
+                    :selected="selectedRows[rowKey]"
                     :columns="nonGroupedColumns"
                     :slots="rowSlots"
                     :toggle-children-icon-slot="toggleChildrenIconSlot"
                     :css-processor="cssProcessor"
                     @toggle-children="toggleChildren(row)"
+                    @click.native="setSelection($event, rowKey)"
                 />
                 <vue-ads-group-row
                     v-else
@@ -83,6 +85,7 @@ import sort from '../mixins/sort';
 import groupBy from '../mixins/groupBy';
 import flatten from '../mixins/flatten';
 import exportData from '../mixins/exportData';
+import selection from '../mixins/selection';
 
 import VueAdsHeaderCell from './HeaderCell';
 import VueAdsRow from './Row.vue';
@@ -111,6 +114,7 @@ export default {
         rows,
         columns,
         slots,
+        selection,
         filter,
         sort,
         groupBy,
@@ -141,7 +145,18 @@ export default {
     methods: {
         totalVisibleRowsChanged (totalVisibleRows) {
             this.cssProcessor.totalRows = totalVisibleRows === 0 ? 2 : totalVisibleRows + 1;
+            this.selectedRows.length = totalVisibleRows;
         },
+
     },
 };
 </script>
+
+<style scoped>
+.no-text-selection {
+    -webkit-user-select: none; /* Chrome 6.0+, Safari 3.1+, Opera 15.0+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+}
+</style>

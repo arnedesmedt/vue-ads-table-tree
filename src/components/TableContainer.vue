@@ -43,6 +43,8 @@
             :slots="$scopedSlots"
             @total-filtered-rows-change="totalFilteredRowsChanged"
             @export="exportTable"
+            :selection="selection"
+            @selection-change="selectionChanged"
         />
         <slot name="bottom"
               :total="total"
@@ -145,6 +147,11 @@ export default {
             type: Boolean,
             default: true,
         },
+
+        selection: {
+            type: Boolean,
+            default: true,
+        },
     },
 
     data () {
@@ -233,6 +240,10 @@ export default {
 
         totalFilteredRowsChanged (total) {
             this.total = total;
+        },
+
+        selectionChanged (rows) {
+            this.$emit('selection-change', rows);
         },
     },
 };

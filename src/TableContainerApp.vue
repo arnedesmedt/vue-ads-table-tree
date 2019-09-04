@@ -13,6 +13,8 @@
             :call-children="callChildren"
             :call-temp-rows="callTempRows"
             export-name="test"
+            :selection="selection"
+            @selection-change="selectionChanged"
         >
             <!--&lt;!&ndash; Will be applied on the name column for the rows with an _id of tiger &ndash;&gt;-->
             <!--<template slot="name_tiger" slot-scope="props">test cell - {{ props.row[props.column.property] }}</template>-->
@@ -24,6 +26,9 @@
             <!--<template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>-->
             <!--<template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>-->
         </vue-ads-table>
+        <p v-if="selection" class="p-2 vue-ads-text-sm">
+            Selected IDs: {{selectedLineIds}}
+        </p>
     </div>
 </template>
 
@@ -263,6 +268,8 @@ export default {
             columns,
             filter: '',
             page: 0,
+            selection: true,
+            selectedLineIds: [],
         };
     },
 
@@ -277,6 +284,12 @@ export default {
 
         pageChanged (page) {
             this.page = page;
+        },
+
+        selectionChanged (rows) {
+            this.selectedLineIds = rows.map(row => {
+                return row.id;
+            });
         },
 
         async callRows (indexesToLoad) {

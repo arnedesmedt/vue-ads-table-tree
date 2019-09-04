@@ -39,6 +39,11 @@ export default {
             required: true,
         },
 
+        selected: {
+            type: Boolean,
+            default: false,
+        },
+
         columns: {
             type: Array,
             required: true,
@@ -62,6 +67,10 @@ export default {
 
     computed: {
         rowClasses () {
+            if (this.selected) {
+                return this.cssProcessor.classes.selection;
+            }
+            
             if (this.row._meta.groupColumn) {
                 return this.cssProcessor.classes.group;
             }
