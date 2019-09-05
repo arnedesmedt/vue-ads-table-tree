@@ -21,6 +21,8 @@ export default {
                 return this.sortedRows;
             }
 
+            this.clearSelection();
+
             return this.sortedRows.slice(this.start, this.end);
         },
     },

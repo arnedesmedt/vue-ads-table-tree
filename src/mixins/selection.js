@@ -22,7 +22,7 @@ export default {
             }
 
             this.selectedRows = [];
-            this.notifyListeners();
+            this.$emit('selection-change', []);
         },
 
         setSelection (event, rowIndex) {
@@ -52,10 +52,6 @@ export default {
                 this.lastSelectedRow = rowIndex;
             }
 
-            this.notifyListeners();
-        },
-
-        notifyListeners () {
             this.$emit('selection-change', this.flattenedRows.filter((row, index) => {
                 return this.selectedRows[index] && !row._meta.groupColumn;
             }));
