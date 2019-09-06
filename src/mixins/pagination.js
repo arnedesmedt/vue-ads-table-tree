@@ -32,7 +32,7 @@ export default {
     methods: {
         startChanged (value, oldValue) {
             // Detect page change and clear selection if so.
-            this.clearSelection(this.totalVisibleRows);
+            this.clearSelection();
         },
     },
 };
