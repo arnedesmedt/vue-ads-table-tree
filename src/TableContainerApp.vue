@@ -26,9 +26,19 @@
             <!--<template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>-->
             <!--<template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>-->
         </vue-ads-table>
-        <p v-if="selection" class="p-2 vue-ads-text-sm">
+        <div v-if="selection" class="p-2 vue-ads-text-sm">
             Selected IDs: {{selectedLineIds}}
-        </p>
+            <br>
+            Sample action:
+            <button
+                type="button"
+                class="vue-ads-text-white vue-ads-p-1 vue-ads-cursor-pointer vue-ads-rounded-sm"
+                :class="[nothingSelected ? 'bg-gray-500' : 'vue-ads-bg-teal-500']"
+                :disabled="nothingSelected"
+                @click="deleteRows"
+            > Delete
+            </button>
+        </div>
     </div>
 </template>
 
@@ -273,6 +283,12 @@ export default {
         };
     },
 
+    computed: {
+        nothingSelected () {
+            return this.selectedLineIds.length === 0;
+        },
+    },
+
     methods: {
         sleep (ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -328,6 +344,19 @@ export default {
                 rows: [],
                 total: 0,
             };
+        },
+
+        deleteRows () {
+            let me = this;
+            this.rows = delRows(this.rows);
+            function delRows (rows) {
+                return rows.filter(row => {
+                    if (row._children && row._children.length) {
+                        row._children = delRows(row._children);
+                    }
+                    return me.selectedLineIds.indexOf(row.id) === -1;
+                });
+            }
         },
     },
 };
