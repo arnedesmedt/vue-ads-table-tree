@@ -9,8 +9,6 @@ export default {
 
     methods: {
         async toggleChildren (row) {
-            this.clearSelection();
-
             row._showChildren = !row._showChildren;
 
             if (!row._hasChildren) {

@@ -22,6 +22,10 @@ export default {
             }
 
             this.selectedRows = [];
+            for (let i=0; i<this.totalVisibleRows; i++) {
+                this.selectedRows.push(false);
+            }
+
             this.$emit('selection-change', []);
         },
 
@@ -29,7 +33,6 @@ export default {
             if (!this.selection) {
                 return;
             }
-
 
             if (event.ctrlKey) {
                 Vue.set(this.selectedRows, rowIndex, !this.selectedRows[rowIndex]);

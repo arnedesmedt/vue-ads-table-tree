@@ -145,7 +145,7 @@ export default {
     methods: {
         totalVisibleRowsChanged (totalVisibleRows) {
             this.cssProcessor.totalRows = totalVisibleRows === 0 ? 2 : totalVisibleRows + 1;
-            this.selectedRows.length = totalVisibleRows;
+            this.clearSelection();
         },
 
     },

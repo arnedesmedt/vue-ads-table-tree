@@ -15,15 +15,24 @@ export default {
         },
     },
 
+    watch: {
+        start: 'startChanged',
+    },
+
     computed: {
         paginatedRows () {
             if (this.unresolved || (this.start === null && this.end === null)) {
                 return this.sortedRows;
             }
 
-            this.clearSelection();
-
             return this.sortedRows.slice(this.start, this.end);
+        },
+    },
+
+    methods: {
+        startChanged (value, oldValue) {
+            // Detect page change and clear selection if so.
+            this.clearSelection(this.totalVisibleRows);
         },
     },
 };
