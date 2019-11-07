@@ -31,6 +31,7 @@ export default {
             return {
                 fa: true,
                 'fa-times-circle': true,
+                'vue-ads-m-auto': true,
                 'vue-ads-cursor-pointer': true,
             };
         },
