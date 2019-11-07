@@ -25,7 +25,7 @@ export default {
         tableClasses () {
             let classes = this.classes.table || {};
             if (this.selection) {
-                classes['no-text-selection'] = true;
+                classes['vue-ads-select-none'] = true;
             }
             return classes;
         },

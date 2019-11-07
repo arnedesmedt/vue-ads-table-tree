@@ -151,12 +151,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.no-text-selection {
-    -webkit-user-select: none; /* Chrome 6.0+, Safari 3.1+, Opera 15.0+ */
-    -moz-user-select: none; /* Firefox 2+ */
-    -ms-user-select: none; /* IE 10+ */
-    user-select: none; /* Standard syntax */
-}
-</style>
