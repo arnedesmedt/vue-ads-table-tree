@@ -238,9 +238,9 @@ The scope contains two parameters:
             :start="start"
             :end="end"
             @filter-change="filterChanged"
-            :call-rows="callRowsFunction"
-            :call-children="callChildrenFunction"
-            :call-temp-rows="callTempRowsFunction"
+            :call-rows="callRows"
+            :call-children="callChildren"
+            :call-temp-rows="callTempRows"
         >
             <!-- Will be applied on the name column for the rows with an _id of tiger -->
             <template slot="name_tiger" slot-scope="props">test cell - {{ props.row.name }}</template>
@@ -249,14 +249,14 @@ The scope contains two parameters:
             <!-- Will be applied on the row with _id tiger -->
             <template slot="_tiger" slot-scope="props">test row - {{ props.row[props.column.property] }}</template>
             <template slot="no-rows">Geen resultaten</template>
-            <template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>
-            <template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>
+            <template slot="sort-icon" slot-scope="props"> ({{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}) </template>
+            <template slot="toggle-children-icon" slot-scope="props"> [{{ props.expanded ? '-' : '+' }}] </template>
         </vue-ads-table>
     </div>
 </template>
 
 <script>
-import { VueAdsTable } from 'vue-ads-table-tree';
+import VueAdsTable from 'vue-ads-table-tree';
 
 export default {
     name: 'BasicTableApp',
@@ -365,6 +365,9 @@ export default {
             '1_/': {
                 'hover:vue-ads-bg-red-lighter': true,
             },
+            '1_/0': {
+                'leftAlign': true
+            }
         };
 
         return {
@@ -441,6 +444,12 @@ export default {
     },
 };
 </script>
+
+<style>
+    .leftAlign {
+        text-align: left;
+    }
+</style>
 ```
 
 ## <a name="fullComponent"></a>Full component
