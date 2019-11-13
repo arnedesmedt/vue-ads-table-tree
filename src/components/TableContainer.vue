@@ -34,6 +34,7 @@
             :columns="columns"
             :rows="rows"
             :filter="debouncedFilter"
+            :selectable="selectable"
             :start="start"
             :end="end"
             :classes="classes"
@@ -43,7 +44,6 @@
             :slots="$scopedSlots"
             @total-filtered-rows-change="totalFilteredRowsChanged"
             @export="exportTable"
-            :selection="selection"
             @selection-change="selectionChanged"
         />
         <slot name="bottom"
@@ -106,6 +106,11 @@ export default {
             default: '',
         },
 
+        selectable: {
+            type: Boolean,
+            default: false,
+        },
+
         classes: {
             type: Object,
             default: () => defaultClasses,
@@ -144,11 +149,6 @@ export default {
         },
 
         fullExport: {
-            type: Boolean,
-            default: true,
-        },
-
-        selection: {
             type: Boolean,
             default: true,
         },
@@ -219,6 +219,10 @@ export default {
             this.$emit('page-change', 0);
         },
 
+        selectionChanged (rows) {
+            this.$emit('selection-change', rows);
+        },
+
         collectExportData () {
             this.$refs.table.exportTable(this.exportName, this.fullExport);
         },
@@ -240,10 +244,6 @@ export default {
 
         totalFilteredRowsChanged (total) {
             this.total = total;
-        },
-
-        selectionChanged (rows) {
-            this.$emit('selection-change', rows);
         },
     },
 };

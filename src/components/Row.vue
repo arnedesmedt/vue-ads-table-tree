@@ -39,11 +39,6 @@ export default {
             required: true,
         },
 
-        selected: {
-            type: Boolean,
-            default: false,
-        },
-
         columns: {
             type: Array,
             required: true,
@@ -67,17 +62,17 @@ export default {
 
     computed: {
         rowClasses () {
-            if (this.selected) {
-                return this.cssProcessor.classes.selection;
-            }
-            
             if (this.row._meta.groupColumn) {
                 return this.cssProcessor.classes.group;
             }
 
             return Object.assign(
                 this.cssProcessor.process(this.rowIndex + 1, null, this.row),
-                this.row._classes ? CSSProcessor.processValue(this.row._classes.row, this.row) : {}
+                this.row._classes ? CSSProcessor.processValue(this.row._classes.row, this.row) : {},
+                this.row._selectable ? {
+                    'vue-ads-select-none': true,
+                } : {},
+                this.row._meta.selected ? this.cssProcessor.classes.selected : {},
             );
         },
     },

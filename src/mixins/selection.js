@@ -1,63 +1,57 @@
-import Vue from 'vue';
-
 export default {
     props: {
-        selection: {
+        selectable: {
             type: Boolean,
-            default: true,
+            default: false,
         },
     },
 
     data () {
         return {
-            selectedRows: [],
-            lastSelectedRow: undefined,
+            firstSelectedRowId: undefined,
         };
     },
 
     methods: {
         clearSelection () {
-            if (!this.selection) {
-                return;
-            }
-
-            this.selectedRows = [];
-            for (let i=0; i<this.totalVisibleRows; i++) {
-                this.selectedRows.push(false);
-            }
-
-            this.$emit('selection-change', []);
+            this.flatten(this.currentRows).forEach(row => row._meta.selected = false);
         },
 
-        setSelection (event, rowIndex) {
-            if (!this.selection) {
+        selectRows(rows) {
+            rows.forEach(row => {
+                if (row._selectable) {
+                    row._meta.selected = true;
+                }
+            });
+        },
+
+        selectRow (event, row, key) {
+            if (! row._selectable) {
                 return;
             }
 
-            if (event.ctrlKey) {
-                Vue.set(this.selectedRows, rowIndex, !this.selectedRows[rowIndex]);
-            }
-            else if (event.shiftKey) {
-                let minIndex = Math.min(rowIndex, this.lastSelectedRow);
-                let maxIndex = Math.max(rowIndex, this.lastSelectedRow);
-                for (let i=0; i<this.selectedRows.length; i++) {
-                    Vue.set(this.selectedRows, i, (i >= minIndex && i <= maxIndex));
+            if (event.shiftKey) {
+                let flatten = this.flatten(this.currentRows);
+                let indexes = [row._meta.uniqueIndex, this.firstSelectedRowIndex];
+                let minKey = Object.keys(flatten).find((key) => flatten[key]._meta.uniqueIndex === indexes[0]);
+                let maxKey = Object.keys(flatten).find((key) => flatten[key]._meta.uniqueIndex === indexes[1]);
+                let keys = [+minKey, +maxKey];
+                [minKey, maxKey] = keys.sort((a, b) => a - b);
+
+                this.clearSelection();
+                this.selectRows(flatten.slice(minKey, maxKey + 1));
+            } else {
+                let oldSelected = row._meta.selected;
+                if (! event.ctrlKey) {
+                    this.clearSelection();
+                    this.firstSelectedRowIndex = row._meta.uniqueIndex;
                 }
-            }
-            else {
-                for (let i=0; i<this.selectedRows.length; i++) {
-                    Vue.set(this.selectedRows, i, false);
-                }
-                Vue.set(this.selectedRows, rowIndex, true);
+
+                row._meta.selected = ! oldSelected;
+
             }
 
-            if (this.selectedRows[rowIndex]) {
-                this.lastSelectedRow = rowIndex;
-            }
-
-            this.$emit('selection-change', this.flattenedRows.filter((row, index) => {
-                return this.selectedRows[index] && !row._meta.groupColumn;
-            }));
+            this.$emit('selection-change', this.flatten(this.currentRows).filter(row => row._meta.selected));
         },
     },
 };

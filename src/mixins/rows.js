@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import uuid from 'uuid';
 
 export default {
     props: {
@@ -45,14 +46,21 @@ export default {
                 Vue.set(row, '_showChildren', false);
             }
 
+            if (!row.hasOwnProperty('_selectable')) {
+                let selectable = parent && parent.hasOwnProperty('_selectable') ? parent._selectable : this.selectable;
+                Vue.set(row, '_selectable', selectable);
+            }
+
             if (!row.hasOwnProperty('_meta')) {
                 Vue.set(row, '_meta', {
                     groupParent: 0,
                     parent: parent ? parent._meta.parent + 1 : 0,
+                    uniqueIndex: uuid(),
                     loading: false,
                     visibleChildren: row._children,
                     index,
                     groupColumn,
+                    selected: false,
                 });
             }
         },

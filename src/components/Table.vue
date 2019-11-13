@@ -47,13 +47,12 @@
                     :key="rowKey"
                     :row="row"
                     :row-index="rowKey"
-                    :selected="selectedRows[rowKey]"
                     :columns="nonGroupedColumns"
                     :slots="rowSlots"
                     :toggle-children-icon-slot="toggleChildrenIconSlot"
                     :css-processor="cssProcessor"
                     @toggle-children="toggleChildren(row)"
-                    @click.native="setSelection($event, rowKey)"
+                    @click.native="selectRow($event, row, rowKey)"
                 />
                 <vue-ads-group-row
                     v-else
@@ -145,9 +144,7 @@ export default {
     methods: {
         totalVisibleRowsChanged (totalVisibleRows) {
             this.cssProcessor.totalRows = totalVisibleRows === 0 ? 2 : totalVisibleRows + 1;
-            this.clearSelection();
         },
-
     },
 };
 </script>

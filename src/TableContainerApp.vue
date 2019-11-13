@@ -7,14 +7,14 @@
             :rows="rows"
             :filter="filter"
             :page="page"
-            @filter-change="filterChanged"
-            @page-change="pageChanged"
+            :selectable="selectable"
             :call-rows="callRows"
             :call-children="callChildren"
             :call-temp-rows="callTempRows"
-            export-name="test"
-            :selection="selection"
+            @filter-change="filterChanged"
+            @page-change="pageChanged"
             @selection-change="selectionChanged"
+            export-name="test"
         >
             <!--&lt;!&ndash; Will be applied on the name column for the rows with an _id of tiger &ndash;&gt;-->
             <!--<template slot="name_tiger" slot-scope="props">test cell - {{ props.row[props.column.property] }}</template>-->
@@ -26,18 +26,20 @@
             <!--<template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>-->
             <!--<template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>-->
         </vue-ads-table>
-        <div v-if="selection" class="p-2 vue-ads-text-sm">
-            Selected IDs: {{selectedLineIds}}
-            <br>
-            Sample action:
-            <button
-                type="button"
-                class="vue-ads-text-white vue-ads-p-1 vue-ads-cursor-pointer vue-ads-rounded-sm"
-                :class="[nothingSelected ? 'bg-gray-500' : 'vue-ads-bg-teal-500']"
-                :disabled="nothingSelected"
-                @click="deleteRows"
-            > Delete
-            </button>
+        <div v-if="selectable" class="vue-ads-p-2 vue-ads-text-sm">
+            <div class="vue-ads-mb-2">Selected Rows: {{selectedRowIds}}</div>
+            <div>
+                Sample action:
+                <button
+                    type="button"
+                    class="vue-ads-text-white vue-ads-p-1 vue-ads-cursor-pointer vue-ads-rounded-sm"
+                    :class="[nothingSelected ? 'vue-ads-bg-gray-500' : 'vue-ads-bg-teal-500']"
+                    :disabled="nothingSelected"
+                    @click="deleteRows"
+                >
+                    Delete
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -65,6 +67,7 @@ export default {
                 id: '5421',
                 since: '2011/04/25',
                 budget: 320800,
+                _selectable: true,
                 _children: [
                     {
                         name: 'Garrett Winters',
@@ -98,6 +101,7 @@ export default {
                                 id: '2558',
                                 since: '2012/10/13',
                                 budget: 132000,
+                                _selectable: false,
                             },
                         ],
                     },
@@ -278,14 +282,14 @@ export default {
             columns,
             filter: '',
             page: 0,
-            selection: true,
-            selectedLineIds: [],
+            selectable: true,
+            selectedRowIds: [],
         };
     },
 
     computed: {
         nothingSelected () {
-            return this.selectedLineIds.length === 0;
+            return this.selectedRowIds.length === 0;
         },
     },
 
@@ -302,10 +306,8 @@ export default {
             this.page = page;
         },
 
-        selectionChanged (rows) {
-            this.selectedLineIds = rows.map(row => {
-                return row.id;
-            });
+        selectionChanged (selectedRows) {
+            this.selectedRowIds = selectedRows.map(row => row.id);
         },
 
         async callRows (indexesToLoad) {

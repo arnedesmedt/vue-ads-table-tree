@@ -23,11 +23,7 @@ export default {
 
     computed: {
         tableClasses () {
-            let classes = this.classes.table || {};
-            if (this.selection) {
-                classes['vue-ads-select-none'] = true;
-            }
-            return classes;
+            return this.classes.table || {};
         },
 
         headerRowClasses () {
