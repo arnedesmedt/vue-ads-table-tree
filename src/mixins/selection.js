@@ -17,7 +17,7 @@ export default {
             this.flatten(this.currentRows).forEach(row => row._meta.selected = false);
         },
 
-        selectRows(rows) {
+        selectRows (rows) {
             rows.forEach(row => {
                 if (row._selectable) {
                     row._meta.selected = true;
@@ -32,11 +32,20 @@ export default {
 
             if (event.shiftKey) {
                 let flatten = this.flatten(this.currentRows);
-                let indexes = [row._meta.uniqueIndex, this.firstSelectedRowIndex];
+                let indexes = [
+                    row._meta.uniqueIndex,
+                    this.firstSelectedRowIndex,
+                ];
                 let minKey = Object.keys(flatten).find((key) => flatten[key]._meta.uniqueIndex === indexes[0]);
                 let maxKey = Object.keys(flatten).find((key) => flatten[key]._meta.uniqueIndex === indexes[1]);
-                let keys = [+minKey, +maxKey];
-                [minKey, maxKey] = keys.sort((a, b) => a - b);
+                let keys = [
+                    +minKey,
+                    +maxKey,
+                ];
+                [
+                    minKey,
+                    maxKey,
+                ] = keys.sort((a, b) => a - b);
 
                 this.clearSelection();
                 this.selectRows(flatten.slice(minKey, maxKey + 1));
