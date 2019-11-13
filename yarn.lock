@@ -781,7 +781,7 @@
   version "5.11.2"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.11.2.tgz#8644bc25b19475779a7b7c1fc104bc0a794f4465"
 
-"@fortawesome/fontawesome-free@^5.7.2", "@fortawesome/fontawesome-free@^5.9.0":
+"@fortawesome/fontawesome-free@^5.7.2":
   version "5.9.0"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.9.0.tgz#1aa5c59efb1b8c6eb6277d1e3e8c8f31998b8c8e"
 
@@ -8780,11 +8780,11 @@ vue-ads-form-builder@^0.1.15:
     vue "^2.6.6"
     vue-perfect-scrollbar "^0.1.0"
 
-vue-ads-pagination@^2.1.6:
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/vue-ads-pagination/-/vue-ads-pagination-2.1.6.tgz#d429c0a9af520629f77741fe6eb0b5c1f055061f"
+vue-ads-pagination@^2.1.7:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/vue-ads-pagination/-/vue-ads-pagination-2.1.7.tgz#be1fb988966a7eed3e592c7b9295f112cc0f260f"
   dependencies:
-    "@fortawesome/fontawesome-free" "^5.9.0"
+    "@fortawesome/fontawesome-free" "^5.11.2"
     vue "^2.6.10"
 
 vue-eslint-parser@^6.0.5:
