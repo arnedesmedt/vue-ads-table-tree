@@ -356,7 +356,7 @@ export default {
                     if (row._children && row._children.length) {
                         row._children = delRows(row._children);
                     }
-                    return me.selectedLineIds.indexOf(row.id) === -1;
+                    return me.selectedRowIds.indexOf(row.id) === -1;
                 });
             }
         },
