@@ -23,9 +23,6 @@ export default {
 
     methods: {
         rowsChanged (rows, oldRows, parent) {
-            if (rows && oldRows && rows.length !== oldRows.length) {
-                this.clearSelection();
-            }
             this.initRows(rows, parent);
         },
 

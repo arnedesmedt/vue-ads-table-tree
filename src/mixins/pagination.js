@@ -15,10 +15,6 @@ export default {
         },
     },
 
-    watch: {
-        start: 'startChanged',
-    },
-
     computed: {
         paginatedRows () {
             if (this.unresolved || (this.start === null && this.end === null)) {
@@ -26,13 +22,6 @@ export default {
             }
 
             return this.sortedRows.slice(this.start, this.end);
-        },
-    },
-
-    methods: {
-        startChanged (value, oldValue) {
-            // Detect page change and clear selection if so.
-            this.clearSelection();
         },
     },
 };
