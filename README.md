@@ -12,6 +12,7 @@ Here is a list of all the features of this table:
 Child rows can be collapsed and expanded.
 - Not all rows has to be loaded on initialization. You can do async calls to load a range of parent rows or
 all the children of one parent row.
+- Select rows as in file manager.
 - Export all your table data, or the current state, to excel.
 - A lot of templates are used, so you can use custom components in rows, columns and or cells.
  All icons can also be customized. Be aware that the icon library [FontAwesome](https://fontawesome.com/) is not imported by the library.
@@ -73,6 +74,8 @@ Rows are listed in a row array as plain objects. Each object contains the row da
 - `_hasChildren`: *(type: boolean, default: `false`)* This is usefull if you want to indicate that the row has children, but you will load them later via an async call.
 - `_showChildren`: *(type: boolean, default: `false`)* Indicates if the children has to be shown on initialization.
   If this is true, and `_hasChildren` is true, but no `_children` attribute is found, an async call will be initiated to call the children.
+- `_selectable`: *(type: boolean, default: The parent `_selectable` property or if no parent the `selectable` property of the table)* 
+  Mark if this row is selectable or not.
 - `_classes`: *(type: Object, default: `{}`)* Contains styling for the current row. It contains the following attributes:
     - `row`: *(type: Object)* A vue based object for adding classes.
     - `<column-selector>`: *(type: Object)* A vue based object for adding classes. The column selector works as explained in [styling](#styling),
@@ -86,6 +89,7 @@ The latter ones can override the earlier ones:
         - `table`: Style the whole table.
         - `info`: Style the info row (shown while loading or no rows are found).
         - `group`: Style the group row.
+        - `selected`: Style rows selected by end users.
     - row/column/cell selectors: These selectors are divided by a slash. So you can have a row selector and a column selector. 
     The header row has index 0. The first data row has index 1. Some examples:
         - 'all': select all rows/columns.
@@ -150,6 +154,7 @@ the total number of rows will decrease. So it's wisely to set the start index on
 Then you will be able to properly display all the filtered rows.
 - `start`: *(type: number, default: `undefined`)* The start index to show only a slice of the rows.
 - `end`: *(type: number, default: `undefined`)* The end index to show only a slice of the rows.
+- `selectable`: *(type: boolean, default: true)* Enable/disable row selection.
 - `slots`: *(type: Object, default: {})* A list of slots that are passed from parent components.
 If this object doesn't contain any attributes, the default component slots will be used.
 - `export-name`: *(type: string, default: `''`)* The name of the export file to download. This is by default an empty string.
@@ -190,6 +195,8 @@ It contains one parameter:
     - `fields`: *(type: Object)* The fields of the export file.
     - `data`: *(type: array)* The rows of the export file.
     - `title`: *(type: string)* The name of the export file.
+- `selection-change`: This event will be triggered if the `selectable` property is `true` and one or more rows are selected. It contains one parameter:
+    - `rows`: *(type: array)* The selected rows.
 
 ### <a name="basic_table_slots"></a>Slots
 
@@ -459,7 +466,7 @@ If your `call-rows` property is not empty, an async table component will be used
 
 ### <a name="container_properties"></a>Properties
 
-You can use the `columns`, `rows`, `filter`, `classes`, `full-export`, `call-rows`, `call-temp-rows` and `call-children` properties from the base and async table. 
+You can use the `columns`, `rows`, `filter`, `classes`, `selectable`, `full-export`, `call-rows`, `call-temp-rows` and `call-children` properties from the base and async table. 
 But their are some additional properties:
 
 - `debounced-filter-time`: *(type: Number, default: 500)* The time in milliseconds to wait before the input value of the filter box is used.

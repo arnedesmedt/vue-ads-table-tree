@@ -44,6 +44,8 @@ export default {
 
     methods: {
         async filterChanged () {
+            this.clearSelection();
+
             this.totalFilteredRowsChanged(this.filteredRows.length);
 
             if (this.unresolved) {

@@ -52,6 +52,7 @@
                     :toggle-children-icon-slot="toggleChildrenIconSlot"
                     :css-processor="cssProcessor"
                     @toggle-children="toggleChildren(row)"
+                    @click.native="selectRow($event, row, rowKey)"
                 />
                 <vue-ads-group-row
                     v-else
@@ -83,6 +84,7 @@ import sort from '../mixins/sort';
 import groupBy from '../mixins/groupBy';
 import flatten from '../mixins/flatten';
 import exportData from '../mixins/exportData';
+import selection from '../mixins/selection';
 
 import VueAdsHeaderCell from './HeaderCell';
 import VueAdsRow from './Row.vue';
@@ -111,6 +113,7 @@ export default {
         rows,
         columns,
         slots,
+        selection,
         filter,
         sort,
         groupBy,

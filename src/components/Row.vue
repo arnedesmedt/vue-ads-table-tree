@@ -68,7 +68,11 @@ export default {
 
             return Object.assign(
                 this.cssProcessor.process(this.rowIndex + 1, null, this.row),
-                this.row._classes ? CSSProcessor.processValue(this.row._classes.row, this.row) : {}
+                this.row._classes ? CSSProcessor.processValue(this.row._classes.row, this.row) : {},
+                this.row._selectable ? {
+                    'vue-ads-select-none': true,
+                } : {},
+                this.row._meta.selected ? this.cssProcessor.classes.selected : {},
             );
         },
     },
