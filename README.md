@@ -101,7 +101,8 @@ The latter ones can override the earlier ones:
         - '1_': select all rows/columns except the first one.
         - '_4': select rows/columns 0,1,2,3.
         - '1_4,5_8': select rows/columns 1,2,3,5,6,7
-- The value is a vue based class object.
+- The value is a vue based class object or a callable function that generates that vue based class object, depending on some given parameters.
+Those parameters depends on the key (the selector of rows, columns or rows and columns => cells).
 - Note that there is a difference between `1_3/all` and `1_3/`. The first will add the classes to all the cells of row 1 and 2.
 The latter will add the classes on the `<tr>` tags of row 1 and 2.
 
@@ -109,6 +110,7 @@ The latter will add the classes on the `<tr>` tags of row 1 and 2.
 - `'0_-1/': {'test-row': true}` => will add the test class for all rows except the last one for all columns. 
 - `'/1_3,5': {'test-column': true}` => will add the test-column class for column 1,2,5 on all rows.
 - `'even/1': {'cell': true}` => will add the cell class for column 1 on all even rows.
+- `'1_/3': (row, column) => {...}` => a callable function that returns a vue based class object, depending on the parameters row and column.
 
 ## Table component
 

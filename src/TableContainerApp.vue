@@ -5,6 +5,7 @@
         <vue-ads-table
             :columns="columns"
             :rows="rows"
+            :classes="classes"
             :filter="filter"
             :page="page"
             :selectable="selectable"
@@ -49,6 +50,7 @@ import './assets/css/tailwind.css';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 
 import VueAdsTable from './components/TableContainer';
+import classes from './services/defaultClasses';
 
 export default {
     name: 'TableContainerApp',
@@ -276,10 +278,22 @@ export default {
                 },
             },
         ];
+        classes['1_/5'] = (row, column) => {
+            console.log(row, column);
+
+            if (row.budget < 100000) {
+                return {
+                    'vue-ads-bg-red-500': true,
+                };
+            }
+
+            return {};
+        };
 
         return {
             rows,
             columns,
+            classes,
             filter: '',
             page: 0,
             selectable: true,
