@@ -265,7 +265,7 @@ The scope contains two parameters:
 </template>
 
 <script>
-import VueAdsTable from 'vue-ads-table-tree';
+import { VueAdsTable } from 'vue-ads-table-tree';
 
 export default {
     name: 'BasicTableApp',
