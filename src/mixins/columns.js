@@ -43,7 +43,7 @@ export default {
         groupColumns () {
             return this.visibleColumns
                 .filter(column => column.groupable && column.grouped)
-                .sort((columnA, columnB) => columnB.order - columnA.order);
+                .sort((columnA, columnB) => columnA.order - columnB.order);
         },
 
         filterColumnProperties () {

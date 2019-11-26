@@ -1,74 +1,57 @@
 // TODO how to handle grouped data for async data
 
 export default {
-    data () {
-        return {
-            groupRows: [],
-        };
-    },
-
     computed: {
         groupedRows () {
             if (this.paginatedRows.length === 0) {
                 return this.paginatedRows;
             }
 
-            this.groupRows = [];
-            return this.groupingRows(this.paginatedRows);
+            return this.groupingRows(this.paginatedRows, 0);
         },
     },
 
     methods: {
-        groupingRows (rows) {
-            if (this.groupColumns.length === 0) {
-                rows.forEach(row => {
-                    row._meta.groupParent = 0;
-                });
+        groupingRows (rows, groupColumnIndex) {
+            if (groupColumnIndex === this.groupColumns.length) {
                 return rows;
             }
 
-            this.groupColumns
-                .forEach(column => {
-                    let previousValue = null;
-                    let groups = [];
-                    let group = [];
-                    let i, value;
-                    for (i = 0; i < rows.length; i++) {
-                        let row = rows[i];
-                        let nonGroupRow = this.firstNonGroupRow(row);
-                        value = this.nonGroupRowValue(nonGroupRow, column);
+            let column = this.groupColumns[groupColumnIndex];
 
-                        if (previousValue === null) {
-                            previousValue = value;
-                        }
+            let previousValue = null;
+            let groups = [];
+            let groupedRows = [];
+            let value;
 
-                        if (value !== previousValue) {
-                            groups.push(this.createGroupRow(previousValue, column, group, i));
 
-                            previousValue = value;
-                            group = [];
-                        }
+            rows.forEach(row => {
+                value = this.rowValue(row, column);
 
-                        group.push(row);
-                    }
+                if (previousValue === null) {
+                    previousValue = value;
+                }
 
-                    groups.push(this.createGroupRow(value, column, group, i));
+                if (value !== previousValue) {
+                    groups.push(this.createGroupRow(previousValue, column, groupedRows, groups.length, groupColumnIndex + 1));
 
-                    rows = groups;
-                });
+                    previousValue = value;
+                    groupedRows = [];
+                }
 
-            return rows;
-        },
+                groupedRows.push(row);
+            });
 
-        firstNonGroupRow (row) {
-            while (row._meta.groupColumn) {
-                row = row._meta.visibleChildren[0];
+            groups.push(this.createGroupRow(value, column, groupedRows, groups.length, groupColumnIndex + 1));
+
+            if (groupColumnIndex > 0) {
+                groups.forEach(row => row._meta.groupParent += 1);
             }
 
-            return row;
+            return groups;
         },
 
-        nonGroupRowValue (row, column) {
+        rowValue (row, column) {
             let value = row[column.property];
 
             if (column.groupBy instanceof Function) {
@@ -78,27 +61,19 @@ export default {
             return value;
         },
 
-        createGroupRow (value, column, group, index) {
-            group.forEach(row => {
-                this.updateGroupParent(row, 1);
-            });
+        createGroupRow (value, column, groupedRows, groupLength, groupColumnIndex) {
+            groupedRows.forEach(row => row._meta.groupParent = groupColumnIndex);
+            groupedRows = this.groupingRows(groupedRows, groupColumnIndex);
+
             let groupRow = {
                 [column.property]: value,
-                _children: group,
+                _children: groupedRows,
                 _showChildren: true,
             };
 
-            this.initRow(groupRow, 0, index, column);
-            this.groupRows.push(groupRow);
+            this.initRow(groupRow, 0, groupLength, column);
 
             return groupRow;
-        },
-
-        updateGroupParent (row, parent) {
-            row._meta.groupParent = parent;
-            row._meta.visibleChildren.forEach(childRow => {
-                this.updateGroupParent(childRow, childRow._meta.groupColumn ? parent + 1 : parent);
-            });
         },
 
         async group (column) {

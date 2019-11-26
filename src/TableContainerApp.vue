@@ -279,8 +279,6 @@ export default {
             },
         ];
         classes['1_/5'] = (row, column) => {
-            console.log(row, column);
-
             if (row.budget < 100000) {
                 return {
                     'vue-ads-bg-red-500': true,

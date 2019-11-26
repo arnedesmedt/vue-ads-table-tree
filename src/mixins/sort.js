@@ -61,7 +61,9 @@ export default {
         async sort (column) {
             let wasFalse = column.direction === false;
             column.direction = wasFalse && !column.grouped ? null : !column.direction;
-            column.order = this.maxSortOrder() + 1;
+            if (! column.grouped) {
+                column.order = this.maxSortOrder() + 1;
+            }
 
             if (this.unresolved) {
                 await this.handleUnresolved();
