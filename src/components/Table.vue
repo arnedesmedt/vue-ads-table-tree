@@ -34,7 +34,7 @@
                         <slot name="loading">Loading...</slot>
                     </span>
                     <span v-else>
-                        <slot name="no-rows">No results found</slot>
+                        <slot name="no-rows">No results found.</slot>
                     </span>
                 </td>
             </tr>

@@ -23,7 +23,7 @@
             <!--<template slot="city" slot-scope="props">test column - {{ props.row.city }}</template>-->
             <!--&lt;!&ndash; Will be applied on the row with _id tiger &ndash;&gt;-->
             <!--<template slot="_tiger" slot-scope="props">test row - {{ props.row[props.column.property] }}</template>-->
-            <!--<template slot="no-rows">Geen resultaten</template>-->
+            <!--<template slot="no-rows"><i>Geen resultaten</i></template>-->
             <!--<template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>-->
             <!--<template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>-->
         </vue-ads-table>

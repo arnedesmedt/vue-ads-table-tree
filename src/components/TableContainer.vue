@@ -45,7 +45,14 @@
             @total-filtered-rows-change="totalFilteredRowsChanged"
             @export="exportTable"
             @selection-change="selectionChanged"
-        />
+        >
+            <template #loading>
+                <slot name="loading"></slot>
+            </template>
+            <template #no-rows>
+                <slot name="no-rows"></slot>
+            </template>
+        </vue-ads-table>
         <slot name="bottom"
               :total="total"
               :page="page"
