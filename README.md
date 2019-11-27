@@ -217,22 +217,26 @@ All three contains a slot-scope which contains the following parameters:
 
 #### 2. No rows slot
 
-If no rows are loaded, the table displays 'No results found.'. You can replace this message by the scoped slot `no-rows`.
+If no rows are loaded, the table displays 'No results found.'. You can replace this message by the `no-rows` slot.
 
-#### 3. Sort icon slot
+#### 3. Loading slot
+
+While rows are being loaded asynchronously, the table displays 'Loading...'. You can replace this message by the `loading` slot.
+
+#### 4. Sort icon slot
 
 If you want to customize the sort icon add a scoped slot with the name `sort-icon`.
 The scope contains only one parameter:
 
 - `direction`: *(type: boolean or null)* The direction is null if the column is not sorted, true if it's sorted asc and false if it's sorted desc.
 
-#### 4. Toggle children icon slot
+#### 5. Toggle children icon slot
 
 If you want to customize the toggle children icon add a scoped slot with the name `toggle-children-icon`.
 The scope contains two parameters:
 
 - `expanded`: *(type: boolean)* Indicates if the children are visible or not.
-- `loading`: *(type: boolean)* Indicates if the chilrend are currently loading.
+- `loading`: *(type: boolean)* Indicates if the children are currently loading.
 
 ### Example
 
