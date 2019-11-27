@@ -32,7 +32,7 @@ export default {
 
     methods: {
         sortIcon (createElement) {
-            return this.sortIconSlot ?
+            let iconNode = this.sortIconSlot ?
                 this.sortIconSlot({
                     direction: this.column.direction,
                 }) :
@@ -40,14 +40,23 @@ export default {
                     'i',
                     {
                         class: this.sortIconClasses,
-                        on: {
-                            click: (event) => {
-                                event.stopPropagation();
-                                this.$emit('sort', this.column);
-                            },
-                        },
                     },
                 );
+
+            return createElement(
+                'span',
+                {
+                    on: {
+                        click: (event) => {
+                            event.stopPropagation();
+                            this.$emit('sort', this.column);
+                        },
+                    },
+                },
+                [
+                    iconNode,
+                ]
+            );
         },
     },
 };
