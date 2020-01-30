@@ -47,7 +47,7 @@ export default {
             }
 
             if (!row.hasOwnProperty('_selectable')) {
-                let selectable = parent && parent.hasOwnProperty('_selectable') ? parent._selectable : this.selectable;
+                let selectable = parent && parent.hasOwnProperty('_selectable') ? parent._selectable : !!this.selectable;
                 Vue.set(row, '_selectable', selectable);
             }
 

@@ -294,7 +294,7 @@ export default {
             classes,
             filter: '',
             page: 0,
-            selectable: true,
+            selectable: 'multi',
             selectedRowIds: [],
         };
     },
