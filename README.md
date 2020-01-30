@@ -156,7 +156,8 @@ the total number of rows will decrease. So it's wisely to set the start index on
 Then you will be able to properly display all the filtered rows.
 - `start`: *(type: number, default: `undefined`)* The start index to show only a slice of the rows.
 - `end`: *(type: number, default: `undefined`)* The end index to show only a slice of the rows.
-- `selectable`: *(type: boolean, default: true)* Enable/disable row selection.
+- `selectable`: *(type: boolean or string, default: false)* Configure whether rows can be selected and how many.
+Accepted values are: false, true or 'multi' to allow selection of multiple rows, 'single' to allow selecting just one row at a time.
 - `slots`: *(type: Object, default: {})* A list of slots that are passed from parent components.
 If this object doesn't contain any attributes, the default component slots will be used.
 - `export-name`: *(type: string, default: `''`)* The name of the export file to download. This is by default an empty string.
@@ -197,8 +198,8 @@ It contains one parameter:
     - `fields`: *(type: Object)* The fields of the export file.
     - `data`: *(type: array)* The rows of the export file.
     - `title`: *(type: string)* The name of the export file.
-- `selection-change`: This event will be triggered if the `selectable` property is `true` and one or more rows are selected. It contains one parameter:
-    - `rows`: *(type: array)* The selected rows.
+- `selection-change`: This event will be triggered if the `selectable` property is not `false` and one or more rows are selected. It contains one parameter:
+    - `rows`: *(type: array)* The selected row(s).
 
 ### <a name="basic_table_slots"></a>Slots
 

@@ -1,8 +1,21 @@
 export default {
     props: {
         selectable: {
-            type: Boolean,
+            type: [
+                Boolean,
+                String,
+            ],
             default: false,
+            validator: function (value) {
+                if (typeof value === 'string') {
+                    return [
+                        'single',
+                        'multi',
+                    ].indexOf(value) !== -1;
+                } else {
+                    return (typeof value === 'boolean');
+                }
+            },
         },
     },
 
@@ -10,6 +23,12 @@ export default {
         return {
             firstSelectedRowId: undefined,
         };
+    },
+
+    computed: {
+        multiSelect () {
+            return this.selectable === true || this.selectable === 'multi';
+        },
     },
 
     methods: {
@@ -30,7 +49,7 @@ export default {
                 return;
             }
 
-            if (event.shiftKey) {
+            if (event.shiftKey && this.multiSelect) {
                 let flatten = this.flatten(this.currentRows);
                 let indexes = [
                     row._meta.uniqueIndex,
@@ -49,15 +68,17 @@ export default {
 
                 this.clearSelection();
                 this.selectRows(flatten.slice(minKey, maxKey + 1));
-            } else {
+            } else if (event.ctrlKey) {
                 let oldSelected = row._meta.selected;
-                if (! event.ctrlKey) {
+                if (! this.multiSelect) {
                     this.clearSelection();
-                    this.firstSelectedRowIndex = row._meta.uniqueIndex;
                 }
-
+                this.firstSelectedRowIndex = row._meta.uniqueIndex;
                 row._meta.selected = ! oldSelected;
-
+            } else {
+                this.clearSelection();
+                this.firstSelectedRowIndex = row._meta.uniqueIndex;
+                row._meta.selected = true;
             }
 
             this.$emit('selection-change', this.flatten(this.currentRows).filter(row => row._meta.selected));
