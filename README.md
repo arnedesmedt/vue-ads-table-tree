@@ -198,7 +198,7 @@ It contains one parameter:
     - `fields`: *(type: Object)* The fields of the export file.
     - `data`: *(type: array)* The rows of the export file.
     - `title`: *(type: string)* The name of the export file.
-- `selection-change`: This event will be triggered if the `selectable` property is not `false` and one or more rows are selected. It contains one parameter:
+- `selection-change`: This event will be triggered if the `selectable` property is not `undefined` and one or more rows are selected. It contains one parameter:
     - `rows`: *(type: array)* The selected row(s).
 
 ### <a name="basic_table_slots"></a>Slots
