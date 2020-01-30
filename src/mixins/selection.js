@@ -1,20 +1,15 @@
 export default {
     props: {
         selectable: {
-            type: [
-                Boolean,
-                String,
-            ],
-            default: false,
+            type: String,
             validator: function (value) {
-                if (typeof value === 'string') {
+                if (value !== undefined) {
                     return [
                         'single',
                         'multi',
                     ].indexOf(value) !== -1;
-                } else {
-                    return (typeof value === 'boolean');
                 }
+                return true;
             },
         },
     },
@@ -27,7 +22,7 @@ export default {
 
     computed: {
         multiSelect () {
-            return this.selectable === true || this.selectable === 'multi';
+            return this.selectable === 'multi';
         },
     },
 

@@ -156,8 +156,8 @@ the total number of rows will decrease. So it's wisely to set the start index on
 Then you will be able to properly display all the filtered rows.
 - `start`: *(type: number, default: `undefined`)* The start index to show only a slice of the rows.
 - `end`: *(type: number, default: `undefined`)* The end index to show only a slice of the rows.
-- `selectable`: *(type: boolean or string, default: false)* Configure whether rows can be selected and how many.
-Accepted values are: false, true or 'multi' to allow selection of multiple rows, 'single' to allow selecting just one row at a time.
+- `selectable`: *(type: string, default: `undefined`)* Configure whether rows can be selected and how many.
+Accepted values are: `'multi'` to allow selection of multiple rows, `'single'` to allow selecting just one row at a time. If omitted (`undefined`) no rows can be selected unless individually configured so using `_selectable` row property.
 - `slots`: *(type: Object, default: {})* A list of slots that are passed from parent components.
 If this object doesn't contain any attributes, the default component slots will be used.
 - `export-name`: *(type: string, default: `''`)* The name of the export file to download. This is by default an empty string.
@@ -187,7 +187,7 @@ root rows are loaded or the table is filtered and not all root rows or child row
 
 
 Start and end using the Array.slice method to show only a part of the rows. If you don't add them as properties, 
-their value will be undefined and all the rows will be visible.
+their value will be `undefined` and all the rows will be visible.
 
 ### <a name="basic_table_events"></a>Events
 

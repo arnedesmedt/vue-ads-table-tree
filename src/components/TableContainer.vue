@@ -107,11 +107,7 @@ export default {
         },
 
         selectable: {
-            type: [
-                Boolean,
-                String,
-            ],
-            default: false,
+            type: String,
         },
 
         classes: {
