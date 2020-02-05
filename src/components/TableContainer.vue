@@ -6,7 +6,7 @@
         >
             <div class="vue-ads-flex vue-ads-py-3">
                 <div class="vue-ads-w-3/4"></div>
-                <div class="vue-ads-w-1/4 vue-ads-flex">
+                <div class="vue-ads-w-1/4 vue-ads-flex" style="min-width: 180px;">
                     <vue-ads-form
                         :class="filterClasses"
                         :style="{'min-width': 0}"
