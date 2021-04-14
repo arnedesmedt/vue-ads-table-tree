@@ -57,6 +57,7 @@
                 :total-items="total"
                 :page="page"
                 :items-per-page="itemsPerPage"
+                :with-input="withPageInput"
                 @page-change="pageChanged"
                 @range-change="rangeChanged"
             />
@@ -77,6 +78,7 @@ import debounce from '../services/debounce';
 import VueAdsTable from './Table';
 
 import defaultClasses from '../services/defaultClasses';
+import 'vue-ads-pagination/dist/vue-ads-pagination.css';
 
 export default {
     name: 'VueAdsTableContainer',
@@ -141,6 +143,11 @@ export default {
         itemsPerPage: {
             type: Number,
             default: 10,
+        },
+
+        withPageInput: {
+            type: Boolean,
+            default: false,
         },
 
         exportName: {
