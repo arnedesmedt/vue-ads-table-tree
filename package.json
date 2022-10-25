@@ -4,10 +4,10 @@
     "description": "A vue table tree plugin.",
     "license": "MIT",
     "author": "Arne De Smedt <arnedesmdt@gmail.com> (https://twitter.com/ArneSmedt)",
-    "homepage": "https://github.com/arnedesmedt/vue-ads-table-tree",
+    "homepage": "https://github.com/RomikLomakin/vue-ads-table-tree.git",
     "repository": {
         "type": "git",
-        "url": "https://github.com/arnedesmedt/vue-ads-table-tree.git"
+        "url": "https://github.com/RomikLomakin/vue-ads-table-tree.git"
     },
     "bugs": {
         "url": "https://github.com/arnedesmedt/vue-ads-table-tree/issues"
