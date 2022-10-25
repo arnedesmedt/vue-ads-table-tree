@@ -24,7 +24,7 @@
             <!--&lt;!&ndash; Will be applied on the row with _id tiger &ndash;&gt;-->
             <!--<template slot="_tiger" slot-scope="props">test row - {{ props.row[props.column.property] }}</template>-->
             <!--<template slot="no-rows">Geen resultaten</template>-->
-            <template slot="sort-icon" slot-scope="props">{{ props }}</template>
+            <!-- <template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template> -->
             <!--<template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>-->
         </vue-ads-table>
         <div v-if="selectable" class="vue-ads-p-2 vue-ads-text-sm">
