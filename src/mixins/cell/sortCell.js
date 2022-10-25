@@ -34,6 +34,7 @@ export default {
         sortIcon (createElement) {
             return this.sortIconSlot ?
                 this.sortIconSlot({
+                    index: this.column.property,
                     direction: this.column.direction,
                 }) :
                 createElement(
