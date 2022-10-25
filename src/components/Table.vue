@@ -31,10 +31,10 @@
                     :colspan="nonGroupedColumns.length"
                 >
                     <span v-if="loading">
-                        <slot name="loading">Loading...</slot>
+                        <slot name="loading">Загрузка</slot>
                     </span>
                     <span v-else>
-                        <slot name="no-rows">No results found</slot>
+                        <slot name="no-rows">Нет данных</slot>
                     </span>
                 </td>
             </tr>
