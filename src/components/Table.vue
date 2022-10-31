@@ -31,10 +31,10 @@
                     :colspan="nonGroupedColumns.length"
                 >
                     <span v-if="loading">
-                        <slot name="loading">Loading...</slot>
+                        <slot name="loading">Загрузка</slot>
                     </span>
                     <span v-else>
-                        <slot name="no-rows">No results found</slot>
+                        <slot name="no-rows">Нет данных</slot>
                     </span>
                 </td>
             </tr>
@@ -52,11 +52,11 @@
                     :toggle-children-icon-slot="toggleChildrenIconSlot"
                     :css-processor="cssProcessor"
                     @toggle-children="toggleChildren(row)"
-                    @click.native="selectRow($event, row, rowKey)"
+                    @click.native="selectRow($event, row, njrowKey)"
                 />
                 <vue-ads-group-row
                     v-else
-                    :key="rowKey"
+                    :key="rowKey + 1"
                     :row-index="rowKey"
                     :row="row"
                     :slots="rowSlots"

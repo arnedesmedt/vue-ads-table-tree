@@ -19,7 +19,7 @@
             <!-- Will be applied on the row with _id tiger -->
             <template slot="_tiger" slot-scope="props">test row - {{ props.row.name }}</template>
             <template slot="no-rows">No results</template>
-            <template slot="sort-icon" slot-scope="props">{{ props.direction === null ? 'null' : (props.direction ? 'up' : 'down') }}</template>
+            <template slot="sort-icon" slot-scope="props">{{ props }}</template>
             <template slot="toggle-children-icon" slot-scope="props">{{ props.expanded ? 'open' : 'closed' }}</template>
         </vue-ads-table-tree>
     </div>

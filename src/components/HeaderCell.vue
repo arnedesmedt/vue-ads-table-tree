@@ -73,6 +73,12 @@ export default {
                     class: {
                         'vue-ads-flex-grow': true,
                     },
+                    on: {
+                        click: (event) => {
+                            event.stopPropagation();
+                            this.$emit('sort', this.column);
+                        },
+                    },
                 },
                 [
                     this.title || this.column.title,
